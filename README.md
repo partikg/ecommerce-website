@@ -18,11 +18,11 @@ To run the full project locally, you need to start the frontend, backend, and ad
 
 ### 1. Running the Website
 1. Navigate to the `frankandoak/` directory:
-   cd frankandoak
+         cd frankandoak
 2.Install dependencies:
-   npm install 
+         npm install 
 3.Run the website:
-    npm run dev
+          npm run dev
 The website will be accessible at http://localhost:3000.
 
 
