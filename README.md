@@ -26,6 +26,8 @@ To run the full project locally, you need to start the frontend, backend, and ad
 
          npm install 
 
+         npm install @babel/preset-env @babel/preset-react @fortawesome/fontawesome-svg-core @fortawesome/free-brands-svg-icons @fortawesome/free-solid-svg-icons @fortawesome/react-               fontawesome @headlessui/react @heroicons/react @reduxjs/toolkit axios next razorpay react react-dom react-icons react-razorpay react-redux react-slick slick-carousel universal-           cookie eslint eslint-config-next postcss tailwindcss
+
 4. Run the website:
 
           npm run dev
@@ -45,6 +47,9 @@ The website will be accessible at `http://localhost:3000`.
 
     `npm install`
 
+    `npm install axios react react-cookie react-dom react-router-dom react-toastify @eslint/js @types/react @types/react-dom @vitejs/plugin-react autoprefixer eslint eslint-plugin-react 
+    eslint-plugin-react-hooks eslint-plugin-react-refresh globals postcss tailwindcss vite`
+
 3. Run the backend API with nodemon:
 
    `nodemon`
@@ -61,7 +66,9 @@ The backend API will be running at `http://localhost:5000`.
 
     `npm install`
 
-3. Run the admin panel:
+   `npm install bcrypt cors express jsonwebtoken mongoose multer nodemailer razorpay react-cookie`
+
+4. Run the admin panel:
 
     `npm run dev`
 
