@@ -18,41 +18,32 @@ To run the full project locally, you need to start the frontend, backend, and ad
 
 ### 1. Running the Website
 1. Navigate to the `frankandoak/` directory:
-   ```bash
    cd frankandoak
 2.Install dependencies:
-   ```bash
-   npm install
+   npm install 
 3.Run the website:
-   ```bash
-  npm run dev
+    npm run dev
 The website will be accessible at http://localhost:3000.
 
 
 
 ### 2. Running the Backend API
 1.Navigate to the `frankandoaks API/` directory:
-   ```bash
-   cd frankandoaks API
+   `cd frankandoaks API`
 2.Install dependencies:
-   ```bash
-    npm install
+    `npm install`
 3.Run the backend API with nodemon:
-   ```bash
-   nodemon
+   `nodemon`
 The backend API will be running at `http://localhost:5000`.
 
 
 ### 3. Running the Admin Panel
 1.Navigate to the `frankandoak_adminpanel/` directory:
-   ```bash
-   cd frankandoak_adminpanel
+   `cd frankandoak_adminpanel`
 2.Install dependencies:
-   ```bash
-    npm install
+    `npm install`
 3.Run the admin panel:
-   ```bash
-    npm run dev
+    `npm run dev`
 The admin panel will be accessible at `http://localhost:4000`.
 
 
