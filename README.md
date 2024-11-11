@@ -20,7 +20,7 @@ To run the full project locally, you need to start the frontend, backend, and ad
 
 1. Navigate to the `frankandoak/` directory:
 
-         `cd frankandoak`
+         cd frankandoak
 
 3. Install dependencies:
 
@@ -39,10 +39,6 @@ The website will be accessible at `http://localhost:3000`.
 
 1. Navigate to the `frankandoaks API/` directory:
 
-
-
-### 2. Running the Backend API
-1.Navigate to the `frankandoaks API/` directory:
    `cd frankandoaks API`
 
 2. Install dependencies:
