@@ -25,27 +25,23 @@ Project Structure
 Run Locally
 
 1. Start Backend
-
+```bash
 cd server
-
 npm install
-
 npm run dev
-
+```
 
 2. Start Client
-
+```bash
 cd client
-
 npm install
-
 npm run dev
+```
 
 
 3. Start Admin Panel
-
+```bash
 cd admin
-
 npm install
-
 npm run dev
+```
