@@ -27,5 +27,13 @@ require('./src/routes/frontend/user.routes')(server);
 require('./src/routes/frontend/orders.routes')(server);
 
 mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log("DB Connected"))
+    .then(() => {
+        console.log("DB Connected");
+
+        const PORT = process.env.PORT || 5000;
+
+        server.listen(PORT, () => {
+            console.log(`Server running on port ${PORT}`);
+        });
+    })
     .catch(err => console.log(err));
