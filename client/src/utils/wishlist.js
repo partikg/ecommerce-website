@@ -1,4 +1,6 @@
 export const addToWishlist = (product) => {
+    if (typeof window === "undefined") return;
+
     let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
 
     const exists = wishlist.find(item => item._id === product._id);
@@ -10,10 +12,13 @@ export const addToWishlist = (product) => {
 };
 
 export const getWishlist = () => {
+    if (typeof window === "undefined") return [];
     return JSON.parse(localStorage.getItem("wishlist")) || [];
 };
 
 export const removeFromWishlist = (id) => {
+    if (typeof window === "undefined") return;
+
     let wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
 
     wishlist = wishlist.filter(item => item._id !== id);
@@ -22,6 +27,8 @@ export const removeFromWishlist = (id) => {
 };
 
 export const isInWishlist = (id) => {
+    if (typeof window === "undefined") return false;
+
     const wishlist = JSON.parse(localStorage.getItem("wishlist")) || [];
     return wishlist.some(item => item._id === id);
 };

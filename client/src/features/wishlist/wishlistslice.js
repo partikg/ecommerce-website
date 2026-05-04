@@ -1,35 +1,35 @@
 import { createSlice } from '@reduxjs/toolkit';
 
-// Load wishlist items from localStorage
 const getWishlistItems = () => {
-    const wishlist = JSON.parse(localStorage.getItem('wishlistItems'));
-    return wishlist;
+    if (typeof window !== "undefined") {
+        const wishlist = JSON.parse(localStorage.getItem('wishlistItems'));
+        return wishlist || [];
+    }
+    return [];
 };
 
-const getwishlistvalue = getWishlistItems();
-
-if (getwishlistvalue == null) {
-    var getwishlistvalu = [];
-} else {
-    var getwishlistvalu = getwishlistvalue;
-}
-
 const initialState = {
-    wishlist: getwishlistvalu,
+    wishlist: getWishlistItems(),
+};
+
+const saveToLocalStorage = (wishlist) => {
+    if (typeof window !== "undefined") {
+        localStorage.setItem('wishlistItems', JSON.stringify(wishlist));
+    }
 };
 
 export const wishlistSlice = createSlice({
     name: 'wishlist',
     initialState,
     reducers: {
-        // Add to Wishlist
-        addToWishlist: (state, action) => {
-            const itemExists = state.wishlist.filter((item, i) => item.id === action.payload.id);
-            console.log("Filtered data:", itemExists);
-            console.log("Data length:", itemExists.length);
 
-            if (itemExists.length == 0) {
-                const wishlistItems = {
+        addToWishlist: (state, action) => {
+            const itemExists = state.wishlist.find(
+                (item) => item.id === action.payload._id
+            );
+
+            if (!itemExists) {
+                const wishlistItem = {
                     id: action.payload._id,
                     name: action.payload.name,
                     image: action.payload.image,
@@ -40,38 +40,36 @@ export const wishlistSlice = createSlice({
                     qty: 1
                 };
 
-                state.wishlist.push(wishlistItems);
-                localStorage.setItem('wishlistItems', JSON.stringify(state.wishlist));
-                console.log('Item added to wishlist:', wishlistItems);
+                state.wishlist.push(wishlistItem);
             } else {
-                console.log('Item already in wishlist:', action.payload.name);
-                state.wishlist.map((item, i) => {
-                    if (item.id == action.payload.id) {
-                        item.qty = item.qty + 1;
-                    }
-                })
-                localStorage.setItem('wishlistItems', JSON.stringify(state.wishlist));
-
+                itemExists.qty += 1;
             }
+
+            saveToLocalStorage(state.wishlist);
         },
 
-        // Remove from Wishlist
         removeFromWishlist: (state, action) => {
-            state.wishlist = state.wishlist.filter(item => item.id !== action.payload);
-            localStorage.setItem('wishlistItems', JSON.stringify(state.wishlist));
-            console.log('Item removed from wishlist:', action.payload);
+            state.wishlist = state.wishlist.filter(
+                item => item.id !== action.payload
+            );
+
+            saveToLocalStorage(state.wishlist);
         },
 
-
-        // Clear Wishlist
         clearWishlist: (state) => {
             state.wishlist = [];
-            localStorage.removeItem('wishlistItems');
-            console.log('Wishlist cleared');
+
+            if (typeof window !== "undefined") {
+                localStorage.removeItem('wishlistItems');
+            }
         },
     },
 });
 
-// Export actions and reducer
-export const { addToWishlist, removeFromWishlist, clearWishlist } = wishlistSlice.actions;
+export const {
+    addToWishlist,
+    removeFromWishlist,
+    clearWishlist
+} = wishlistSlice.actions;
+
 export default wishlistSlice.reducer;
