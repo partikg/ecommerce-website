@@ -57,14 +57,12 @@ export const countercart = createSlice({
         updatecartaddqty: (state, action) => {
             const item = state.cart.find(v => v.id == action.payload);
             if (item) item.qty += 1;
-
             saveToLocalStorage(state.cart);
         },
 
         updatecartminusqty: (state, action) => {
             const item = state.cart.find(v => v.id == action.payload);
             if (item && item.qty > 1) item.qty -= 1;
-
             saveToLocalStorage(state.cart);
         },
     },
