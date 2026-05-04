@@ -77,7 +77,7 @@ export default function SearchPopover({ newProducts }) {
                     <div className="max-h-[250px] overflow-y-auto">
                         {searchResults.length > 0 ? (
                             searchResults.map((product) => (
-                                <Popover.Button as={Link}
+                                <Popover.Button key={product._id} as={Link}
                                     href={`/Salesdetail/${product._id}`}
                                     onClick={clearSearch}
                                     className="block p-2 hover:bg-gray-100"
