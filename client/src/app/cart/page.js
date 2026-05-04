@@ -1,30 +1,30 @@
-'use client'
-import React from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import Link from 'next/link'
-import { emptycart, removecart, updatecartaddqty, updatecartminusqty } from '../../features/cart/cartslice'
+'use client';
+
+export const dynamic = 'force-dynamic';
+
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { emptycart, removecart, updatecartaddqty, updatecartminusqty, setCart } from '../../features/cart/cartslice';
 import useRazorpay from "react-razorpay";
-import axios from 'axios'
-import { useEffect } from 'react'
-import { setCart } from '../../features/cart/cartslice'
-import { useState } from 'react'
-import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
-import { XMarkIcon } from '@heroicons/react/24/outline'
+import axios from 'axios';
+import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react';
+import { XMarkIcon } from '@heroicons/react/24/outline';
 
 export default function Page() {
 
-    const getcartitems = useSelector((state) => state.cart.cart)
-    console.log(getcartitems)
-    const dispatch = useDispatch()
+    const dispatch = useDispatch();
+    const cartItems = useSelector((state) => state.cart?.cart || []);
 
-    const [open, setOpen] = useState(true)
+    const [mounted, setMounted] = useState(false);
+    const [open, setOpen] = useState(true);
     const [Razorpay] = useRazorpay();
 
-    const subtotal = getcartitems.reduce((total, item) => {
-        const price = parseFloat(item.price.replace('$', '').trim());
-        return total + (price * item.qty);
-    }, 0);
+    // ✅ Ensure client-side rendering only
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
+    // ✅ Load cart from localStorage
     useEffect(() => {
         if (typeof window !== "undefined") {
             const cart = localStorage.getItem('cartitems');
@@ -34,237 +34,144 @@ export default function Page() {
         }
     }, [dispatch]);
 
+    if (!mounted) return null; // 🔥 prevents SSR crash
+
+    const subtotal = cartItems.reduce((total, item) => {
+        const price = parseFloat(item.price.replace('$', '').trim());
+        return total + (price * item.qty);
+    }, 0);
+
     const placeOrder = (e) => {
+        e?.preventDefault();
 
-        if (e) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
-
-        const shippingDetails = {
-            address: "testing address"
-        }
-        const userId = 1001;
-        const productDetails = getcartitems.map(
-            (c) => {
-                return {
-                    productId: c.id,
-                    qty: c.qty,
-                    price: c.price,
-                    total: c.qty * c.price,
-                }
-            }
-        )
+        const productDetails = cartItems.map((c) => ({
+            productId: c.id,
+            qty: c.qty,
+            price: c.price,
+            total: c.qty * c.price,
+        }));
 
         axios.post(
             `${process.env.NEXT_PUBLIC_API_URL}/api/frontend/orders/place-order`,
             {
-                user_id: userId,
+                user_id: 1001,
                 product_details: productDetails,
-                order_total: 5000,
-                shipping_details: shippingDetails,
+                order_total: subtotal,
+                shipping_details: { address: "testing address" },
             }
-        ).then(
-            (success) => {
-                console.log(success)
-                if (success.data.data.status) {
-                    openPaymentPopUp(success.data.data.id, success.data.data);
-                } else {
-                    console.log('Unable to place order');
-                }
+        ).then((res) => {
+            if (res.data.data.status) {
+                openPaymentPopUp(res.data.data);
             }
-        )
-    }
+        });
+    };
 
-    const openPaymentPopUp = (razorpayOrder) => {
+    const openPaymentPopUp = (order) => {
         const options = {
             key: "rzp_test_RghXFo7rcpVb1U",
-            amount: razorpayOrder.amount,
+            amount: order.amount,
             currency: "INR",
             name: "WsCube Tech",
-            description: "upskillingBharat",
-            image: "https://www.wscubetech.com/images/wscube-tech-logo.svg",
-            order_id: razorpayOrder.id,
+            description: "Order Payment",
+            order_id: order.id,
 
             handler: function (response) {
-                console.log(response);
-                alert('success');
-
                 axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/frontend/orders/confirm-order`, {
                     order_id: response.razorpay_order_id,
                     payment_id: response.razorpay_payment_id,
                     status: 2
                 });
             },
-
-            prefill: {
-                name: "Test User",
-                email: "test@gmail.com",
-                contact: "9999999999",
-            },
-
-            theme: {
-                color: "#ff4252",
-            },
         };
 
-        const rzp1 = new Razorpay(options);
-
-        rzp1.on("payment.failed", function (response) {
-            console.log(response);
-            alert('Payment Failed');
-
-            axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/frontend/orders/confirm-order`, {
-                order_id: response.error.metadata.order_id,
-                payment_id: response.error.metadata.payment_id,
-                status: 3
-            });
-        });
-
-        rzp1.open();
+        const rzp = new Razorpay(options);
+        rzp.open();
     };
 
     return (
-        <div>
-            <Dialog open={open} onClose={setOpen} className="relative z-10" >
-                <DialogBackdrop
-                    transition
-                    className="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity duration-500 ease-in-out data-[closed]:opacity-0"
-                />
+        <Dialog open={open} onClose={setOpen} className="relative z-10">
+            <DialogBackdrop className="fixed inset-0 bg-gray-500 bg-opacity-75" />
 
-                <div className="fixed inset-0 overflow-hidden">
-                    <div className="absolute inset-0 overflow-hidden">
-                        <div className=" fixed inset-y-0 right-0 flex max-w-full pl-10">
-                            <DialogPanel
-                                transition
-                                className="pointer-events-auto w-screen max-w-md transform transition duration-500 ease-in-out data-[closed]:translate-x-full sm:duration-700"
-                            >
-                                <div className="flex h-full flex-col overflow-y-scroll bg-white shadow-xl">
-                                    <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
-                                        <div className="flex items-start justify-between">
-                                            <DialogTitle className="text-lg font-medium text-gray-900">Shopping cart</DialogTitle>
-                                            <div className="ml-3 flex h-7 items-center">
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setOpen(false)}
-                                                    className="relative -m-2 p-2 text-gray-400 hover:text-gray-500"
-                                                >
-                                                    <span className="absolute -inset-0.5" />
-                                                    <span className="sr-only">Close panel</span>
-                                                    <XMarkIcon aria-hidden="true" className="h-6 w-6" />
-                                                </button>
-                                            </div>
-                                        </div>
+            <div className="fixed inset-0 overflow-hidden">
+                <div className="absolute inset-0 overflow-hidden">
+                    <div className="fixed inset-y-0 right-0 flex max-w-full pl-10">
 
-                                        <div className="mt-8">
-                                            <div className="flow-root">
-                                                <ul role="list" className="-my-6 divide-y divide-gray-200">
-                                                    {getcartitems.map((product) => (
-                                                        <li key={product.id} className="flex py-6">
-                                                            <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
-                                                                <img
-                                                                    alt={product.name}
-                                                                    src={`${process.env.NEXT_PUBLIC_API_URL}/uploads/sales/${product.image}`}
-                                                                    className="h-full w-full object-cover object-center"
-                                                                />
-                                                            </div>
+                        <DialogPanel className="pointer-events-auto w-screen max-w-md bg-white shadow-xl">
 
-                                                            <div className="ml-4 flex flex-1 flex-col">
-                                                                <div>
-                                                                    <div className="flex justify-between text-base font-medium text-gray-900">
-                                                                        <h3>
-                                                                            <span>{product.name}</span>
-                                                                        </h3>
-                                                                        <p className="ml-4">{product.price}</p>
+                            <div className="flex h-full flex-col overflow-y-scroll">
 
-                                                                    </div>
-                                                                    <p className="mt-1 text-sm text-gray-500">{product.color}</p>
-                                                                </div>
-                                                                <div className="flex flex-1 items-end justify-between text-sm">
-                                                                    <p className="text-gray-500">Qty {product.qty}</p>
-                                                                    <div className="flex items-center border-gray-100">
-                                                                        <span onClick={() => dispatch(updatecartminusqty(product.id))} className="cursor-pointer rounded-l bg-gray-100 py-1 px-3.5 
-                                                duration-100 hover:bg-blue-500 hover:text-blue-50"> - </span>
-                                                                        <input className="h-8 w-8 border bg-white text-center text-xs 
-                                                outline-none" type="number" value={product.qty} min="1" />
-                                                                        <span onClick={() => dispatch(updatecartaddqty(product.id))} className="cursor-pointer rounded-r bg-gray-100 py-1 px-3 
-                                                duration-100 hover:bg-blue-500 hover:text-blue-50"> + </span>
-                                                                    </div>
-                                                                    <div className="flex">
-                                                                        <button onClick={() => dispatch(removecart(product.id))} type="button" className="font-medium text-indigo-600 hover:text-indigo-500">
-                                                                            Remove
-                                                                        </button>
-                                                                        <button
-                                                                            onClick={() => dispatch(emptycart())}
-                                                                            className="px-4 py-2 text-white bg-blue-500 rounded-md"
-                                                                        >
-                                                                            EmptyCart
-                                                                        </button>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </li>
-                                                    ))}
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
-                                        <div className="flex justify-between text-base font-medium text-gray-900">
-                                            <p>Subtotal</p>
-                                            <p>${subtotal.toFixed(2)}</p>
-                                        </div>
-                                        <p className="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
-                                        <div className="mt-6">
-                                            <button onClick={(e) => placeOrder(e)}>
-                                                Checkout
-                                            </button>
-                                        </div>
-                                        <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
-                                            <p>
-                                                or{' '}
-                                                <button
-                                                    type="button"
-                                                    onClick={() => setOpen(false)}
-                                                    className="font-medium text-indigo-600 hover:text-indigo-500"
-                                                >
-                                                    Continue Shopping
-                                                    <span aria-hidden="true"> &rarr;</span>
-                                                </button>
-                                            </p>
-                                        </div>
-                                    </div>
+                                {/* Header */}
+                                <div className="flex justify-between p-4">
+                                    <DialogTitle className="text-lg font-medium">Shopping Cart</DialogTitle>
+                                    <button onClick={() => setOpen(false)}>
+                                        <XMarkIcon className="h-6 w-6" />
+                                    </button>
                                 </div>
-                            </DialogPanel>
-                        </div>
+
+                                {/* Items */}
+                                <div className="p-4">
+                                    {cartItems.length === 0 ? (
+                                        <p>Your cart is empty</p>
+                                    ) : (
+                                        cartItems.map((product) => (
+                                            <div key={product.id} className="flex mb-4">
+
+                                                <img
+                                                    src={`${process.env.NEXT_PUBLIC_API_URL}/uploads/sales/${product.image}`}
+                                                    className="h-20 w-20 object-cover"
+                                                    alt={product.name}
+                                                />
+
+                                                <div className="ml-4 flex-1">
+                                                    <p>{product.name}</p>
+                                                    <p>{product.price}</p>
+
+                                                    <div className="flex items-center mt-2">
+                                                        <button onClick={() => dispatch(updatecartminusqty(product.id))}>-</button>
+                                                        <span className="mx-2">{product.qty}</span>
+                                                        <button onClick={() => dispatch(updatecartaddqty(product.id))}>+</button>
+                                                    </div>
+
+                                                    <button
+                                                        onClick={() => dispatch(removecart(product.id))}
+                                                        className="text-red-500 text-sm"
+                                                    >
+                                                        Remove
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ))
+                                    )}
+                                </div>
+
+                                {/* Footer */}
+                                <div className="p-4 border-t">
+                                    <div className="flex justify-between">
+                                        <span>Total</span>
+                                        <span>₹{subtotal.toFixed(2)}</span>
+                                    </div>
+
+                                    <button
+                                        onClick={placeOrder}
+                                        className="w-full bg-blue-500 text-white mt-4 p-2"
+                                    >
+                                        Checkout
+                                    </button>
+
+                                    <button
+                                        onClick={() => dispatch(emptycart())}
+                                        className="w-full mt-2 border p-2"
+                                    >
+                                        Clear Cart
+                                    </button>
+                                </div>
+
+                            </div>
+
+                        </DialogPanel>
                     </div>
                 </div>
-            </Dialog >
-
-        </div>
-
-
-
-
-
-
-
-
-
-
-
-    )
+            </div>
+        </Dialog>
+    );
 }
-
-
-
-
-
-
-
-
-
-
-
-
