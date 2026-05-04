@@ -6,46 +6,45 @@ import Link from 'next/link'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHeart } from '@fortawesome/free-solid-svg-icons'
 import { useSearchParams } from 'next/navigation'
-import { addToWishlist } from '../../utils/wishlist';
+import { useDispatch, useSelector } from 'react-redux'
+import { addToWishlist } from '../../features/wishlist/wishlistslice'
 
 export default function Page() {
 
     const [productsales, setproductsales] = useState([])
     const [salespath, setsalespath] = useState('')
-    const searchParams = useSearchParams();
-    const [wishlistIds, setWishlistIds] = useState([]);
+    const searchParams = useSearchParams()
+
+    const dispatch = useDispatch()
+
+    // ✅ Redux wishlist (single source of truth)
+    const wishlist = useSelector(state => state.wishlist.wishlist)
 
     const [filters, setFilters] = useState({
         gender: '',
         type: '',
         category: ''
-    });
+    })
 
     useEffect(() => {
-        const category = searchParams.get('category') || '';
-        const gender = searchParams.get('gender') || '';
+        const category = searchParams.get('category') || ''
+        const gender = searchParams.get('gender') || ''
 
-        const updatedFilters = {
+        setFilters(prev => ({
+            ...prev,
             category,
-            gender,
-            type: ''
-        };
-
-    }, [searchParams]);
+            gender
+        }))
+    }, [searchParams])
 
     useEffect(() => {
         axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/sales/view`, filters)
             .then((res) => {
-                setproductsales(res.data.data || []);
-                setsalespath(res.data.imagePath);
+                setproductsales(res.data.data || [])
+                setsalespath(res.data.imagePath)
             })
-            .catch((err) => console.log(err));
-    }, [filters]);
-
-    useEffect(() => {
-        const list = JSON.parse(localStorage.getItem("wishlist")) || [];
-        setWishlistIds(list.map(i => i._id));
-    }, []);
+            .catch((err) => console.log(err))
+    }, [filters])
 
     return (
         <div className='flex'>
@@ -85,7 +84,11 @@ export default function Page() {
                 <div className='flex flex-wrap'>
                     {productsales.length > 0 ? (
                         productsales.map((data) => (
-                            <Link href={`/Salesdetail/${data._id}`} key={data._id} className='pb-4 m-2 w-[245px]'>
+                            <Link
+                                href={`/Salesdetail/${data._id}`}
+                                key={data._id}
+                                className='pb-4 m-2 w-[245px]'
+                            >
 
                                 <div className='relative group'>
                                     <img
@@ -98,6 +101,7 @@ export default function Page() {
                                         <img
                                             className='absolute top-0 left-0 h-80 w-full object-cover opacity-0 group-hover:opacity-100'
                                             src={`${salespath}${data.image[1]}`}
+                                            alt={data.name}
                                         />
                                     )}
                                 </div>
@@ -107,15 +111,16 @@ export default function Page() {
 
                                     <button
                                         onClick={(e) => {
-                                            e.preventDefault();
-                                            addToWishlist(data);
-                                            setWishlistIds(prev => [...prev, data._id]);
+                                            e.preventDefault()
+                                            dispatch(addToWishlist(data))
                                         }}
                                     >
                                         <FontAwesomeIcon
                                             icon={faHeart}
                                             style={{
-                                                color: wishlistIds.includes(data._id) ? "red" : "gray"
+                                                color: wishlist.some(item => item.id === data._id)
+                                                    ? "red"
+                                                    : "gray"
                                             }}
                                         />
                                     </button>
