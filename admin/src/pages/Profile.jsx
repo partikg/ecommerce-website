@@ -13,7 +13,7 @@ export default function Profile() {
     useEffect(() => {
 
         const usertoken = cookies.get('token');
-        axios.post('http://localhost:3/api/frontend/user/profile', '', {
+        axios.post('http://localhost:5000/api/frontend/user/profile', '', {
             headers: {
                 'authorization': `Bearer ${usertoken}`
             }

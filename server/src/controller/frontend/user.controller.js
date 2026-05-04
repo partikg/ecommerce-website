@@ -175,7 +175,7 @@ exports.profile = async (request, response) => {
             var result = {
                 status: true,
                 message: 'profile found',
-                imagePath: 'http://localhost:3/uploads/user/',
+                imagePath: 'http://localhost:5000/uploads/user/',
                 data: result
             }
             response.send(result);

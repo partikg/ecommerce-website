@@ -3,64 +3,123 @@ const orderModel = require('../../models/order');
 const Razorpay = require('razorpay');
 
 const instance = new Razorpay({
-    key_id: 'rzp_test_7xIni0RPTlUpmY',
-    key_secret: 'Q8wxUl6gUCWmHjPbz0Ip17Co',
+    key_id: 'rzp_test_RghXFo7rcpVb1U',
+    key_secret: 'iiZE9Dh75wXoj0V4OQ6OMWw0',
 });
+
+// exports.placeOrder = async (request, response) => {
+
+//     var data = new orderModel({
+//         user_id: request.body.user_id,
+//         product_details: request.body.product_details,
+//         order_total: request.body.order_total,
+//         shipping_details: request.body.shipping_details,
+//         status: 1
+//     })
+
+//     await data.save().then((result) => {
+
+//         var options = {
+//             amount: result.order_total,  // amount in the smallest currency unit
+//             currency: "INR",
+//             receipt: result._id
+//         };
+
+//         instance.orders.create(options, async function (err, order) {
+
+//             await orderModel.updateOne(
+//                 {
+//                     _id: result._id
+//                 },
+//                 {
+//                     $set: {
+//                         razorpay_order_id: order.id
+//                     }
+//                 });
+//             // console.log(result);
+
+//             order.status = 1;
+//             var resp = {
+//                 status: true,
+//                 message: 'Order Placedd successfully !!',
+//                 data: order
+//             }
+
+//             response.send(resp);
+
+//         })
+
+//     }).catch((error) => {
+
+//         var resp = {
+//             status: false,
+//             message: 'Something went wrong !!',
+//             error: error
+//         }
+
+//         response.send(resp);
+
+//     });
+// }
 
 exports.placeOrder = async (request, response) => {
 
-    var data = new orderModel({
-        user_id: request.body.user_id,
-        product_details: request.body.product_details,
-        order_total: request.body.order_total,
-        shipping_details: request.body.shipping_details,
-        status: 1
-    })
+    try {
 
-    await data.save().then((result) => {
+        const data = new orderModel({
+            user_id: request.body.user_id,
+            product_details: request.body.product_details,
+            order_total: request.body.order_total,
+            shipping_details: request.body.shipping_details,
+            status: 1
+        });
 
-        var options = {
-            amount: result.order_total,  // amount in the smallest currency unit
+        const result = await data.save();
+
+        const options = {
+            amount: result.order_total * 100, // ✅ FIXED
             currency: "INR",
-            receipt: result._id
+            receipt: result._id.toString()
         };
 
         instance.orders.create(options, async function (err, order) {
 
-            await orderModel.updateOne(
-                {
-                    _id: result._id
-                },
-                {
-                    $set: {
-                        razorpay_order_id: order.id
-                    }
-                });
-            // console.log(result);
+            if (err) {
+                console.log("RAZORPAY ERROR:", err);
 
-            order.status = 1;
-            var resp = {
-                status: true,
-                message: 'Order Placedd successfully !!',
-                data: order
+                return response.send({
+                    status: false,
+                    message: "Razorpay failed",
+                    error: err
+                });
             }
 
-            response.send(resp);
+            await orderModel.updateOne(
+                { _id: result._id },
+                { $set: { razorpay_order_id: order.id } }
+            );
 
-        })
+            order.status = true;
 
-    }).catch((error) => {
+            response.send({
+                status: true,
+                message: 'Order placed successfully',
+                data: order
+            });
 
-        var resp = {
+        });
+
+    } catch (error) {
+
+        console.log("SERVER ERROR:", error);
+
+        response.send({
             status: false,
-            message: 'Something went wrong !!',
+            message: 'Something went wrong',
             error: error
-        }
-
-        response.send(resp);
-
-    });
-}
+        });
+    }
+};
 
 exports.confirmOrder = async (request, response) => {
 

@@ -18,7 +18,7 @@ export default function Login() {
             password: event.target.password.value
         }
 
-        axios.post('http://localhost:3/api/frontend/user/login', data)
+        axios.post('http://localhost:5000/api/frontend/user/login', data)
             .then((result) => {
                 if (result.data.status == true) {
                     nav('/home');

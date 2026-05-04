@@ -5,11 +5,6 @@ const { Schema } = mongoose;
 const womenschema = new mongoose.Schema({
     name: {
         type: String,
-        // required: [true, "please select name"],
-        // minLength: [2, 'must be minimun 2 characters'],
-        // // maxLength: 10,
-        // match: /^[a-zA_Z ']{2,10}$/
-        // enum: ['man', 'woman']
     },
     price: {
         type: String,
@@ -20,7 +15,6 @@ const womenschema = new mongoose.Schema({
     },
     image: {
         type: String,
-        // required: true,
     },
     status: {
         type: Boolean,

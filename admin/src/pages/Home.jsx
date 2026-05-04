@@ -6,7 +6,6 @@ const Home = () => {
 
     let [userprofile, setuserprofile] = useState([]);
     let [user, setuser] = useState([]);
-    let [courses, setcourses] = useState([]);
     let [categories, setcategories] = useState([]);
     let [products, setproducts] = useState([]);
 
@@ -16,7 +15,7 @@ const Home = () => {
 
         // name
         const usertoken = cookies.get('token');
-        axios.post('http://localhost:3/api/frontend/user/profile', '', {
+        axios.post('http://localhost:5000/api/frontend/user/profile', '', {
             headers: {
                 'authorization': `Bearer ${usertoken}`
             }
@@ -30,7 +29,7 @@ const Home = () => {
             })
 
         // total user
-        axios.post('http://localhost:3/api/frontend/user/viewuser',)
+        axios.post('http://localhost:5000/api/frontend/user/viewuser',)
             .then((success) => {
                 // console.log(success.data.data)
                 setuser(success.data.data)
@@ -40,17 +39,17 @@ const Home = () => {
             })
 
         // total courses
-        axios.post('http://localhost:3/api/backend/courses/view',)
-            .then((success) => {
-                // console.log(success.data.data.length)
-                setcourses(success.data.data)
-            })
-            .catch((error) => {
-                console.log(error)
-            })
+        // axios.post('http://localhost:5000/api/backend/courses/view',)
+        //     .then((success) => {
+        //         // console.log(success.data.data.length)
+        //         setcourses(success.data.data)
+        //     })
+        //     .catch((error) => {
+        //         console.log(error)
+        //     })
 
         // total categories
-        axios.post('http://localhost:3/api/backend/categories/view',)
+        axios.post('http://localhost:5000/api/backend/categories/view',)
             .then((success) => {
                 // console.log(success.data.data.length)
                 setcategories(success.data.data)
@@ -60,7 +59,7 @@ const Home = () => {
             })
 
         // total products
-        axios.post('http://localhost:3/api/backend/products/view',)
+        axios.post('http://localhost:5000/api/backend/products/view',)
             .then((success) => {
                 // console.log(success.data.data.length)
                 setproducts(success.data.data)
@@ -87,11 +86,6 @@ const Home = () => {
                 <div className="mb-4 border border-gray-300 rounded-lg p-4 shadow-md hover:shadow-lg transition duration-300">
                     <h3 className="text-lg font-medium">Total Users</h3>
                     <p className="text-lg font-medium text-gray-700">{user.length}</p>
-                </div>
-
-                <div className="mb-4 border border-gray-300 rounded-lg p-4 shadow-md hover:shadow-lg transition duration-300">
-                    <h3 className="text-lg font-medium">Total Courses</h3>
-                    <p className="text-lg font-medium text-gray-700">{courses.length}</p>
                 </div>
 
                 <div className="mb-4 border border-gray-300 rounded-lg p-4 shadow-md hover:shadow-lg transition duration-300">

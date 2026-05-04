@@ -19,7 +19,7 @@ export default function Register() {
             data.image = form.get('regimage');
         }
 
-        axios.post('http://localhost:3/api/frontend/user/register', toFormData(data))
+        axios.post('http://localhost:5000/api/frontend/user/register', toFormData(data))
             .then((success) => {
                 console.log(success.data)
                 if (success.data.status == true) {

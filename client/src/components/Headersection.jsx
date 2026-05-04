@@ -1,0 +1,44 @@
+"use client";
+import { useEffect, useState } from 'react';
+import axios from 'axios';
+import { useSearchParams } from 'next/navigation';
+import Hero from './Hero';
+import FeaturesBar from './FeaturesBar';
+import FeaturedCategories from './FeaturedCategories';
+import JustIn from './JustIn';
+import Brr from './Brr';
+import Footer from './Footer';
+
+export default function Headersection() {
+
+    const [newProducts, setNewProducts] = useState([]);
+    const searchparams = useSearchParams();
+
+    useEffect(() => {
+        const justIn = searchparams.get('justIn') || '';
+        const daysAgo = searchparams.get('daysAgo') || '';
+        const type = searchparams.get('type') || '';
+
+        axios.post('http://localhost:5000/api/backend/sales/view', { justIn, daysAgo, type })
+            .then((response) => {
+                setNewProducts(response.data.data.slice(0, 8));
+                console.log(response.data.data.slice(0, 8));
+            })
+            .catch((error) => {
+                console.error('Error fetching new products:', error);
+            });
+    }, []);
+
+    return (
+
+        <div>
+            <Hero />
+            <FeaturesBar />
+            <FeaturedCategories />
+            <JustIn products={newProducts} />
+            <Brr products={newProducts} />
+            <Footer />
+        </div >
+
+    )
+}

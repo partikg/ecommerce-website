@@ -29,7 +29,7 @@ export default function Addcategories() {
 
         // add or update
         if (params.categories_id == undefined) {
-            axios.post('http://localhost:3/api/backend/categories/add', toFormData(data))
+            axios.post('http://localhost:5000/api/backend/categories/add', toFormData(data))
                 .then((success) => {
                     // console.log(success.data)
                     nav('/categories/view');
@@ -40,7 +40,7 @@ export default function Addcategories() {
                     toast.error('Error: ' + error);
                 })
         } else {
-            axios.put('http://localhost:3/api/backend/categories/update/' + params.categories_id, toFormData(data))
+            axios.put('http://localhost:5000/api/backend/categories/update/' + params.categories_id, toFormData(data))
                 .then((success) => {
                     // console.log(success.data)
                     nav('/categories/view');
@@ -58,7 +58,7 @@ export default function Addcategories() {
     useEffect(() => {
         if (params.categories_id != undefined) {
             console.log(params.categories_id)
-            axios.post('http://localhost:3/api/backend/categories/details/' + params.categories_id)
+            axios.post('http://localhost:5000/api/backend/categories/details/' + params.categories_id)
                 .then((result) => {
                     console.log(result.data)
                     setinput({
@@ -78,7 +78,13 @@ export default function Addcategories() {
 
     let inputhandler = (event) => {
         let data = { ...input };
-        data[event.target.name] = event.target.value;
+
+        if (event.target.type === "file") {
+            data[event.target.name] = event.target.files[0];
+        } else {
+            data[event.target.name] = event.target.value;
+        }
+
         setinput(data)
     }
 

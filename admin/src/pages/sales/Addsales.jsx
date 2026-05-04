@@ -19,6 +19,17 @@ export default function Addsales() {
         salesstatus: true,
         salesimages: [],
     });
+    let [categories, setcategories] = useState([]);
+
+    useEffect(() => {
+        axios.post('http://localhost:5000/api/backend/categories/view')
+            .then(res => {
+                setcategories(res.data.data);
+            })
+            .catch(err => {
+                console.log('Category fetch error:', err);
+            });
+    }, []);
 
     let submithandler = (event) => {
         event.preventDefault();
@@ -33,7 +44,7 @@ export default function Addsales() {
         form.append('name', input.salesname);
         form.append('type', input.salestype);
         form.append('gender', input.salesgender);
-        form.append('categoryid', input.salescategoryid);
+        form.append('category_id', input.salescategoryid);
         form.append('price', input.salesprice);
         form.append('description', input.salesdescription);
         form.append('order', input.salesorder);
@@ -46,7 +57,7 @@ export default function Addsales() {
         }
 
         if (params.sales_id === undefined) {
-            axios.post('http://localhost:3/api/backend/sales/add', form)
+            axios.post('http://localhost:5000/api/backend/sales/add', form)
                 .then((success) => {
                     console.log('Add Success:', success);
                     if (success.data.status === true) {
@@ -62,7 +73,7 @@ export default function Addsales() {
                 });
         } else {
             if (params.sales_id) {
-                axios.put('http://localhost:3/api/backend/sales/update/' + params.sales_id, form)
+                axios.put('http://localhost:5000/api/backend/sales/update/' + params.sales_id, form)
                     .then((success) => {
                         console.log('Update Success:', success);
                         if (success.data.status === true) {
@@ -85,14 +96,14 @@ export default function Addsales() {
 
     useEffect(() => {
         if (params.sales_id !== undefined) {
-            axios.post('http://localhost:3/api/backend/sales/details/' + params.sales_id)
+            axios.post('http://localhost:5000/api/backend/sales/details/' + params.sales_id)
                 .then((success) => {
                     console.log('Sales Details:', success.data);
                     setinput({
                         salesname: success.data.data.name || '',
                         salestype: success.data.data.type || '',
                         salesgender: success.data.data.gender || '',
-                        salescategoryid: success.data.data.category_id || '',
+                        salescategoryid: success.data.data.category_id?._id || '',
                         salesprice: success.data.data.price || '',
                         salesdescription: success.data.data.description || '',
                         salesorder: success.data.data.order || '',
@@ -146,10 +157,6 @@ export default function Addsales() {
         event.target.value = null;  // This clears the file input
     };
 
-
-
-
-
     return (
         <div>
             <h2 className="text-2xl font-semibold mb-4">Add Sales</h2>
@@ -177,7 +184,18 @@ export default function Addsales() {
 
                 <div className="mb-4">
                     <label className="block text-gray-700">Category ID:</label>
-                    <input name="salescategoryid" onChange={inputhandler} value={input.salescategoryid} type="text" className="mt-1 block w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    <select
+                        name="salescategoryid"
+                        value={input.salescategoryid}
+                        onChange={inputhandler}
+                    >
+                        <option value="">Select Category</option>
+                        {categories.map(cat => (
+                            <option key={cat._id} value={cat._id}>
+                                {cat.name}
+                            </option>
+                        ))}
+                    </select>
                 </div>
 
                 <div className="mb-4">

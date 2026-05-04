@@ -1,7 +1,5 @@
 const womenmodel = require("../../models/women");
 
-
-
 exports.create = async (request, response) => {
 
     data = new womenmodel({
@@ -84,7 +82,7 @@ exports.view = async (request, response) => {
                 status: true,
                 message: 'record found successfully',
                 data: womendata,
-                imagePath: 'http://localhost:3/uploads/women/',
+                imagePath: 'http://localhost:5000/uploads/women/',
                 total: total,
             }
             response.send(resp);

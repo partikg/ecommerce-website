@@ -3,7 +3,6 @@ const mongoose = require('mongoose');
 const categoryschema = new mongoose.Schema({
     name: {
         type: String,
-        match: /^[a-zA_Z ']{2,10}$/
     },
     image: {
         type: String,

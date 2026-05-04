@@ -14,7 +14,7 @@ export default function Viewproducts() {
     // products
     useEffect(() => {
 
-        axios.post('http://localhost:3/api/backend/products/view')
+        axios.post('http://localhost:5000/api/backend/products/view')
             .then((success) => {
                 // console.log(success)
                 setproducts(success.data.data)
@@ -32,7 +32,7 @@ export default function Viewproducts() {
             id: id,
             status: !status
         }
-        axios.put('http://localhost:3/api/backend/products/change-status', data)
+        axios.put('http://localhost:5000/api/backend/products/change-status', data)
             .then((success) => {
                 console.log(success)
                 toast.success('status changed', success)
@@ -49,7 +49,7 @@ export default function Viewproducts() {
         let data = {
             id: id
         }
-        axios.put('http://localhost:3/api/backend/products/delete', data)
+        axios.put('http://localhost:5000/api/backend/products/delete', data)
             .then((success) => {
                 // console.log(success.data.status)
                 if (success.data.status == true) {
@@ -84,7 +84,7 @@ export default function Viewproducts() {
         let data = {
             ids: ids
         }
-        axios.put('http://localhost:3/api/backend/products/multi-delete', data)
+        axios.put('http://localhost:5000/api/backend/products/multi-delete', data)
             .then((success) => {
                 console.log(success)
                 toast.success(success.data.message)

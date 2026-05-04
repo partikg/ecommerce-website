@@ -79,6 +79,10 @@ exports.view = async (request, response) => {
             filter.type = request.body.type;
         }
 
+        if (request.body.category) {
+            filter.category_id = request.body.category;
+        }
+
         // give justIn and daysAgo key in body
         const daysAgo = request.body.daysAgo || 1; // Default to 30 days if not provided
         const currentDate = new Date();
@@ -118,11 +122,10 @@ exports.view = async (request, response) => {
         }
         ])
 
-        const salesdata = await
-            salesmodel.find(filter).populate({
-                path: 'category_id',
-                select: { '_id': 1, 'name': 1, 'image': 1, 'price': 1 }
-            })
+        const salesdata = await salesmodel.find(filter).populate({
+            path: 'category_id',
+            select: { '_id': 1, 'name': 1, 'image': 1 }
+        });
 
         console.log("Sales Data Created At:", salesdata.map(s => s.created_at)); // Log created_at of records
 
@@ -132,7 +135,7 @@ exports.view = async (request, response) => {
                 status: true,
                 message: 'record found successfully',
                 data: salesdata,
-                imagePath: 'http://localhost:3/uploads/sales/',
+                imagePath: 'http://localhost:5000/uploads/sales/',
                 total: total,
             }
             response.send(resp);

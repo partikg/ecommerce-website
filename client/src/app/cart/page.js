@@ -2,38 +2,13 @@
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Link from 'next/link'
-import { emptycart, removecart, updatecartaddqty, updatecartminusqty } from '../reduxtoolkit/slices/cartslice'
-// import useRazorpay from "react-razorpay";
-// import axios from 'axios'
+import { emptycart, removecart, updatecartaddqty, updatecartminusqty } from '../../features/cart/cartslice'
+import useRazorpay from "react-razorpay";
+import axios from 'axios'
 
 import { useState } from 'react'
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
-
-const products = [
-    {
-        id: 1,
-        name: 'Throwback Hip Bag',
-        href: '#',
-        color: 'Salmon',
-        price: '$90.00',
-        quantity: 1,
-        imageSrc: 'https://tailwindui.com/plus/img/ecommerce-images/shopping-cart-page-04-product-01.jpg',
-        imageAlt: 'Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt.',
-    },
-    {
-        id: 2,
-        name: 'Medium Stuff Satchel',
-        href: '#',
-        color: 'Blue',
-        price: '$32.00',
-        quantity: 1,
-        imageSrc: 'https://tailwindui.com/plus/img/ecommerce-images/shopping-cart-page-04-product-02.jpg',
-        imageAlt:
-            'Front of satchel with blue canvas body, black straps and handle, drawstring top, and front zipper pouch.',
-    },
-    // More products...
-]
 
 export default function page() {
 
@@ -42,148 +17,103 @@ export default function page() {
     const dispatch = useDispatch()
 
     const [open, setOpen] = useState(true)
+    const [Razorpay] = useRazorpay();
 
-    // Calculate subtotal
     const subtotal = getcartitems.reduce((total, item) => {
-        // as price has $73.99 
         const price = parseFloat(item.price.replace('$', '').trim());
         return total + (price * item.qty);
-    }, 0); // starting from 0
+    }, 0);
 
 
-    // const [Razorpay] = useRazorpay();
+    const placeOrder = (e) => {
 
-    // const placeOrder = () => {
-    //     const shippingDetails = {
-    //         address: "testing address"
-    //     }
-    //     const userId = 1001;
-    //     const productDetails = getcartitems.map(
-    //         (c) => {
-    //             return {
-    //                 productId: c.id,
-    //                 qty: c.qty,
-    //                 price: c.price,
-    //                 total: c.qty * c.price,
-    //             }
-    //         }
-    //     )
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
 
-    //     axios.post(
-    //         "http://localhost:3/api/frontend/orders/place-order",
-    //         {
-    //             user_id: userId,
-    //             product_details: productDetails,
-    //             order_total: 5000,
-    //             shipping_details: shippingDetails,
-    //         }
-    //     ).then(
-    //         (success) => {
-    //             console.log(success)
-    //             if (success.data.data.status) {
-    //                 openPaymentPopUp(success.data.data.id, success.data.data);
-    //             } else {
-    //                 console.log('Unable to place order');
-    //             }
-    //         }
-    //     ).catch(
-    //         () => {
+        const shippingDetails = {
+            address: "testing address"
+        }
+        const userId = 1001;
+        const productDetails = getcartitems.map(
+            (c) => {
+                return {
+                    productId: c.id,
+                    qty: c.qty,
+                    price: c.price,
+                    total: c.qty * c.price,
+                }
+            }
+        )
 
-    //         }
-    //     )
-    // }
+        axios.post(
+            "http://localhost:5000/api/frontend/orders/place-order",
+            {
+                user_id: userId,
+                product_details: productDetails,
+                order_total: 5000,
+                shipping_details: shippingDetails,
+            }
+        ).then(
+            (success) => {
+                console.log(success)
+                if (success.data.data.status) {
+                    openPaymentPopUp(success.data.data.id, success.data.data);
+                } else {
+                    console.log('Unable to place order');
+                }
+            }
+        )
+    }
 
+    const openPaymentPopUp = (razorpayOrder) => {
+        const options = {
+            key: "rzp_test_RghXFo7rcpVb1U",
+            amount: razorpayOrder.amount,
+            currency: "INR",
+            name: "WsCube Tech",
+            description: "upskillingBharat",
+            image: "https://www.wscubetech.com/images/wscube-tech-logo.svg",
+            order_id: razorpayOrder.id,
 
-    // const openPaymentPopUp = (order_id, razorpayOrder) => {
-    //     const options = {
-    //         key: "rzp_test_7xIni0RPTlUpmY", // Enter the Key ID generated from the Dashboard
-    //         amount: razorpayOrder.amount * 100, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
-    //         currency: "INR",
-    //         name: "WsCube Tech",
-    //         description: "upskillingBharat",
-    //         image: "https://www.wscubetech.com/images/wscube-tech-logo.svg",
-    //         order_id: razorpayOrder.id, //This is a sample Order ID. Pass the `id` obtained in the response of createOrder().
-    //         handler: function (response) {
+            handler: function (response) {
+                console.log(response);
+                alert('success');
 
-    //             console.log(response)
-    //             alert('success')
-    //             axios.post("http://localhost:3/api/frontend/orders/confirm-order",
-    //                 { order_id: response.razorpay_order_id, payment_id: response.razorpay_payment_id, status: 2 }
-    //             ).then(
-    //                 (success) => {
-    //                     if (success.data.status) {
-    //                         // navigator(`/order-summary/${success.data.order_id}/true`);
-    //                         // dispatcher(emptyCart());
-    //                     } else {
-    //                         // notify(success.data.msg, "error");
-    //                     }
-    //                 }
-    //             ).catch(
-    //                 (error) => {
-    //                     notify("Client error", "error");
-    //                 }
-    //             )
-    //         },
-    //         prefill: {
-    //             name: "sandeep Bhati",
-    //             email: "sandeep@gmail.com",
-    //             contact: "price",
-    //         },
-    //         theme: {
-    //             color: "#ff4252",
-    //         },
-    //     };
+                axios.post("http://localhost:5000/api/frontend/orders/confirm-order", {
+                    order_id: response.razorpay_order_id,
+                    payment_id: response.razorpay_payment_id,
+                    status: 2
+                });
+            },
 
+            prefill: {
+                name: "Test User",
+                email: "test@gmail.com",
+                contact: "9999999999",
+            },
 
+            theme: {
+                color: "#ff4252",
+            },
+        };
 
-    //     const rzp1 = new Razorpay(options);
+        const rzp1 = new Razorpay(options);
 
-    //     rzp1.on("payment.failed", function (response) {
+        rzp1.on("payment.failed", function (response) {
+            console.log(response);
+            alert('Payment Failed');
 
-    //         console.log(response);
-    //         alert('error')
-    //         axios.post("http://localhost:3/api/frontend/orders/confirm-order",
-    //             { order_id: response.razorpay_order_id, payment_id: response.razorpay_payment_id, status: 3 }
-    //         ).then(
-    //             (success) => {
-    //                 if (success.data.status) {
-    //                     // navigator(`/order-summary/${success.data.order_id}/true`);
-    //                     // dispatcher(emptyCart());
-    //                 } else {
-    //                     // notify(success.data.msg, "error");
-    //                 }
-    //             }
-    //         ).catch(
-    //             (error) => {
-    //                 notify("Client error", "error");
-    //             }
-    //         )
-    //         // axios.post("http://localhost:5000/order/razorpay-transaction-handle",
-    //         //         { amount: razorpayOrder.amount, razorpay_response: response.error.metadata, order_id }
-    //         //     ).then(
-    //         //         (success) => {
-    //         //             notify(success.data.msg, "error");
-    //         //             console.clear();
-    //         //         }
-    //         //     ).catch(
-    //         //         (error) => {
-    //         //             console.clear();
-    //         //             console.log(error.message);
-    //         //             notify("Client error", "error");
-    //         //         }
-    //         //     )
-    //         //     // alert(response.error.code);
-    //         //     // alert(response.error.description);
-    //         //     // alert(response.error.source);
-    //         //     // alert(response.error.step);
-    //         //     // alert(response.error.reason);
-    //         //     // alert(response.error.metadata.order_id);
-    //         //     // alert(response.error.metadata.payment_id);
-    //     });
+            axios.post("http://localhost:5000/api/frontend/orders/confirm-order", {
+                order_id: response.error.metadata.order_id,
+                payment_id: response.error.metadata.payment_id,
+                status: 3
+            });
+        });
 
-    //     rzp1.open();
-    // }
-
+        rzp1.open();
+    };
 
     return (
         <div>
@@ -195,7 +125,7 @@ export default function page() {
 
                 <div className="fixed inset-0 overflow-hidden">
                     <div className="absolute inset-0 overflow-hidden">
-                        <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
+                        <div className=" fixed inset-y-0 right-0 flex max-w-full pl-10">
                             <DialogPanel
                                 transition
                                 className="pointer-events-auto w-screen max-w-md transform transition duration-500 ease-in-out data-[closed]:translate-x-full sm:duration-700"
@@ -225,7 +155,7 @@ export default function page() {
                                                             <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                                                                 <img
                                                                     alt={product.name}
-                                                                    src={`http://localhost:3/uploads/sales/${product.image}`}
+                                                                    src={`http://localhost:5000/uploads/sales/${product.image}`}
                                                                     className="h-full w-full object-cover object-center"
                                                                 />
                                                             </div>
@@ -234,7 +164,7 @@ export default function page() {
                                                                 <div>
                                                                     <div className="flex justify-between text-base font-medium text-gray-900">
                                                                         <h3>
-                                                                            <a href={product.href}>{product.name}</a>
+                                                                            <span>{product.name}</span>
                                                                         </h3>
                                                                         <p className="ml-4">{product.price}</p>
 
@@ -255,9 +185,12 @@ export default function page() {
                                                                         <button onClick={() => dispatch(removecart(product.id))} type="button" className="font-medium text-indigo-600 hover:text-indigo-500">
                                                                             Remove
                                                                         </button>
-                                                                        <Link href="#" className=' px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300 empty-cart-button mx-2' onClick={() => dispatch(emptycart(product.id))} >
+                                                                        <button
+                                                                            onClick={() => dispatch(emptycart())}
+                                                                            className="px-4 py-2 text-white bg-blue-500 rounded-md"
+                                                                        >
                                                                             EmptyCart
-                                                                        </Link>
+                                                                        </button>
                                                                     </div>
                                                                 </div>
                                                             </div>
@@ -275,12 +208,9 @@ export default function page() {
                                         </div>
                                         <p className="mt-0.5 text-sm text-gray-500">Shipping and taxes calculated at checkout.</p>
                                         <div className="mt-6">
-                                            <a
-                                                href="#"
-                                                className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
-                                            >
+                                            <button onClick={(e) => placeOrder(e)}>
                                                 Checkout
-                                            </a>
+                                            </button>
                                         </div>
                                         <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
                                             <p>

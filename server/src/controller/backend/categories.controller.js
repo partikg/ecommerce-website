@@ -89,20 +89,13 @@ exports.view = async (request, response) => {
             }
         ])
 
-        const categorydata = await categorymodel.find
-            (
-                {
-                    name: { $exists: true },
-                    order: { $type: 16 },
-                    deleted_at: null,
-                }
-            );
+        const categorydata = await categorymodel.find({ deleted_at: null });
 
-        if (categorydata.length != 0) {
+        if (categorydata.length > 0) {
             var resp = {
                 status: true,
                 message: 'record found successfully',
-                imagePath: 'http://localhost:3/uploads/categories/',
+                imagePath: 'http://localhost:5000/uploads/categories/',
                 data: categorydata,
                 total: total,
             }
@@ -173,7 +166,7 @@ exports.delete = async (request, response) => {
             }
         })
 
-        if (categorydata.length != 0) {
+        if (categorydata.modifiedCount > 0) {
             var resp = {
                 status: true,
                 message: 'record found successfully',
@@ -208,7 +201,7 @@ exports.changestatus = async (request, response) => {
             }
         })
 
-        if (categorydata.length != 0) {
+        if (categorydata.modifiedCount > 0) {
             var resp = {
                 status: true,
                 message: 'record changed successfully',
@@ -244,7 +237,7 @@ exports.multidelete = async (request, response) => {
             }
         })
 
-        if (categorydata.length != 0) {
+        if (categorydata.modifiedCount > 0) {
             var resp = {
                 status: true,
                 message: 'record deleted successfully',
@@ -275,7 +268,7 @@ exports.details = async (request, response) => {
 
         const categorydata = await categorymodel.findById(request.params.id);
 
-        if (categorydata.length != 0) {
+        if (categorydata) {
             var resp = {
                 status: true,
                 message: 'record found successfully',

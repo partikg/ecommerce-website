@@ -83,7 +83,7 @@ exports.view = async (request, response) => {
                 status: true,
                 message: 'record found successfully',
                 data: productdata,
-                imagePath: 'http://localhost:3/uploads/products/',
+                imagePath: 'http://localhost:5000/uploads/products/',
                 total: total,
             }
             response.send(resp);
