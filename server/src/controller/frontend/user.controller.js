@@ -67,7 +67,7 @@ exports.register = async (request, response) => {
             var token = jwt.sign({
                 userdata: result
             },
-                'secretkey',
+                'process.env.JWT_SECRET',
                 { expiresIn: '1h' }
             );
             var result = {
@@ -102,7 +102,7 @@ exports.login = async (request, response) => {
                     var token = jwt.sign({
                         userdata: result
                     },
-                        'secretkey',
+                        'process.env.JWT_SECRET',
                         { expiresIn: '1h' }
                     );
 
@@ -161,7 +161,7 @@ exports.profile = async (request, response) => {
         response.send(result);
     }
 
-    jwt.verify(request.headers.authorization.split(' ')[1], 'secretkey', function (error, result) {
+    jwt.verify(request.headers.authorization.split(' ')[1], 'process.env.JWT_SECRET', function (error, result) {
         if (error) {
             var result = {
                 status: false,
