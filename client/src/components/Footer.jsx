@@ -58,7 +58,7 @@ export default function Footer() {
                         <div className=' w-[180px] h-[440px]'>
                             <h4 className=' text-white py-2 text-lg font-medium'>Discover</h4>
                             <h4 className=' text-white py-2'>Gift Cards</h4>
-                            <h4 className=' text-white py-2'>PratikWear's Club</h4>
+                            <h4 className=' text-white py-2'>PratikWear Club</h4>
                             <h4 className=' text-white py-2'>Give $15, Get $15</h4>
                             <h4 className=' text-white py-2'>Affiliate</h4>
                             <h4 className=' text-white py-2'>Blog</h4>
