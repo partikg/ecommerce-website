@@ -1,32 +1,29 @@
 import { createSlice } from '@reduxjs/toolkit'
 
-const getcartitems = () => {
-    const cart = JSON.parse(localStorage.getItem('cartitems'));
-    return cart;
-}
-
-const getcartvalue = getcartitems();
-
-if (getcartvalue == null) {
-    var getcartvalu = [];
-} else {
-    var getcartvalu = getcartvalue;
-}
-
 const initialState = {
-    cart: getcartvalu,
-}
+    cart: [],
+};
+
+const saveToLocalStorage = (cart) => {
+    if (typeof window !== "undefined") {
+        localStorage.setItem('cartitems', JSON.stringify(cart));
+    }
+};
 
 export const countercart = createSlice({
     name: 'cart',
     initialState,
     reducers: {
 
-        addtocart: (state, action) => {
-            let data = state.cart.filter((v) => v.id == action.payload._id);
+        setCart: (state, action) => {
+            state.cart = action.payload;
+        },
 
-            if (data.length == 0) {
-                var cartitems = {
+        addtocart: (state, action) => {
+            let existing = state.cart.find(v => v.id == action.payload._id);
+
+            if (!existing) {
+                const cartitems = {
                     id: action.payload._id,
                     name: action.payload.name,
                     image: action.payload.image,
@@ -35,52 +32,51 @@ export const countercart = createSlice({
                     type: action.payload.type,
                     description: action.payload.description,
                     qty: 1
-                }
+                };
 
                 state.cart.push(cartitems);
-                localStorage.setItem('cartitems', JSON.stringify(state.cart));
-                console.log("Item added to cart:", cartitems);
             } else {
-                state.cart.map((v) => {
-                    if (v.id == action.payload._id) {
-                        v.qty = v.qty + 1;
-                    }
-                });
-                localStorage.setItem('cartitems', JSON.stringify(state.cart));
+                existing.qty += 1;
             }
+
+            saveToLocalStorage(state.cart);
         },
 
         removecart: (state, action) => {
-            let data = state.cart.filter((v, i) => v.id != action.payload);
-            state.cart = data;
-            localStorage.setItem('cartitems', JSON.stringify(state.cart));
+            state.cart = state.cart.filter(v => v.id != action.payload);
+            saveToLocalStorage(state.cart);
         },
 
         emptycart: (state) => {
-            localStorage.clear('cartitems')
-            state.cart = []
+            state.cart = [];
+            if (typeof window !== "undefined") {
+                localStorage.removeItem('cartitems');
+            }
         },
 
         updatecartaddqty: (state, action) => {
-            state.cart.map((v, i) => {
-                if (v.id == action.payload) {
-                    v.qty = v.qty + 1;
-                }
-            })
-            localStorage.setItem('cartitems', JSON.stringify(state.cart));
+            const item = state.cart.find(v => v.id == action.payload);
+            if (item) item.qty += 1;
+
+            saveToLocalStorage(state.cart);
         },
 
         updatecartminusqty: (state, action) => {
-            state.cart.map((v) => {
-                if (v.id === action.payload && v.qty > 1) {
-                    v.qty = v.qty - 1;
-                }
-            });
-        },
+            const item = state.cart.find(v => v.id == action.payload);
+            if (item && item.qty > 1) item.qty -= 1;
 
+            saveToLocalStorage(state.cart);
+        },
     },
 })
 
-export const { addtocart, removecart, emptycart, updatecartaddqty, updatecartminusqty } = countercart.actions
+export const {
+    addtocart,
+    removecart,
+    emptycart,
+    updatecartaddqty,
+    updatecartminusqty,
+    setCart
+} = countercart.actions;
 
-export default countercart.reducer
+export default countercart.reducer;

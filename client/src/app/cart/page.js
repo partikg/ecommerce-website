@@ -5,7 +5,8 @@ import Link from 'next/link'
 import { emptycart, removecart, updatecartaddqty, updatecartminusqty } from '../../features/cart/cartslice'
 import useRazorpay from "react-razorpay";
 import axios from 'axios'
-
+import { useEffect } from 'react'
+import { setCart } from '../../features/cart/cartslice'
 import { useState } from 'react'
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
@@ -24,6 +25,14 @@ export default function Page() {
         return total + (price * item.qty);
     }, 0);
 
+    useEffect(() => {
+        if (typeof window !== "undefined") {
+            const cart = localStorage.getItem('cartitems');
+            if (cart) {
+                dispatch(setCart(JSON.parse(cart)));
+            }
+        }
+    }, [dispatch]);
 
     const placeOrder = (e) => {
 
@@ -172,13 +181,13 @@ export default function Page() {
                                                                     <p className="mt-1 text-sm text-gray-500">{product.color}</p>
                                                                 </div>
                                                                 <div className="flex flex-1 items-end justify-between text-sm">
-                                                                    <p className="text-gray-500">Qty {product.quantity}</p>
-                                                                    <div class="flex items-center border-gray-100">
-                                                                        <span onClick={() => dispatch(updatecartminusqty(product.id))} class="cursor-pointer rounded-l bg-gray-100 py-1 px-3.5 
+                                                                    <p className="text-gray-500">Qty {product.qty}</p>
+                                                                    <div className="flex items-center border-gray-100">
+                                                                        <span onClick={() => dispatch(updatecartminusqty(product.id))} className="cursor-pointer rounded-l bg-gray-100 py-1 px-3.5 
                                                 duration-100 hover:bg-blue-500 hover:text-blue-50"> - </span>
-                                                                        <input class="h-8 w-8 border bg-white text-center text-xs 
+                                                                        <input className="h-8 w-8 border bg-white text-center text-xs 
                                                 outline-none" type="number" value={product.qty} min="1" />
-                                                                        <span onClick={() => dispatch(updatecartaddqty(product.id))} class="cursor-pointer rounded-r bg-gray-100 py-1 px-3 
+                                                                        <span onClick={() => dispatch(updatecartaddqty(product.id))} className="cursor-pointer rounded-r bg-gray-100 py-1 px-3 
                                                 duration-100 hover:bg-blue-500 hover:text-blue-50"> + </span>
                                                                     </div>
                                                                     <div className="flex">
