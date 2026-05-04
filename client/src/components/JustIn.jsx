@@ -46,7 +46,7 @@ export default function JustIn({ products }) {
                             className="text-center group"
                         >
                             <img
-                                src={`http://localhost:5000/uploads/sales/${img}`}
+                                src={`${process.env.NEXT_PUBLIC_API_URL}/uploads/sales/${img}`}
                                 className="h-[350px] w-[260px] object-cover"
                             />
                             <p className="mt-2 font-medium">{p.name}</p>

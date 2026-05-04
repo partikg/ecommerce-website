@@ -48,7 +48,7 @@ export default function page() {
         )
 
         axios.post(
-            "http://localhost:5000/api/frontend/orders/place-order",
+            `${process.env.NEXT_PUBLIC_API_URL}/api/frontend/orders/place-order`,
             {
                 user_id: userId,
                 product_details: productDetails,
@@ -81,7 +81,7 @@ export default function page() {
                 console.log(response);
                 alert('success');
 
-                axios.post("http://localhost:5000/api/frontend/orders/confirm-order", {
+                axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/frontend/orders/confirm-order`, {
                     order_id: response.razorpay_order_id,
                     payment_id: response.razorpay_payment_id,
                     status: 2
@@ -105,7 +105,7 @@ export default function page() {
             console.log(response);
             alert('Payment Failed');
 
-            axios.post("http://localhost:5000/api/frontend/orders/confirm-order", {
+            axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/frontend/orders/confirm-order`, {
                 order_id: response.error.metadata.order_id,
                 payment_id: response.error.metadata.payment_id,
                 status: 3
@@ -155,7 +155,7 @@ export default function page() {
                                                             <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
                                                                 <img
                                                                     alt={product.name}
-                                                                    src={`http://localhost:5000/uploads/sales/${product.image}`}
+                                                                    src={`${process.env.NEXT_PUBLIC_API_URL}/uploads/sales/${product.image}`}
                                                                     className="h-full w-full object-cover object-center"
                                                                 />
                                                             </div>

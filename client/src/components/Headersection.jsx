@@ -19,7 +19,7 @@ export default function Headersection() {
         const daysAgo = searchparams.get('daysAgo') || '';
         const type = searchparams.get('type') || '';
 
-        axios.post('http://localhost:5000/api/backend/sales/view', { justIn, daysAgo, type })
+        axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/sales/view`, { justIn, daysAgo, type })
             .then((response) => {
                 setNewProducts(response.data.data.slice(0, 8));
                 console.log(response.data.data.slice(0, 8));

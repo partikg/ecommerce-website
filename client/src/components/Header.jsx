@@ -40,7 +40,7 @@ export default function Header() {
     const popoverRef = useRef(null);
 
     useEffect(() => {
-        axios.post('http://localhost:5000/api/backend/sales/view')
+        axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/sales/view`)
             .then((response) => {
                 setNewProducts(response.data.data);
             })
@@ -63,7 +63,7 @@ export default function Header() {
 
         if (term) {
             // Fetch search results based on the search term
-            axios.post('http://localhost:5000/api/backend/sales/view', { search: term })
+            axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/sales/view`, { search: term })
                 .then((response) => {
                     console.log(response.data.data);
                     setSearchResults(response.data.data || []);
@@ -91,7 +91,7 @@ export default function Header() {
 
 
         try {
-            const result = await axios.post('http://localhost:5000/api/frontend/user/login', data);
+            const result = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/frontend/user/login`, data);
             if (result.data.status === true) {
                 console.log("Login successful, token received:", result.data.token);
                 cookies.set('token', result.data.token);
@@ -131,7 +131,7 @@ export default function Header() {
         setgetlogindata(data);
 
         try {
-            const result = await axios.post('http://localhost:5000/api/frontend/user/register', data);
+            const result = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/frontend/user/register`, data);
             if (result.data.status === true) {
                 console.log("Registration successful");
                 setShowLoginForm(true);
@@ -151,7 +151,7 @@ export default function Header() {
         if (!usertoken) return;
 
         axios.post(
-            'http://localhost:5000/api/frontend/user/profile',
+            `${process.env.NEXT_PUBLIC_API_URL}/api/frontend/user/profile`,
             {},
             {
                 headers: {

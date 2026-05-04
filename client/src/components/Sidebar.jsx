@@ -14,13 +14,13 @@ export default function Sidebar({
     const [types, setTypes] = useState([]);
 
     useEffect(() => {
-        axios.post('http://localhost:5000/api/backend/categories/view')
+        axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/categories/view`)
             .then(res => setCategories(res.data.data))
             .catch(err => console.log(err))
     }, [])
 
     useEffect(() => {
-        axios.post('http://localhost:5000/api/backend/sales/view')
+        axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/sales/view`)
             .then(res => {
                 const uniqueTypes = [...new Set(res.data.data.map(p => p.type))];
                 setTypes(uniqueTypes);

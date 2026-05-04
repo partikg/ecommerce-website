@@ -27,7 +27,7 @@ export const openPaymentPopUp = (order) => {
 
             try {
                 await axios.post(
-                    "http://localhost:5000/api/frontend/orders/confirm-order",
+                    `${process.env.NEXT_PUBLIC_API_URL}/api/frontend/orders/confirm-order`,
                     {
                         order_id: response.razorpay_order_id,
                         payment_id: response.razorpay_payment_id,
@@ -75,7 +75,7 @@ export const handleCheckoutService = async ({
         };
 
         const res = await axios.post(
-            "http://localhost:5000/api/frontend/orders/place-order",
+            `${process.env.NEXT_PUBLIC_API_URL}/api/frontend/orders/place-order`,
             orderData,
             {
                 headers: {

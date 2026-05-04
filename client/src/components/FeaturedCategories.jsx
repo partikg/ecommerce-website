@@ -10,7 +10,7 @@ export default function FeaturedCategories({ gender }) {
 
     useEffect(() => {
         axios
-            .post("http://localhost:5000/api/backend/categories/view")
+            .post(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/categories/view`)
             .then((res) => {
                 let data = res.data.data;
 

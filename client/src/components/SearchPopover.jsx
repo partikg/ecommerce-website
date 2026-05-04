@@ -23,7 +23,7 @@ export default function SearchPopover({ newProducts }) {
 
         try {
             const res = await axios.post(
-                'http://localhost:5000/api/backend/sales/view',
+                `${process.env.NEXT_PUBLIC_API_URL}/api/backend/sales/view`,
                 { search: term }
             );
 
@@ -101,7 +101,7 @@ export default function SearchPopover({ newProducts }) {
                                 onClick={clearSearch}
                             >
                                 <img
-                                    src={`http://localhost:5000/uploads/sales/${p.image?.[0] || p.image}`}
+                                    src={`${process.env.NEXT_PUBLIC_API_URL}/uploads/sales/${p.image?.[0] || p.image}`}
                                     className="h-[120px] w-full object-cover"
                                 />
                                 <p className="text-sm">{p.name}</p>

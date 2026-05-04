@@ -80,7 +80,7 @@ export default function CartDrawer({ open, setOpen, profile }) {
 
                                                                 <img
                                                                     alt={product.name}
-                                                                    src={Array.isArray(product.image) ? `http://localhost:5000/uploads/sales/${product.image[0]}` : `http://localhost:5000/uploads/sales/${product.image}`}
+                                                                    src={Array.isArray(product.image) ? `${process.env.NEXT_PUBLIC_API_URL}/uploads/sales/${product.image[0]}` : `${process.env.NEXT_PUBLIC_API_URL}/uploads/sales/${product.image}`}
                                                                     className="h-full w-full object-cover object-center"
                                                                 />
                                                             </div>

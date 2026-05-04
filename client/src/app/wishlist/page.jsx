@@ -50,14 +50,14 @@ export default function page() {
 
                                         <img
                                             className='cursor-pointer h-80 w-full object-cover transition-opacity duration-300 group-hover:opacity-0'
-                                            src={`http://localhost:5000/uploads/sales/${item.image[0]}`}
+                                            src={`${process.env.NEXT_PUBLIC_API_URL}/uploads/sales/${item.image[0]}`}
                                             alt={item.name}
                                         />
 
                                         {item.image[1] && (
                                             <img
                                                 className='absolute top-0 left-0 h-80 w-full object-cover opacity-0 transition-opacity duration-300 group-hover:opacity-100'
-                                                src={`http://localhost:5000/uploads/sales/${item.image[1]}`}
+                                                src={`${process.env.NEXT_PUBLIC_API_URL}/uploads/sales/${item.image[1]}`}
                                                 alt={`${item.name} Hover`}
                                             />
                                         )}

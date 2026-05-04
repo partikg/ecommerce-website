@@ -15,7 +15,7 @@ export default function page() {
 
     useEffect(() => {
         if (params?.id) {
-            axios.post('http://localhost:5000/api/backend/sales/details/' + params.id)
+            axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/sales/details/` + params.id)
                 .then((response) => {
                     setProduct(response.data.data);
                     console.log('Product data:', response.data.data);
@@ -40,7 +40,7 @@ export default function page() {
                             product.image.map((img, index) => (
 
                                 <img key={index}
-                                    src={`http://localhost:5000/uploads/sales/${img}`}
+                                    src={`${process.env.NEXT_PUBLIC_API_URL}/uploads/sales/${img}`}
                                     className='w-full h-[350px] object-cover'
                                 />
 
