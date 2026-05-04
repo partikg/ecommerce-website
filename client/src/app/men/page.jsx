@@ -11,7 +11,7 @@ import Footer from '@/components/Footer';
 import Hero from '@/components/Hero';
 import JustIn from '@/components/JustIn';
 
-export default function page() {
+export default function Page() {
 
     const [newProducts, setNewProducts] = useState([]);
 

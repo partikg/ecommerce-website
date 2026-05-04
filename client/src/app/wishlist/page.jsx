@@ -6,7 +6,7 @@ import Link from 'next/link';
 import Footer from '@/components/Footer';
 import { getWishlist, removeFromWishlist } from '@/utils/wishlist';
 
-export default function page() {
+export default function Page() {
 
     const [wishlist, setWishlist] = useState([]);
 

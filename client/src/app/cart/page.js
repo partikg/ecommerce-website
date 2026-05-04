@@ -10,7 +10,7 @@ import { useState } from 'react'
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 
-export default function page() {
+export default function Page() {
 
     const getcartitems = useSelector((state) => state.cart.cart)
     console.log(getcartitems)

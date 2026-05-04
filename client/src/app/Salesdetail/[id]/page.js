@@ -6,7 +6,7 @@ import { useParams } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 
-export default function page() {
+export default function Page() {
 
     const params = useParams();
     const [product, setProduct] = useState([]);
