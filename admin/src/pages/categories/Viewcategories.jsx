@@ -15,6 +15,7 @@ export default function Viewcategories() {
 
         axios.post(`${import.meta.env.VITE_API_URL}/api/backend/categories/view`)
             .then((success) => {
+                console.log("API RESPONSE:", success.data);
                 setcategories(success.data.data);
                 setimagepath(success.data.imagePath)
                 console.log(success.data.imagePath);
@@ -133,7 +134,16 @@ export default function Viewcategories() {
 
                                 {/* image */}
                                 <td className="p-2">
-                                    <img className="w-20 h-max mx-auto border border-gray-300 rounded" src={`${imagepath}${data.image}`} alt="" /></td>
+                                    <img
+                                        src={
+                                            imagepath && data.image
+                                                ? `${imagepath}${data.image}`
+                                                : 'https://via.placeholder.com/80'
+                                        }
+                                        className="w-20 h-max mx-auto border border-gray-300 rounded"
+                                        alt="category"
+                                    />
+                                </td>
 
                                 {/* edit */}
                                 <td className="border p-2 text-center">
