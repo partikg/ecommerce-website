@@ -19,15 +19,28 @@ export default function Headersection() {
         const daysAgo = searchparams.get('daysAgo') || '';
         const type = searchparams.get('type') || '';
 
-        axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/sales/view`, { justIn, daysAgo, type })
+        axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/sales/view`, {
+            justIn,
+            daysAgo,
+            type
+        })
             .then((response) => {
-                setNewProducts(response.data.data.slice(0, 8));
-                console.log(response.data.data.slice(0, 8));
+
+                const data = response?.data?.data;
+
+                if (Array.isArray(data)) {
+                    setNewProducts(data.slice(0, 8));
+                } else {
+                    setNewProducts([]);
+                }
+
             })
             .catch((error) => {
-                console.error('Error fetching new products:', error);
+                console.log("API not ready yet:", error);
+                setNewProducts([]);
             });
-    }, []);
+
+    }, [searchparams]);
 
     return (
 
