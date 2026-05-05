@@ -2,6 +2,7 @@ const categorymodel = require("../../models/categories");
 
 
 exports.create = async (request, response) => {
+    console.log("FILE:", request.file);
 
     data = new categorymodel({
         name: request.body.name,
@@ -27,6 +28,8 @@ exports.create = async (request, response) => {
             response.send(result);
         })
         .catch((error) => {
+
+            console.log("CREATE ERROR:", error);
 
             error_messages = [];
 
