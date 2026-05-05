@@ -32,7 +32,7 @@ export default function FeaturedCategories({ gender }) {
             })
             .catch((err) => {
                 console.log("Category API error:", err);
-                setCategories([]);   // 🔥 prevent crash
+                setCategories([]);
             });
 
     }, [gender]);

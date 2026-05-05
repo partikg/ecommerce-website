@@ -20,7 +20,7 @@ const Header = () => {
         const usertoken = cookies.get('token');
 
         if (usertoken && location.pathname !== '/register') {
-            axios.post('http://localhost:5000/api/frontend/user/profile', '', {
+            axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/frontend/user/profile`, '', {
                 headers: {
                     'authorization': `Bearer ${usertoken}`
                 }

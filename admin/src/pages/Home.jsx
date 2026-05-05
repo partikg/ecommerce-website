@@ -15,7 +15,7 @@ const Home = () => {
 
         // name
         const usertoken = cookies.get('token');
-        axios.post('http://localhost:5000/api/frontend/user/profile', '', {
+        axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/frontend/user/profile`, '', {
             headers: {
                 'authorization': `Bearer ${usertoken}`
             }
@@ -29,7 +29,7 @@ const Home = () => {
             })
 
         // total user
-        axios.post('http://localhost:5000/api/frontend/user/viewuser',)
+        axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/frontend/user/viewuser`,)
             .then((success) => {
                 // console.log(success.data.data)
                 setuser(success.data.data)
@@ -39,7 +39,7 @@ const Home = () => {
             })
 
         // total courses
-        // axios.post('http://localhost:5000/api/backend/courses/view',)
+        // axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/courses/view`,)
         //     .then((success) => {
         //         // console.log(success.data.data.length)
         //         setcourses(success.data.data)
@@ -49,7 +49,7 @@ const Home = () => {
         //     })
 
         // total categories
-        axios.post('http://localhost:5000/api/backend/categories/view',)
+        axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/categories/view`,)
             .then((success) => {
                 // console.log(success.data.data.length)
                 setcategories(success.data.data)
@@ -59,7 +59,7 @@ const Home = () => {
             })
 
         // total products
-        axios.post('http://localhost:5000/api/backend/products/view',)
+        axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/products/view`,)
             .then((success) => {
                 // console.log(success.data.data.length)
                 setproducts(success.data.data)

@@ -29,7 +29,7 @@ export default function Addcategories() {
 
         // add or update
         if (params.categories_id == undefined) {
-            axios.post('http://localhost:5000/api/backend/categories/add', toFormData(data))
+            axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/categories/add`, toFormData(data))
                 .then((success) => {
                     // console.log(success.data)
                     nav('/categories/view');
@@ -40,7 +40,7 @@ export default function Addcategories() {
                     toast.error('Error: ' + error);
                 })
         } else {
-            axios.put('http://localhost:5000/api/backend/categories/update/' + params.categories_id, toFormData(data))
+            axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/categories/update/` + params.categories_id, toFormData(data))
                 .then((success) => {
                     // console.log(success.data)
                     nav('/categories/view');
@@ -58,7 +58,7 @@ export default function Addcategories() {
     useEffect(() => {
         if (params.categories_id != undefined) {
             console.log(params.categories_id)
-            axios.post('http://localhost:5000/api/backend/categories/details/' + params.categories_id)
+            axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/categories/details/` + params.categories_id)
                 .then((result) => {
                     console.log(result.data)
                     setinput({
