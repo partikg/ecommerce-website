@@ -5,26 +5,36 @@ import Link from "next/link";
 import axios from "axios";
 
 export default function FeaturedCategories({ gender }) {
+
     const [categories, setCategories] = useState([]);
     const [imagePath, setImagePath] = useState("");
 
     useEffect(() => {
-        axios
-            .post(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/categories/view`)
-            .then((res) => {
-                let data = res.data.data;
 
-                // OPTIONAL filter (only if your DB supports gender in categories)
+        axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/categories/view`)
+            .then((res) => {
+
+                const data = Array.isArray(res?.data?.data)
+                    ? res.data.data
+                    : [];
+
+                let filteredData = data;
+
                 if (gender) {
-                    data = data.filter(
+                    filteredData = data.filter(
                         (cat) => !cat.gender || cat.gender === gender
                     );
                 }
 
-                setCategories(data);
-                setImagePath(res.data.imagePath);
+                setCategories(filteredData);
+                setImagePath(res?.data?.imagePath || "");
+
             })
-            .catch((err) => console.log(err));
+            .catch((err) => {
+                console.log("Category API error:", err);
+                setCategories([]);   // 🔥 prevent crash
+            });
+
     }, [gender]);
 
     return (
@@ -33,9 +43,9 @@ export default function FeaturedCategories({ gender }) {
 
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mt-5">
 
-                {categories.map((cat) => (
+                {categories?.map((cat) => (
                     <Link
-                        key={cat._id}
+                        key={cat?._id}
                         href={
                             gender
                                 ? `/sales?category=${cat._id}&gender=${gender}`
@@ -44,10 +54,10 @@ export default function FeaturedCategories({ gender }) {
                         className="text-center"
                     >
                         <img
-                            src={`${imagePath}${cat.image}`}
+                            src={`${imagePath}${cat?.image}`}
                             className="h-[400px] w-[300px] object-cover rounded-md"
                         />
-                        <h4 className="mt-2 font-medium">{cat.name}</h4>
+                        <h4 className="mt-2 font-medium">{cat?.name}</h4>
                     </Link>
                 ))}
 
