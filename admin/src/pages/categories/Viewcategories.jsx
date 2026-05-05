@@ -8,7 +8,6 @@ export default function Viewcategories() {
     let [categories, setcategories] = useState([]);
     let [status, setstatus] = useState(true);
     let [ids, setids] = useState([])
-    let [imagepath, setimagepath] = useState(null)
 
     // view
     useEffect(() => {
@@ -17,7 +16,6 @@ export default function Viewcategories() {
             .then((success) => {
                 console.log("API RESPONSE:", success.data);
                 setcategories(success.data.data);
-                setimagepath(success.data.imagePath)
                 console.log(success.data.imagePath);
                 console.log("IMAGE PATH:", success.data.imagePath);
                 console.log("DATA:", success.data.data);
@@ -136,9 +134,9 @@ export default function Viewcategories() {
 
                                 {/* image */}
                                 <td className="p-2">
-                                    {imagepath && data.image ? (
+                                    {data.image ? (
                                         <img
-                                            src={`${imagepath}${data.image}`}
+                                            src={data.image}
                                             className="w-20 h-max mx-auto border border-gray-300 rounded"
                                             alt="category"
                                         />

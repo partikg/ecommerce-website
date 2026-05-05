@@ -12,7 +12,7 @@ exports.create = async (request, response) => {
     })
     if (request.file != undefined) {
         if (request.file != '') {
-            data.image = request.file.filename
+            data.image = request.file.path
         }
     }
     console.log(request.file)
@@ -95,7 +95,6 @@ exports.view = async (request, response) => {
             var resp = {
                 status: true,
                 message: 'record found successfully',
-                imagePath: `${process.env.BASE_URL}/uploads/categories/`,
                 data: categorydata,
                 total: total,
             }
@@ -130,7 +129,7 @@ exports.update = async (request, response) => {
 
     if (request.file != undefined) {
         if (request.file != '') {
-            data.image = request.file.filename
+            data.image = request.file.path
         }
     }
 
