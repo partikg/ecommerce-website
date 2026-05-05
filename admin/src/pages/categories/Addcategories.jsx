@@ -31,7 +31,7 @@ export default function Addcategories() {
         if (params.categories_id == undefined) {
             axios.post(`${import.meta.env.VITE_API_URL}/api/backend/categories/add`, toFormData(data))
                 .then((success) => {
-                    // console.log(success.data)
+                    console.log(success.data)
                     nav('/categories/view');
                     toast.success(success.data.message)
                 })

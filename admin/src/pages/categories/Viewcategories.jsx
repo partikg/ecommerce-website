@@ -8,7 +8,7 @@ export default function Viewcategories() {
     let [categories, setcategories] = useState([]);
     let [status, setstatus] = useState(true);
     let [ids, setids] = useState([])
-    let [imagepath, setimagepath] = useState('')
+    let [imagepath, setimagepath] = useState(null)
 
     // view
     useEffect(() => {
@@ -19,6 +19,8 @@ export default function Viewcategories() {
                 setcategories(success.data.data);
                 setimagepath(success.data.imagePath)
                 console.log(success.data.imagePath);
+                console.log("IMAGE PATH:", success.data.imagePath);
+                console.log("DATA:", success.data.data);
             })
             .catch((error) => {
                 console.log(error)
@@ -64,7 +66,7 @@ export default function Viewcategories() {
         // console.log(id);
         let updateids = [...ids];
         if (updateids.includes(id)) {
-            updateids = updateids.filter((id) => { return id != id })
+            updateids = updateids.filter((item) => item !== id);
         }
         else {
             updateids.push(id);
@@ -134,15 +136,15 @@ export default function Viewcategories() {
 
                                 {/* image */}
                                 <td className="p-2">
-                                    <img
-                                        src={
-                                            imagepath && data.image
-                                                ? `${imagepath}${data.image}`
-                                                : 'https://via.placeholder.com/80'
-                                        }
-                                        className="w-20 h-max mx-auto border border-gray-300 rounded"
-                                        alt="category"
-                                    />
+                                    {imagepath && data.image ? (
+                                        <img
+                                            src={`${imagepath}${data.image}`}
+                                            className="w-20 h-max mx-auto border border-gray-300 rounded"
+                                            alt="category"
+                                        />
+                                    ) : (
+                                        <div className="w-20 h-20 bg-gray-200 mx-auto rounded"></div>
+                                    )}
                                 </td>
 
                                 {/* edit */}
