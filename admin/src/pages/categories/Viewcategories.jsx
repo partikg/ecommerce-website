@@ -133,7 +133,7 @@ export default function Viewcategories() {
 
                                 {/* image */}
                                 <td className="p-2">
-                                    <img className="w-20 h-max mx-auto border border-gray-300 rounded" src={imagepath + data.image} alt="" /></td>
+                                    <img className="w-20 h-max mx-auto border border-gray-300 rounded" src={`${imagepath}${data.image}`} alt="" /></td>
 
                                 {/* edit */}
                                 <td className="border p-2 text-center">

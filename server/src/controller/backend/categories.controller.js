@@ -95,7 +95,7 @@ exports.view = async (request, response) => {
             var resp = {
                 status: true,
                 message: 'record found successfully',
-                imagePath: 'http://localhost:5000/uploads/categories/',
+                imagePath: `${process.env.BASE_URL}/uploads/categories/`,
                 data: categorydata,
                 total: total,
             }
