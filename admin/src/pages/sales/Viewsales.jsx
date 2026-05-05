@@ -14,7 +14,7 @@ export default function Viewsales() {
 
     // sales
     useEffect(() => {
-        axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/sales/view`)
+        axios.post(`${import.meta.env.VITE_API_URL}/api/backend/sales/view`)
             .then((success) => {
                 console.log('API Response:', success.data);
                 setsales(success.data.data || []);
@@ -33,7 +33,7 @@ export default function Viewsales() {
             id: id,
             status: !status
         }
-        axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/sales/change-status`, data)
+        axios.put(`${import.meta.env.VITE_API_URL}/api/backend/sales/change-status`, data)
             .then((success) => {
                 console.log(success)
                 toast.success('status changed', success)
@@ -50,7 +50,7 @@ export default function Viewsales() {
         let data = {
             id: id
         }
-        axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/sales/delete`, data)
+        axios.put(`${import.meta.env.VITE_API_URL}/api/backend/sales/delete`, data)
             .then((success) => {
                 // console.log(success.data.status)
                 if (success.data.status == true) {
@@ -85,7 +85,7 @@ export default function Viewsales() {
         let data = {
             ids: ids
         }
-        axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/sales/multi-delete`, data)
+        axios.put(`${import.meta.env.VITE_API_URL}/api/backend/sales/multi-delete`, data)
             .then((success) => {
                 console.log(success)
                 toast.success(success.data.message)

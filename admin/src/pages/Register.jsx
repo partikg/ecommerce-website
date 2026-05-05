@@ -19,7 +19,7 @@ export default function Register() {
             data.image = form.get('regimage');
         }
 
-        axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/frontend/user/register`, toFormData(data))
+        axios.post(`${import.meta.env.VITE_API_URL}/api/frontend/user/register`, toFormData(data))
             .then((success) => {
                 console.log(success.data)
                 if (success.data.status == true) {

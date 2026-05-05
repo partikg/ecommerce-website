@@ -22,7 +22,7 @@ export default function Addsales() {
     let [categories, setcategories] = useState([]);
 
     useEffect(() => {
-        axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/categories/view`)
+        axios.post(`${import.meta.env.VITE_API_URL}/api/backend/categories/view`)
             .then(res => {
                 setcategories(res.data.data);
             })
@@ -57,7 +57,7 @@ export default function Addsales() {
         }
 
         if (params.sales_id === undefined) {
-            axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/sales/add`, form)
+            axios.post(`${import.meta.env.VITE_API_URL}/api/backend/sales/add`, form)
                 .then((success) => {
                     console.log('Add Success:', success);
                     if (success.data.status === true) {
@@ -73,7 +73,7 @@ export default function Addsales() {
                 });
         } else {
             if (params.sales_id) {
-                axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/sales/update/` + params.sales_id, form)
+                axios.put(`${import.meta.env.VITE_API_URL}/api/backend/sales/update/` + params.sales_id, form)
                     .then((success) => {
                         console.log('Update Success:', success);
                         if (success.data.status === true) {
@@ -96,7 +96,7 @@ export default function Addsales() {
 
     useEffect(() => {
         if (params.sales_id !== undefined) {
-            axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/sales/details/` + params.sales_id)
+            axios.post(`${import.meta.env.VITE_API_URL}/api/backend/sales/details/` + params.sales_id)
                 .then((success) => {
                     console.log('Sales Details:', success.data);
                     setinput({

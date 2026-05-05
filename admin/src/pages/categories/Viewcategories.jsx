@@ -13,7 +13,7 @@ export default function Viewcategories() {
     // view
     useEffect(() => {
 
-        axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/categories/view`)
+        axios.post(`${import.meta.env.VITE_API_URL}/api/backend/categories/view`)
             .then((success) => {
                 setcategories(success.data.data);
                 setimagepath(success.data.imagePath)
@@ -31,7 +31,7 @@ export default function Viewcategories() {
             id: id,
             status: !status
         }
-        axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/categories/change-status`, data)
+        axios.put(`${import.meta.env.VITE_API_URL}/api/backend/categories/change-status`, data)
             .then((success) => {
                 // console.log(success.data)
                 toast.success('status changed', success)
@@ -48,7 +48,7 @@ export default function Viewcategories() {
         let data = {
             id: id
         }
-        axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/categories/delete`, data)
+        axios.put(`${import.meta.env.VITE_API_URL}/api/backend/categories/delete`, data)
             .then((success) => {
                 toast.success('single record deleted', success)
                 setstatus(!status)
@@ -75,7 +75,7 @@ export default function Viewcategories() {
         let data = {
             ids: ids
         }
-        axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/categories/multi-delete`, data)
+        axios.put(`${import.meta.env.VITE_API_URL}/api/backend/categories/multi-delete`, data)
             .then((success) => {
                 console.log(success)
                 toast.success(success.data.message)

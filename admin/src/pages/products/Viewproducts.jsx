@@ -14,7 +14,7 @@ export default function Viewproducts() {
     // products
     useEffect(() => {
 
-        axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/products/view`)
+        axios.post(`${import.meta.env.VITE_API_URL}/api/backend/products/view`)
             .then((success) => {
                 // console.log(success)
                 setproducts(success.data.data)
@@ -32,7 +32,7 @@ export default function Viewproducts() {
             id: id,
             status: !status
         }
-        axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/products/change-status`, data)
+        axios.put(`${import.meta.env.VITE_API_URL}/api/backend/products/change-status`, data)
             .then((success) => {
                 console.log(success)
                 toast.success('status changed', success)
@@ -49,7 +49,7 @@ export default function Viewproducts() {
         let data = {
             id: id
         }
-        axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/products/delete`, data)
+        axios.put(`${import.meta.env.VITE_API_URL}/api/backend/products/delete`, data)
             .then((success) => {
                 // console.log(success.data.status)
                 if (success.data.status == true) {
@@ -84,7 +84,7 @@ export default function Viewproducts() {
         let data = {
             ids: ids
         }
-        axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/products/multi-delete`, data)
+        axios.put(`${import.meta.env.VITE_API_URL}/api/backend/products/multi-delete`, data)
             .then((success) => {
                 console.log(success)
                 toast.success(success.data.message)

@@ -35,7 +35,7 @@ export default function Addproducts() {
         }
 
         if (params.products_id == undefined) {
-            axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/products/add`, toFormData(data))
+            axios.post(`${import.meta.env.VITE_API_URL}/api/backend/products/add`, toFormData(data))
                 .then((success) => {
                     console.log(success)
                     nav('/products/view')
@@ -45,7 +45,7 @@ export default function Addproducts() {
                     toast.error('error')
                 })
         } else {
-            axios.put(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/products/update/` + params.products_id, toFormData(data))
+            axios.put(`${import.meta.env.VITE_API_URL}/api/backend/products/update/` + params.products_id, toFormData(data))
                 .then((success) => {
                     if (success.data.status == true) {
                         console.log(success)
@@ -66,7 +66,7 @@ export default function Addproducts() {
         if (params.products_id != undefined) {
             console.log(params.products_id)
         }
-        axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/products/details/` + params.products_id)
+        axios.post(`${import.meta.env.VITE_API_URL}/api/backend/products/details/` + params.products_id)
             .then((success) => {
                 console.log(success.data)
                 setinput({
