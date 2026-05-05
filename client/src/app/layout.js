@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "../components/Header";
 import { Provider } from "react-redux";
 import { store } from "../store/store";
+import Script from "next/script";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -31,8 +32,12 @@ export default function RootLayout({ children }) {
           <Header />
           {children}
         </Provider>
-      </body>
 
+        <Script
+          src="https://checkout.razorpay.com/v1/checkout.js"
+          strategy="beforeInteractive"
+        />
+      </body>
     </html>
   );
 }

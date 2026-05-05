@@ -5,7 +5,6 @@ export const dynamic = 'force-dynamic';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { emptycart, removecart, updatecartaddqty, updatecartminusqty, setCart } from '../../features/cart/cartslice';
-import useRazorpay from "react-razorpay";
 import axios from 'axios';
 import { Dialog, DialogBackdrop, DialogPanel, DialogTitle } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/24/outline';
@@ -17,7 +16,7 @@ export default function Page() {
 
     const [mounted, setMounted] = useState(false);
     const [open, setOpen] = useState(true);
-    const [Razorpay] = useRazorpay();
+
 
     // ✅ Ensure client-side rendering only
     useEffect(() => {
@@ -37,8 +36,7 @@ export default function Page() {
     if (!mounted) return null; // 🔥 prevents SSR crash
 
     const subtotal = cartItems.reduce((total, item) => {
-        const price = parseFloat(item.price.replace('$', '').trim());
-        return total + (price * item.qty);
+        const price = Number(String(item.price).replace('$', '').trim()); return total + (price * item.qty);
     }, 0);
 
     const placeOrder = (e) => {
@@ -67,6 +65,8 @@ export default function Page() {
     };
 
     const openPaymentPopUp = (order) => {
+        if (typeof window === "undefined") return;
+
         const options = {
             key: "rzp_test_RghXFo7rcpVb1U",
             amount: order.amount,
@@ -84,7 +84,7 @@ export default function Page() {
             },
         };
 
-        const rzp = new Razorpay(options);
+        const rzp = new window.Razorpay(options);
         rzp.open();
     };
 
