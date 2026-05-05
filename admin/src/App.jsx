@@ -2,7 +2,6 @@ import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-route
 import './App.css';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
-import Profile from './pages/profile';
 import Addcategories from './pages/categories/Addcategories';
 import Viewcategories from './pages/categories/Viewcategories';
 import Login from './pages/Login';
@@ -10,6 +9,7 @@ import Home from './pages/Home';
 import Register from './pages/Register';
 import Addsales from './pages/sales/Addsales';
 import Viewsales from './pages/sales/Viewsales';
+import Profile from './pages/profile';
 
 function App() {
   return (
