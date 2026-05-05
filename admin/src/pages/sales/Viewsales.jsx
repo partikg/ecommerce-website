@@ -155,7 +155,7 @@ export default function Viewsales() {
                                                 <div key={index} className="relative">
                                                     {/* Image Display */}
                                                     <img
-                                                        src={`${imagepath}${image}`} // Concatenates imagepath with the image URL
+                                                        src={image}
                                                         alt={`Image ${index + 1}`}
                                                         className="w-16 h-16 object-cover border border-gray-300 rounded shadow-md"
                                                     />

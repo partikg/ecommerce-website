@@ -30,7 +30,7 @@ exports.create = async (request, response) => {
 
     if (request.files != undefined) {
         if (request.files != '') {
-            data.image = request.files.map(file => file.filename);
+            data.image = request.files.map(file => file.path);
         }
     }
 
@@ -135,7 +135,6 @@ exports.view = async (request, response) => {
                 status: true,
                 message: 'record found successfully',
                 data: salesdata,
-                imagePath: 'http://localhost:5000/uploads/sales/',
                 total: total,
             }
             response.send(resp);
@@ -180,7 +179,7 @@ exports.update = async (request, response) => {
     // }
     if (request.files != undefined) {
         if (request.files != '') {
-            data.image = request.files.map(file => file.filename);
+            data.image = request.files.map(file => file.path);
         }
     }
     const salesdata = await salesmodel.updateOne({
