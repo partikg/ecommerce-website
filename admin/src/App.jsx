@@ -9,7 +9,7 @@ import Home from './pages/Home';
 import Register from './pages/Register';
 import Addsales from './pages/sales/Addsales';
 import Viewsales from './pages/sales/Viewsales';
-import Profile from './pages/profile';
+import Profile from "./pages/Profile";
 
 function App() {
   return (
