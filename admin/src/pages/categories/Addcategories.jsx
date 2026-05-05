@@ -11,25 +11,25 @@ export default function Addcategories() {
         categories_name: '',
         categories_order: '',
         categories_status: '',
-        categories_image: '',
+        image: null,
     })
 
     let submithandler = (event) => {
         event.preventDefault();
-        let form = new FormData(event.target);
-        let data = {
-            name: form.get('categories_name'),
-            status: form.get('categories_status'),
-            order: form.get('categories_order'),
-        }
 
-        if (form.get('categories_image') != '') {
-            data.image = form.get('categories_image');
+        const formData = new FormData();
+
+        formData.append('name', input.categories_name);
+        formData.append('status', input.categories_status);
+        formData.append('order', input.categories_order);
+
+        if (input.image) {
+            formData.append('image', input.image);
         }
 
         // add or update
         if (params.categories_id == undefined) {
-            axios.post(`${import.meta.env.VITE_API_URL}/api/backend/categories/add`, toFormData(data))
+            axios.post(`${import.meta.env.VITE_API_URL}/api/backend/categories/add`, formData)
                 .then((success) => {
                     console.log(success.data)
                     nav('/categories/view');
@@ -40,9 +40,9 @@ export default function Addcategories() {
                     toast.error('Error: ' + error);
                 })
         } else {
-            axios.put(`${import.meta.env.VITE_API_URL}/api/backend/categories/update/` + params.categories_id, toFormData(data))
+            axios.put(`${import.meta.env.VITE_API_URL}/api/backend/categories/update/${params.categories_id}`, formData)
                 .then((success) => {
-                    // console.log(success.data)
+                    console.log(success.data)
                     nav('/categories/view');
                     toast.success(success.data.message)
                 })
@@ -111,7 +111,7 @@ export default function Addcategories() {
 
                 <div className="mb-4">
                     <label className="block text-gray-700">Image:</label>
-                    <input type="file" onChange={inputhandler} name="categories_image" className="mt-1 block w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    <input type="file" onChange={inputhandler} name="image" className="mt-1 block w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
                 </div>
 
                 <input value={(params.categories_id == undefined) ? 'submit' : 'update'} type="submit" className="bg-blue-600 text-center text-white py-2 px-5 rounded hover:bg-blue-700 transition duration-200" />
