@@ -12,7 +12,6 @@ export default function SearchPopover({ newProducts }) {
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState([]);
 
-    const img = Array.isArray(p.image) ? p.image[0] : p.image;
 
     const handleSearchChange = async (e) => {
         const term = e.target.value;
@@ -95,20 +94,25 @@ export default function SearchPopover({ newProducts }) {
                     {/* trending products */}
                     <h3 className="font-bold mt-6">Trending</h3>
                     <div className="flex flex-wrap gap-3 mt-2">
-                        {newProducts?.slice(0, 6).map((p) => (
-                            <Link
-                                key={p._id}
-                                href={`/Salesdetail/${p._id}`}
-                                className="w-[150px]"
-                                onClick={clearSearch}
-                            >
-                                <img
-                                    src={img}
-                                    className="h-[120px] w-full object-cover"
-                                />
-                                <p className="text-sm">{p.name}</p>
-                            </Link>
-                        ))}
+                        {newProducts?.slice(0, 6).map((p) => {
+                            const img = Array.isArray(p.image) ? p.image[0] : p.image;
+
+                            return (
+                                <Link
+                                    key={p._id}
+                                    href={`/Salesdetail/${p._id}`}
+                                    className="w-[150px]"
+                                    onClick={clearSearch}
+                                >
+                                    <img
+                                        src={img}
+                                        className="h-[120px] w-full object-cover"
+                                        alt={p.name}
+                                    />
+                                    <p className="text-sm">{p.name}</p>
+                                </Link>
+                            );
+                        })}
                     </div>
 
                 </div>

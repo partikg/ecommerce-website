@@ -24,10 +24,6 @@ export default function CartDrawer({ open, setOpen, profile }) {
 
     const cookies = new Cookies();
 
-    const img = Array.isArray(product.image)
-        ? product.image[0]
-        : product.image;
-
     useEffect(() => {
         loadRazorpay();
     }, []);
@@ -78,49 +74,55 @@ export default function CartDrawer({ open, setOpen, profile }) {
                                         <div className="mt-8">
                                             <div className="flow-root">
                                                 <ul role="list" className="-my-6 divide-y divide-gray-200">
-                                                    {getcartitems.map((product) => (
-                                                        <li key={product.id} className="flex py-6">
-                                                            <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
+                                                    {getcartitems.map((product) => {
+                                                        const img = Array.isArray(product.image)
+                                                            ? product.image[0]
+                                                            : product.image;
 
-                                                                <img
-                                                                    src={img}
-                                                                    alt={product.name}
-                                                                    className="h-full w-full object-cover"
-                                                                />
-                                                            </div>
+                                                        return (
+                                                            <li key={product.id} className="flex py-6">
+                                                                <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
 
-                                                            <div className="ml-4 flex flex-1 flex-col">
-                                                                <div>
-                                                                    <div className="flex justify-between text-base font-medium text-gray-900">
-                                                                        <h3>
-                                                                            <a href={product.href}>{product.name}</a>
-                                                                        </h3>
-                                                                        <p className="ml-4">{product.price}</p>
-                                                                    </div>
-                                                                    <p className="mt-1 text-sm text-gray-500">{product.color}</p>
+                                                                    <img
+                                                                        src={img}
+                                                                        alt={product.name}
+                                                                        className="h-full w-full object-cover"
+                                                                    />
                                                                 </div>
-                                                                <div className="flex flex-1 items-end justify-between text-sm">
-                                                                    <p className="text-gray-500">Qty {product.qty}</p>
-                                                                    <div className="flex items-center border-gray-100">
-                                                                        <span onClick={() => dispatch(updatecartminusqty(product.id))} className="cursor-pointer rounded-l bg-gray-100 py-1 px-3.5 
+
+                                                                <div className="ml-4 flex flex-1 flex-col">
+                                                                    <div>
+                                                                        <div className="flex justify-between text-base font-medium text-gray-900">
+                                                                            <h3>
+                                                                                <a href={product.href}>{product.name}</a>
+                                                                            </h3>
+                                                                            <p className="ml-4">{product.price}</p>
+                                                                        </div>
+                                                                        <p className="mt-1 text-sm text-gray-500">{product.color}</p>
+                                                                    </div>
+                                                                    <div className="flex flex-1 items-end justify-between text-sm">
+                                                                        <p className="text-gray-500">Qty {product.qty}</p>
+                                                                        <div className="flex items-center border-gray-100">
+                                                                            <span onClick={() => dispatch(updatecartminusqty(product.id))} className="cursor-pointer rounded-l bg-gray-100 py-1 px-3.5 
                                                                                     duration-100 hover:bg-blue-500 hover:text-blue-50"> - </span>
-                                                                        <input className="h-8 w-8 border bg-white text-center text-xs 
+                                                                            <input className="h-8 w-8 border bg-white text-center text-xs 
                                                                                     outline-none" type="number" value={product.qty} min="1" />
-                                                                        <span onClick={() => dispatch(updatecartaddqty(product.id))} className="cursor-pointer rounded-r bg-gray-100 py-1 px-3 
+                                                                            <span onClick={() => dispatch(updatecartaddqty(product.id))} className="cursor-pointer rounded-r bg-gray-100 py-1 px-3 
                                                                                     duration-100 hover:bg-blue-500 hover:text-blue-50"> + </span>
-                                                                    </div>
-                                                                    <div className="flex">
-                                                                        <button onClick={() => dispatch(removecart(product.id))} type="button" className="font-medium text-indigo-600 hover:text-indigo-500">
-                                                                            Remove
-                                                                        </button>
-                                                                        <Link href="#" className=' px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300 empty-cart-button mx-2' onClick={() => dispatch(emptycart())} >
-                                                                            EmptyCart
-                                                                        </Link>
+                                                                        </div>
+                                                                        <div className="flex">
+                                                                            <button onClick={() => dispatch(removecart(product.id))} type="button" className="font-medium text-indigo-600 hover:text-indigo-500">
+                                                                                Remove
+                                                                            </button>
+                                                                            <Link href="#" className=' px-4 py-2 text-white bg-blue-500 rounded-md hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300 empty-cart-button mx-2' onClick={() => dispatch(emptycart())} >
+                                                                                EmptyCart
+                                                                            </Link>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
-                                                            </div>
-                                                        </li>
-                                                    ))}
+                                                            </li>
+                                                        )
+                                                    })}
                                                 </ul>
                                             </div>
                                         </div>
