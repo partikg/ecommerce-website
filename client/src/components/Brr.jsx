@@ -49,7 +49,7 @@ export default function Brr({ products = [] }) {
                                 className="min-w-[200px]"
                             >
                                 <img
-                                    src={`${process.env.NEXT_PUBLIC_API_URL}/uploads/sales/${img}`}
+                                    src={img}
                                     className="h-[260px] w-full object-cover"
                                 />
                                 <p className="mt-2 text-sm font-medium">
