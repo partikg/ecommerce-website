@@ -17,7 +17,6 @@ export default function Page() {
 
     const dispatch = useDispatch()
 
-    // ✅ Redux wishlist (single source of truth)
     const wishlist = useSelector(state => state.wishlist.wishlist)
 
     const [filters, setFilters] = useState({
@@ -112,7 +111,10 @@ export default function Page() {
                                     <button
                                         onClick={(e) => {
                                             e.preventDefault()
-                                            dispatch(addToWishlist(data))
+                                            dispatch(addToWishlist({
+                                                ...data,
+                                                id: data._id
+                                            }))
                                         }}
                                     >
                                         <FontAwesomeIcon

@@ -4,20 +4,13 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowLeftRotate, faAward, faCashRegister, faHeart, faTruck } from '@fortawesome/free-solid-svg-icons'
 import Link from 'next/link';
 import Footer from '@/components/Footer';
-import { getWishlist, removeFromWishlist } from '@/utils/wishlist';
+import { useDispatch, useSelector } from 'react-redux';
+import { removeFromWishlist } from '@/features/wishlist/wishlistslice';
 
 export default function Page() {
 
-    const [wishlist, setWishlist] = useState([]);
-
-    useEffect(() => {
-        setWishlist(getWishlist());
-    }, []);
-
-    const handleRemove = (id) => {
-        removeFromWishlist(id);
-        setWishlist(getWishlist());
-    };
+    const dispatch = useDispatch();
+    const wishlist = useSelector(state => state.wishlist.wishlist);
 
     return (
 
@@ -71,8 +64,8 @@ export default function Page() {
                                         <p>{item.price}</p>
                                     </Link>
                                     <button
-                                        onClick={() => handleRemove(item._id)}
-                                        className='text-red-500 hover:text-red-700'
+                                        onClick={() => dispatch(removeFromWishlist(item.id))}
+                                        className='text-red-500 text-sm'
                                     >
                                         Remove from Wishlist
                                     </button>
