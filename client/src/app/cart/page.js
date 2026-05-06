@@ -116,30 +116,36 @@ export default function Page() {
                                     {cartItems.length === 0 ? (
                                         <p>Your cart is empty</p>
                                     ) : (
-                                        cartItems.map((product) => (
-                                            <div key={product.id} className="flex mb-4">
+                                        cartItems.map((product) => {
+                                            const img = Array.isArray(product.image)
+                                                ? product.image[0]
+                                                : product.image;
 
-                                                <img src={img} className="h-20 w-20 object-cover" />
+                                            return (
+                                                <div key={product.id} className="flex mb-4">
 
-                                                <div className="ml-4 flex-1">
-                                                    <p>{product.name}</p>
-                                                    <p>{product.price}</p>
+                                                    <img src={img} className="h-20 w-20 object-cover" />
 
-                                                    <div className="flex items-center mt-2">
-                                                        <button onClick={() => dispatch(updatecartminusqty(product.id))}>-</button>
-                                                        <span className="mx-2">{product.qty}</span>
-                                                        <button onClick={() => dispatch(updatecartaddqty(product.id))}>+</button>
+                                                    <div className="ml-4 flex-1">
+                                                        <p>{product.name}</p>
+                                                        <p>{product.price}</p>
+
+                                                        <div className="flex items-center mt-2">
+                                                            <button onClick={() => dispatch(updatecartminusqty(product.id))}>-</button>
+                                                            <span className="mx-2">{product.qty}</span>
+                                                            <button onClick={() => dispatch(updatecartaddqty(product.id))}>+</button>
+                                                        </div>
+
+                                                        <button
+                                                            onClick={() => dispatch(removecart(product.id))}
+                                                            className="text-red-500 text-sm"
+                                                        >
+                                                            Remove
+                                                        </button>
                                                     </div>
-
-                                                    <button
-                                                        onClick={() => dispatch(removecart(product.id))}
-                                                        className="text-red-500 text-sm"
-                                                    >
-                                                        Remove
-                                                    </button>
                                                 </div>
-                                            </div>
-                                        ))
+                                            )
+                                        })
                                     )}
                                 </div>
 
