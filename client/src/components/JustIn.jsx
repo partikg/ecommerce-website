@@ -7,6 +7,8 @@ export default function JustIn({ products }) {
     const [slide, setSlide] = useState(0);
     const items = 4;
 
+    console.log("Products:", products);
+
     const next = () => {
         if (slide + items < products.length) {
             setSlide(slide + items);
