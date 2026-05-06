@@ -39,9 +39,9 @@ export default function Page() {
                         {product.image && product.image.length > 0 ? (
                             product.image.map((img, index) => (
 
-                                <img key={index}
-                                    src={`${process.env.NEXT_PUBLIC_API_URL}/uploads/sales/${img}`}
-                                    className='w-full h-[350px] object-cover'
+                                <img
+                                    src={img}
+                                    className="w-full h-[350px] object-cover"
                                 />
 
                             ))

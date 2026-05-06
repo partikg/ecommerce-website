@@ -24,6 +24,10 @@ export default function CartDrawer({ open, setOpen, profile }) {
 
     const cookies = new Cookies();
 
+    const img = Array.isArray(product.image)
+        ? product.image[0]
+        : product.image;
+
     useEffect(() => {
         loadRazorpay();
     }, []);
@@ -79,9 +83,9 @@ export default function CartDrawer({ open, setOpen, profile }) {
                                                             <div className="h-24 w-24 flex-shrink-0 overflow-hidden rounded-md border border-gray-200">
 
                                                                 <img
+                                                                    src={img}
                                                                     alt={product.name}
-                                                                    src={Array.isArray(product.image) ? `${process.env.NEXT_PUBLIC_API_URL}/uploads/sales/${product.image[0]}` : `${process.env.NEXT_PUBLIC_API_URL}/uploads/sales/${product.image}`}
-                                                                    className="h-full w-full object-cover object-center"
+                                                                    className="h-full w-full object-cover"
                                                                 />
                                                             </div>
 

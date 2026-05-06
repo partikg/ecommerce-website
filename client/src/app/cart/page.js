@@ -17,6 +17,9 @@ export default function Page() {
     const [mounted, setMounted] = useState(false);
     const [open, setOpen] = useState(true);
 
+    const img = Array.isArray(product.image)
+        ? product.image[0]
+        : product.image;
 
     // ✅ Ensure client-side rendering only
     useEffect(() => {
@@ -116,11 +119,7 @@ export default function Page() {
                                         cartItems.map((product) => (
                                             <div key={product.id} className="flex mb-4">
 
-                                                <img
-                                                    src={`${process.env.NEXT_PUBLIC_API_URL}/uploads/sales/${product.image}`}
-                                                    className="h-20 w-20 object-cover"
-                                                    alt={product.name}
-                                                />
+                                                <img src={img} className="h-20 w-20 object-cover" />
 
                                                 <div className="ml-4 flex-1">
                                                     <p>{product.name}</p>

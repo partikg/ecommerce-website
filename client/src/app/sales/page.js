@@ -93,14 +93,14 @@ export default function Page() {
                                 <div className='relative group'>
                                     <img
                                         className='h-80 w-full object-cover transition-opacity duration-300 group-hover:opacity-0'
-                                        src={`${salespath}${data.image?.[0]}`}
+                                        src={data.image?.[0]}
                                         alt={data.name}
                                     />
 
                                     {data.image?.[1] && (
                                         <img
                                             className='absolute top-0 left-0 h-80 w-full object-cover opacity-0 group-hover:opacity-100'
-                                            src={`${salespath}${data.image[1]}`}
+                                            src={data.image[1]}
                                             alt={data.name}
                                         />
                                     )}
