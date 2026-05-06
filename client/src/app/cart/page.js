@@ -17,10 +17,6 @@ export default function Page() {
     const [mounted, setMounted] = useState(false);
     const [open, setOpen] = useState(true);
 
-    const img = Array.isArray(product.image)
-        ? product.image[0]
-        : product.image;
-
     // ✅ Ensure client-side rendering only
     useEffect(() => {
         setMounted(true);
