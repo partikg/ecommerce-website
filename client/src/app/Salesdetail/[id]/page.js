@@ -39,9 +39,9 @@ export default function Page() {
                         {product.image && product.image.length > 0 ? (
                             product.image.map((img, index) => (
 
-                                <img
+                                <img key={index}
                                     src={img}
-                                    className="w-full h-[350px] object-cover"
+                                    className='w-full h-[350px] object-cover'
                                 />
 
                             ))
