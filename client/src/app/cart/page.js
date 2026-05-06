@@ -67,7 +67,7 @@ export default function Page() {
         if (typeof window === "undefined") return;
 
         const options = {
-            key: "rzp_test_RghXFo7rcpVb1U",
+            key: process.env.NEXT_PUBLIC_RAZORPAY_KEY,
             amount: order.amount,
             currency: "INR",
             name: "WsCube Tech",

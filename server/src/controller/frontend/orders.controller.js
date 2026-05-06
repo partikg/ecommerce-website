@@ -3,64 +3,9 @@ const orderModel = require('../../models/order');
 const Razorpay = require('razorpay');
 
 const instance = new Razorpay({
-    key_id: 'rzp_test_RghXFo7rcpVb1U',
-    key_secret: 'iiZE9Dh75wXoj0V4OQ6OMWw0',
+    key_id: process.env.RAZORPAY_KEY_ID,
+    key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
-
-// exports.placeOrder = async (request, response) => {
-
-//     var data = new orderModel({
-//         user_id: request.body.user_id,
-//         product_details: request.body.product_details,
-//         order_total: request.body.order_total,
-//         shipping_details: request.body.shipping_details,
-//         status: 1
-//     })
-
-//     await data.save().then((result) => {
-
-//         var options = {
-//             amount: result.order_total,  // amount in the smallest currency unit
-//             currency: "INR",
-//             receipt: result._id
-//         };
-
-//         instance.orders.create(options, async function (err, order) {
-
-//             await orderModel.updateOne(
-//                 {
-//                     _id: result._id
-//                 },
-//                 {
-//                     $set: {
-//                         razorpay_order_id: order.id
-//                     }
-//                 });
-//             // console.log(result);
-
-//             order.status = 1;
-//             var resp = {
-//                 status: true,
-//                 message: 'Order Placedd successfully !!',
-//                 data: order
-//             }
-
-//             response.send(resp);
-
-//         })
-
-//     }).catch((error) => {
-
-//         var resp = {
-//             status: false,
-//             message: 'Something went wrong !!',
-//             error: error
-//         }
-
-//         response.send(resp);
-
-//     });
-// }
 
 exports.placeOrder = async (request, response) => {
 
@@ -77,7 +22,7 @@ exports.placeOrder = async (request, response) => {
         const result = await data.save();
 
         const options = {
-            amount: result.order_total * 100, // ✅ FIXED
+            amount: result.order_total * 100,
             currency: "INR",
             receipt: result._id.toString()
         };
@@ -137,7 +82,7 @@ exports.confirmOrder = async (request, response) => {
 
         var resp = {
             status: true,
-            message: 'Order Status update successfully !!',
+            message: 'Order Status update successfully',
         }
 
         response.send(resp);
@@ -146,7 +91,7 @@ exports.confirmOrder = async (request, response) => {
 
         var resp = {
             status: false,
-            message: 'Something went wrong !!'
+            message: 'Something went wrong'
         }
 
         response.send(resp);

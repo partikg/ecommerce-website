@@ -3,38 +3,35 @@ const usermodel = require('../../models/user')
 const bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
 
-
 exports.sendmail = async (request, response) => {
-
-
 
     const transporter = nodemailer.createTransport({
         service: 'gmail',
         auth: {
-            user: "pratikgraut2610@gmail.com",
-            pass: "iljzuoqluamyfryr",
+            user: process.env.EMAIL,
+            pass: process.env.EMAIL_PASS,
         },
     });
 
     try {
         const info = await transporter.sendMail({
-            from: '"pratik 👻" <pratik53@ethereal.email>', // sender address
-            to: "pratikgraut2610@gmail.com",
-            subject: "Hello ✔", // Subject line
-            text: "Hello world?", // plain text body
-            html: "<b>Hello world?</b>", // html body
+            from: '"pratik" <pratik53@ethereal.email>',
+            to: process.env.EMAIL,
+            subject: "Hello",
+            text: "Hello world",
+            html: "<b>Hello world</b>",
         });
 
         var success = {
-            status: 'true',
+            status: true,
             message: 'successfully send mail',
             data: info
         }
         response.send(success)
     }
-    catch {
+    catch (err) {
         var error = {
-            status: 'false',
+            status: false,
             message: 'error in send mail',
             data: error.message
         }
