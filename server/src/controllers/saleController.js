@@ -1,7 +1,5 @@
-const sales = require("../../models/sales");
-const salesmodel = require("../../models/sales");
-
-
+const sales = require("../models/Sale");
+const salesmodel = require("../models/Sale");
 
 exports.create = async (request, response) => {
 
@@ -21,20 +19,11 @@ exports.create = async (request, response) => {
         updated_at: Date.now(),
     })
 
-
-    // if (request.file != undefined) {
-    //     if (request.file != '') {
-    //         // data.image = request.file.filename
-    //     }
-    // }
-
     if (request.files != undefined) {
         if (request.files != '') {
             data.image = request.files.map(file => file.path);
         }
     }
-
-    console.log("Uploaded Files:", request.file)
 
     await data.save()
         .then((success) => {
@@ -63,8 +52,6 @@ exports.create = async (request, response) => {
 
 }
 
-
-
 exports.view = async (request, response) => {
 
     try {
@@ -83,14 +70,14 @@ exports.view = async (request, response) => {
             filter.category_id = request.body.category;
         }
 
-        // give justIn and daysAgo key in body
-        const daysAgo = request.body.daysAgo || 1; // Default to 30 days if not provided
+
+        const daysAgo = request.body.daysAgo || 1;
         const currentDate = new Date();
         const pastDate = new Date();
-        pastDate.setDate(currentDate.getDate() - daysAgo); // Calculate the past date
+        pastDate.setDate(currentDate.getDate() - daysAgo);
 
         if (request.body.justIn) {
-            filter.created_at = { $gte: pastDate }; // Filter products added after the calculated past date
+            filter.created_at = { $gte: pastDate };
         }
 
         if (search) {
@@ -127,7 +114,7 @@ exports.view = async (request, response) => {
             select: { '_id': 1, 'name': 1, 'image': 1 }
         });
 
-        console.log("Sales Data Created At:", salesdata.map(s => s.created_at)); // Log created_at of records
+        console.log("Sales Data Created At:", salesdata.map(s => s.created_at));
 
 
         if (salesdata.length > 0) {
@@ -172,11 +159,6 @@ exports.update = async (request, response) => {
         updated_at: Date.now(),
     }
 
-    // if (request.file != undefined) {
-    //     if (request.file != '') {
-    //         data.image = request.file.filename
-    //     }
-    // }
     if (request.files != undefined) {
         if (request.files != '') {
             data.image = request.files.map(file => file.path);
@@ -272,7 +254,6 @@ exports.changestatus = async (request, response) => {
     }
 }
 
-
 exports.multidelete = async (request, response) => {
     try {
 
@@ -307,7 +288,6 @@ exports.multidelete = async (request, response) => {
         response.send(resp);
     }
 }
-
 
 exports.details = async (request, response) => {
 

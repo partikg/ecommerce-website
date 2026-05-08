@@ -16,25 +16,14 @@ export default function Page() {
 
         <div className="max-w-6xl mx-auto px-4 py-6">
 
-            <div className='flex  '>
+            <div>
 
-                {/* left side */}
-                <div className="hidden md:block w-48 mr-6 text-sm">
-
-                    <div className="bg-gray-100 p-4 rounded-lg space-y-2">
-                        <div className="font-medium">My Account</div>
-                        <div className="text-gray-600 hover:text-black cursor-pointer">Orders</div>
-                        <div className="text-gray-600 hover:text-black cursor-pointer">Address</div>
-                        <div className="text-black font-semibold flex items-center gap-2">
-                            Wishlist <FontAwesomeIcon icon={faHeart} />
-                        </div>
-                    </div>
-
-                </div>
+                <h2 className='text-4xl font-semibold mb-6'>
+                    Wishlist
+                </h2>
 
                 {/* wishlist */}
                 <div>
-                    <h2 className='text-4xl font-semibold m-5'>Wishlist</h2>
                     <div className='flex flex-wrap w-fit'>
                         {wishlist.length > 0 ? (
                             wishlist.map((item) => (

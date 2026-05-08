@@ -1,8 +1,7 @@
-const categorymodel = require("../../models/categories");
+const categorymodel = require("../models/Category");
 
 
 exports.create = async (request, response) => {
-    console.log("FILE:", request.file);
 
     data = new categorymodel({
         name: request.body.name,
@@ -16,7 +15,6 @@ exports.create = async (request, response) => {
             data.image = request.file.path
         }
     }
-    console.log(request.file)
 
     await data.save()
         .then((success) => {
@@ -28,9 +26,6 @@ exports.create = async (request, response) => {
             response.send(result);
         })
         .catch((error) => {
-
-            console.log("CREATE ERROR:", error);
-
             error_messages = [];
 
             for (let field in error.errors) {
@@ -50,7 +45,7 @@ exports.create = async (request, response) => {
 exports.view = async (request, response) => {
 
     try {
-        console.log("View categories route hit, request body:", request.body);
+        console.log("View categories route request body:", request.body);
         const addcondition = [{
             deleted_at: null
         }
@@ -192,7 +187,6 @@ exports.delete = async (request, response) => {
     }
 }
 
-
 exports.changestatus = async (request, response) => {
     try {
         const categorydata = await categorymodel.updateOne({
@@ -226,7 +220,6 @@ exports.changestatus = async (request, response) => {
         response.send(resp);
     }
 }
-
 
 exports.multidelete = async (request, response) => {
     try {
@@ -262,7 +255,6 @@ exports.multidelete = async (request, response) => {
         response.send(resp);
     }
 }
-
 
 exports.details = async (request, response) => {
 

@@ -12,12 +12,11 @@ import {
 import {
     XMarkIcon,
 } from '@heroicons/react/24/outline'
-import { ChevronDownIcon, PhoneIcon, PlayCircleIcon } from '@heroicons/react/20/solid'
+import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import Link from 'next/link'
-import axios, { toFormData } from 'axios'
+import axios from 'axios'
 import { useSelector, useDispatch } from 'react-redux'
-import { faCartShopping, faHeart, faLitecoinSign, faSearch, faSign, faUser } from '@fortawesome/free-solid-svg-icons';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { faCartShopping, faHeart, faUser } from '@fortawesome/free-solid-svg-icons';
 import Cookies from 'universal-cookie';
 import CartDrawer from './CartDrawer';
 import SearchPopover from './SearchPopover';
@@ -33,11 +32,12 @@ export default function Header() {
     const [popoverOpen, setPopoverOpen] = useState(false);
     const dispatch = useDispatch()
     const [open, setOpen] = useState(false)
-    const [loggedIn, setLoggedIn] = useState(false);
-    const [showLoginForm, setShowLoginForm] = useState(true);
-    const [getlogindata, setgetlogindata] = useState([]);
     let [profile, setprofile] = useState(null);
     const popoverRef = useRef(null);
+
+    const cookies = new Cookies();
+    const token = cookies.get('token');
+    const loggedIn = !!token;
 
     useEffect(() => {
         axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/sales/view`)
@@ -77,71 +77,10 @@ export default function Header() {
         }
     };
 
-    // login 
-    const router = useRouter();
-    const cookies = new Cookies();
-    const loginHandler = async (event) => {
-        event.preventDefault();
-
-        const data = {
-            email: event.target.email.value,
-            password: event.target.password.value
-        };
-        console.log("Submitting login data:", data)
-
-
-        try {
-            const result = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/frontend/user/login`, data);
-            if (result.data.status === true) {
-                console.log("Login successful, token received:", result.data.token);
-                cookies.set('token', result.data.token);
-                setLoggedIn(true);
-            } else {
-                console.log("Login failed:", result.data.message);
-            }
-        } catch (error) {
-            console.error("Login error:", error);
-        }
-    };
-    useEffect(() => {
-        const token = cookies.get('token');
-        // console.log("Token in cookies:", token);
-        if (token) {
-            console.log("Redirecting to / as token exists.");
-            setLoggedIn(true);
-        }
-    }, []);
-
     // logout
     const logoutHandler = () => {
         cookies.remove('token');
-        setLoggedIn(false);
-    };
-
-    // register 
-    const register = async (event) => {
-        event.preventDefault();
-        const data = {
-            name: event.target.name.value,
-            email: event.target.email.value,
-            password: event.target.password.value
-        };
-
-        console.log("Submitting registration data:", data);
-        setgetlogindata(data);
-
-        try {
-            const result = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/frontend/user/register`, data);
-            if (result.data.status === true) {
-                console.log("Registration successful");
-                setShowLoginForm(true);
-                router.push('/');
-            } else {
-                console.log("Registration failed:", result.data.message);
-            }
-        } catch (error) {
-            console.error("Registration error:", error);
-        }
+        window.location.reload();
     };
 
     // profile
@@ -221,123 +160,138 @@ export default function Header() {
                     <SearchPopover newProducts={newProducts} />
 
                     {/* myaccount */}
-                    <Popover className="relative" onMouseEnter={() => setPopoverOpen(true)} onMouseLeave={() => setPopoverOpen(false)}>
-                        <Popover.Button ref={popoverRef} className="h-full w-10 flex justify-center items-center cursor-pointer font-medium text-gray-900 focus:outline-none">
-                            <FontAwesomeIcon icon={faUser} />
+                    <Popover
+                        className="relative"
+                        onMouseEnter={() => setPopoverOpen(true)}
+                        onMouseLeave={() => setPopoverOpen(false)}
+                    >
+
+                        <Popover.Button
+                            ref={popoverRef}
+                            className="h-full w-10 flex justify-center items-center cursor-pointer text-gray-900 focus:outline-none"
+                        >
+                            <FontAwesomeIcon
+                                icon={faUser}
+                                className="text-lg hover:text-black"
+                            />
                         </Popover.Button>
 
                         <Popover.Panel
-                            className="absolute -left-32 top-8 w-64 bg-white rounded-lg shadow-lg z-30 max-h-[90vh] overflow-y-auto"
-                            onMouseEnter={() => setPopoverOpen(true)}
-                            onMouseLeave={() => setPopoverOpen(false)}
+                            className="absolute -right-12 top-8 w-72 bg-white rounded-2xl shadow-2xl border border-gray-200 z-30 overflow-hidden"
                         >
-                            <h2 className="text-lg font-bold mb-2 bg-gray-300 p-2 text-center rounded-t-lg">My Account</h2>
-                            <div className="text-black bg-gray-100 p-4">
-                                {loggedIn ? (
-                                    <>
-                                        <div className="mb-2 text-lg">
-                                            Hi {profile?.name || "User"}
-                                        </div>
-                                        <hr className="my-2" />
-                                        <Link href="/wishlist" className="text-gray-700 mb-1 block hover:text-blue-500">
-                                            Wishlist
-                                        </Link>
-                                        <Link href="/orders" className="text-gray-700 mb-1 block hover:text-blue-500">
-                                            Orders & Returns
-                                        </Link>
-                                        <Link href="/address-book" className="text-gray-700 mb-1 block hover:text-blue-500">
-                                            Address Book
-                                        </Link>
-                                        <Link href="/account-settings" className="text-gray-700 mb-2 block hover:text-blue-500">
-                                            Account Settings
-                                        </Link>
-                                        <button className="text-red-500 mt-2 w-full text-lg" onClick={logoutHandler}>
-                                            Logout
-                                        </button>
-                                    </>
-                                ) : (
-                                    <>
+                            {({ close }) => (
 
-                                        {/* login */}
-                                        {showLoginForm ? (
-                                            <>
-                                                <h2 className="text-lg font-bold mb-2 text-center">Login</h2>
-                                                <form onSubmit={loginHandler}>
-                                                    <div className="mb-4">
-                                                        <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email:</label>
-                                                        <input
-                                                            type="email"
-                                                            id="email"
-                                                            name="email"
-                                                            required
-                                                            className="w-full px-3 py-2 border rounded-md"
-                                                        />
-                                                    </div>
-                                                    <div className="mb-4">
-                                                        <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password:</label>
-                                                        <input
-                                                            type="password"
-                                                            id="password"
-                                                            name="password"
-                                                            required
-                                                            className="w-full px-3 py-2 border rounded-md"
-                                                        />
-                                                    </div>
-                                                    <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-md">Login</button>
-                                                </form>
-                                                <p className="text-center mt-4">
-                                                    <span className="text-gray-600">Not registered?</span>{' '}
-                                                    <a onClick={() => setShowLoginForm(false)} className="text-blue-600 cursor-pointer hover:underline">Register Here</a>
-                                                </p> </>
-                                        ) : (
-                                            <>
-                                                {/* register */}
-                                                <h2 className="text-lg font-bold mb-2 text-center">Register</h2>
-                                                <form onSubmit={register}>
-                                                    <div className="mb-4">
-                                                        <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name:</label>
-                                                        <input
-                                                            type="text"
-                                                            id="name"
-                                                            name="name"
-                                                            required
-                                                            className="w-full px-3 py-2 border rounded-md"
-                                                        />
-                                                    </div>
-                                                    <div className="mb-4">
-                                                        <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email:</label>
-                                                        <input
-                                                            type="email"
-                                                            id="email"
-                                                            name="email"
-                                                            required
-                                                            className="w-full px-3 py-2 border rounded-md"
-                                                        />
-                                                    </div>
-                                                    <div className="mb-4">
-                                                        <label htmlFor="password" className="block text-sm font-medium text-gray-700">Password:</label>
-                                                        <input
-                                                            type="password"
-                                                            id="password"
-                                                            name="password"
-                                                            required
-                                                            className="w-full px-3 py-2 border rounded-md"
-                                                        />
-                                                    </div>
-                                                    <button type="submit" className="w-full bg-green-600 text-white py-2 rounded-md">Register</button>
-                                                </form>
-                                                <p className="text-center mt-4">
-                                                    <span className="text-gray-600">Already have an account?</span>{' '}
-                                                    <a onClick={() => setShowLoginForm(true)} className="text-blue-600 cursor-pointer hover:underline">Login Here</a>
+                                <div>
+
+                                    <div className="bg-black text-white px-5 py-5">
+
+                                        {loggedIn ? (
+
+                                            <div>
+
+                                                <p className="text-sm text-gray-300">
+                                                    Welcome back
                                                 </p>
-                                            </>
-                                        )}
-                                    </>
-                                )}
-                            </div>
-                        </Popover.Panel>
-                    </Popover>
 
+                                            </div>
+
+                                        ) : (
+
+                                            <div>
+
+                                                <h2 className="text-lg font-semibold">
+                                                    My Account
+                                                </h2>
+
+                                                <p className="text-sm text-gray-300 mt-1">
+                                                    Login or create account
+                                                </p>
+
+                                            </div>
+
+                                        )}
+
+                                    </div>
+
+                                    {/* profile */}
+                                    <div className="p-4">
+
+                                        {loggedIn ? (
+
+                                            <div className="space-y-3">
+
+                                                <div className="pb-3 border-b">
+
+                                                    <h2 className="text-lg font-semibold text-gray-900">
+                                                        {profile?.name || 'User'}
+                                                    </h2>
+
+                                                    <p className="text-sm text-gray-500 mt-1 break-all">
+                                                        {profile?.email}
+                                                    </p>
+
+                                                </div>
+
+                                                <Link
+                                                    href="/wishlist"
+                                                    onClick={() => close()}
+                                                    className="block px-4 py-3 rounded-lg border hover:bg-gray-100 transition"
+                                                >
+                                                    Wishlist
+                                                </Link>
+
+                                                <Link
+                                                    href="/orders"
+                                                    onClick={() => close()}
+                                                    className="block px-4 py-3 rounded-lg border hover:bg-gray-100 transition"
+                                                >
+                                                    Orders
+                                                </Link>
+
+                                                <button
+                                                    onClick={() => {
+                                                        close();
+                                                        logoutHandler();
+                                                    }}
+                                                    className="w-full text-left px-4 py-3 rounded-lg border text-red-500 hover:bg-red-50 transition"
+                                                >
+                                                    Logout
+                                                </button>
+
+                                            </div>
+
+                                        ) : (
+
+                                            <div className="space-y-3">
+
+                                                <Link
+                                                    href="/login"
+                                                    onClick={() => close()}
+                                                    className="block text-center bg-black text-white py-3 rounded-lg hover:bg-gray-800 transition"
+                                                >
+                                                    Login
+                                                </Link>
+
+                                                <Link
+                                                    href="/register"
+                                                    onClick={() => close()}
+                                                    className="block text-center border border-black py-3 rounded-lg hover:bg-gray-100 transition"
+                                                >
+                                                    Create Account
+                                                </Link>
+
+                                            </div>
+
+                                        )}
+
+                                    </div>
+
+                                </div>
+
+                            )}
+                        </Popover.Panel>
+
+                    </Popover>
 
                     {/* fav */}
                     <div className="h-full w-20 flex justify-center items-center cursor-pointer font-medium  text-gray-900">
@@ -345,7 +299,6 @@ export default function Header() {
                             <FontAwesomeIcon icon={faHeart} />
                         </Link>
                     </div>
-
 
                     {/* cart */}
                     <div className=' h-full w-20 flex justify-center items-center cursor-pointer font-medium text-gray-900'>
@@ -362,15 +315,9 @@ export default function Header() {
                         />
                     </div>
 
-
                 </div>
 
             </nav>
-
-
-
-
-
 
 
             {/* for mobile */}

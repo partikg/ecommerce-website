@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
-const Category = require('./categories')
+const Category = require('./Category')
 const { Schema } = mongoose;
 
-const womenschema = new mongoose.Schema({
+const salesschema = new mongoose.Schema({
     name: {
         type: String,
     },
@@ -10,11 +10,18 @@ const womenschema = new mongoose.Schema({
         type: String,
         default: 0,
     },
+    gender: {
+        type: String,
+        enum: ['men', 'women', 'unisex'],
+    },
+    type: {
+        type: String,
+    },
     description: {
         type: String,
     },
     image: {
-        type: String,
+        type: [String],
     },
     status: {
         type: Boolean,
@@ -23,6 +30,16 @@ const womenschema = new mongoose.Schema({
     order: {
         type: Number,
         default: 0,
+    },
+    qty: {
+        type: Number,
+        default: 1,
+    },
+    justIn: {
+        type: String,
+    },
+    daysAgo: {
+        type: String,
     },
     created_at: {
         type: Date,
@@ -43,5 +60,5 @@ const womenschema = new mongoose.Schema({
 })
 
 
-const women = mongoose.model('women', womenschema);
-module.exports = women;
+const sales = mongoose.model('sales', salesschema);
+module.exports = sales;

@@ -1,7 +1,7 @@
 const express = require('express');
 const route = express.Router();
-const salescontroller = require('../../controller/backend/sales.controller')
-const upload = require('../../middleware/upload');
+const salescontroller = require('../controllers/saleController')
+const { upload } = require('../config/cloudinary')
 
 module.exports = app => {
     route.post('/add', upload.array('images', 5), salescontroller.create);
