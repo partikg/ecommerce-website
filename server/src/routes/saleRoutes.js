@@ -1,16 +1,15 @@
 const express = require('express');
-const route = express.Router();
-const salescontroller = require('../controllers/saleController')
-const { upload } = require('../config/cloudinary')
+const router = express.Router();
 
-module.exports = app => {
-    route.post('/add', upload.array('images', 5), salescontroller.create);
-    route.post('/view', salescontroller.view);
-    route.put('/delete', salescontroller.delete);
-    route.put('/update/:id', upload.array('images', 5), salescontroller.update);
-    route.put('/change-status', salescontroller.changestatus);
-    route.put('/multi-delete', salescontroller.multidelete);
-    route.post('/details/:id', salescontroller.details);
+const salesController = require('../controllers/saleController');
+const { upload } = require('../config/cloudinary');
 
-    app.use('/api/backend/sales', route);
-}
+router.post('/add', upload.array('images', 5), salesController.create);
+router.post('/view', salesController.view);
+router.put('/delete', salesController.delete);
+router.put('/update/:id', upload.array('images', 5), salesController.update);
+router.put('/change-status', salesController.changestatus);
+router.put('/multi-delete', salesController.multidelete);
+router.post('/details/:id', salesController.details);
+
+module.exports = router;

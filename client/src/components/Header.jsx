@@ -32,7 +32,7 @@ export default function Header() {
     const [popoverOpen, setPopoverOpen] = useState(false);
     const dispatch = useDispatch()
     const [open, setOpen] = useState(false)
-    let [profile, setprofile] = useState(null);
+    const [profile, setProfile] = useState(null);
     const popoverRef = useRef(null);
 
     const cookies = new Cookies();
@@ -40,7 +40,7 @@ export default function Header() {
     const loggedIn = !!token;
 
     useEffect(() => {
-        axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/sales/view`)
+        axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/sales/view`)
             .then((response) => {
                 setNewProducts(response.data.data);
             })
@@ -85,28 +85,36 @@ export default function Header() {
 
     // profile
     useEffect(() => {
-        const usertoken = cookies.get('token');
 
-        if (!usertoken) return;
+        const token = cookies.get('token');
+        if (!token) return;
 
         axios.post(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/frontend/user/profile`,
+            `${process.env.NEXT_PUBLIC_API_URL}/api/users/profile`,
             {},
             {
                 headers: {
-                    Authorization: `Bearer ${usertoken}`
+                    Authorization: `Bearer ${token}`
                 }
             }
         )
             .then((res) => {
-                console.log("PROFILE API:", res.data);
-                setprofile(res.data.data.userdata);
+
+                console.log("PROFILE:", res.data);
+
+                const user = res.data.data.userdata;
+
+                setProfile(user);
+
+                localStorage.setItem('userId', user._id);
+
             })
             .catch((err) => {
                 console.log("PROFILE ERROR:", err);
             });
 
-    }, [loggedIn]);
+    }, []);
+
 
     return (
 

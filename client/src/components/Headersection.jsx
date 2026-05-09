@@ -19,7 +19,7 @@ export default function Headersection() {
         const daysAgo = searchparams.get('daysAgo') || '';
         const type = searchparams.get('type') || '';
 
-        axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/sales/view`, {
+        axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/sales/view`, {
             justIn,
             daysAgo,
             type

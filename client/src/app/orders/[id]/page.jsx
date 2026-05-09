@@ -14,7 +14,7 @@ export default function OrderDetail() {
 
         if (!params?.id) return;
 
-        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/order/orders/${params.id}`)
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/orders/orders/${params.id}`)
             .then((success) => {
                 setData(success.data.order)
             })
@@ -24,7 +24,9 @@ export default function OrderDetail() {
 
     }, [params])
 
-    if (!data) return <p>Loading...</p>
+    if (!data) return <p className="text-center mt-10">Order not found</p>;
+
+    const items = data.product_details || data.items || [];
 
     const getStatusColor = (status) => {
         switch (status) {
@@ -37,9 +39,6 @@ export default function OrderDetail() {
             case 'Delivered':
                 return 'bg-green-100 text-green-800'
 
-            case 'Cancelled':
-                return 'bg-red-100 text-red-800'
-
             default:
                 return 'bg-gray-100 text-gray-800'
         }
@@ -48,90 +47,79 @@ export default function OrderDetail() {
     return (
         <div className="max-w-3xl mx-auto px-6 py-8">
 
-            <Link
-                href="/orders"
-                className="inline-flex items-center text-sm text-gray-500 hover:text-black mb-6"
-            >
-                Back
+            <Link href="/orders" className="text-gray-600 hover:text-black">
+                ← Back to Orders
             </Link>
 
             {/* order */}
-            <div className="border rounded-lg p-5 mb-6">
+            <div className="border rounded-lg p-5 mt-5 mb-6">
 
                 <h2 className="text-xl font-bold mb-4">
                     Order Info
                 </h2>
 
-                <div className="grid grid-cols-2 gap-3 text-sm">
+                <div className="space-y-2">
 
-                    <div>
-                        <p className="text-gray-500">Order ID</p>
-                        <p className="font-medium">
-                            #{data._id}
-                        </p>
-                    </div>
+                    <p>
+                        <b>Order ID:</b> {data._id}
+                    </p>
 
-                    <div>
-                        <p className="text-gray-500">Payment</p>
-                        <p className="font-medium">
-                            {data.paymentStatus}
-                        </p>
-                    </div>
+                    <p>
+                        <b>Total:</b> ₹{data.order_total || data.total || 0}
+                    </p>
 
-                    <div>
-                        <p className="text-gray-500">Order Status</p>
+                    <p>
+                        <b>Payment Status:</b>{" "}
+                        {data.status === 2 ? "Paid" : "Pending"}
+                    </p>
 
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${getStatusColor(data.orderStatus)}`}>
-                            {data.orderStatus}
+                    <p>
+                        <b>Order Status:</b>{" "}
+                        <span className={`px-2 py-1 rounded text-xs ${getStatusColor(data.orderStatus)}`}>
+                            {data.orderStatus || (data.status === 2 ? "Processing" : "Pending")}
                         </span>
-                    </div>
+                    </p>
 
                 </div>
-
             </div>
 
-            {/* items */}
+            {/* item */}
             <div className="border rounded-lg p-5 mb-6">
 
                 <h2 className="text-xl font-bold mb-4">
                     Items Ordered
                 </h2>
 
-                {data.items.map((item, index) => (
+                {items.length > 0 ? (
+                    <div className="space-y-3">
 
-                    <div key={index}>
-                        <div className="flex justify-between items-center py-3">
+                        {items.map((item, index) => (
+                            <div
+                                key={index}
+                                className="flex justify-between items-center p-3 border rounded-lg"
+                            >
 
-                            <div>
-                                <p className="font-medium">
-                                    {item.name}
+                                <div>
+                                    <p className="font-medium">
+                                        {item.name || item.product_name || "Product"}
+                                    </p>
+
+                                    <p className="text-sm text-gray-500">
+                                        Qty: {item.quantity || 1}
+                                    </p>
+                                </div>
+
+                                <p className="font-semibold">
+                                    ₹{item.price || 0}
                                 </p>
 
-                                <p className="text-sm text-gray-500">
-                                    Qty: {item.quantity}
-                                </p>
                             </div>
+                        ))}
 
-                            <p className="font-semibold">
-                                ${item.price}
-                            </p>
-
-                        </div>
                     </div>
-
-                ))}
-
-            </div>
-
-            <div className="flex justify-between items-center border rounded-lg p-5">
-
-                <p className="text-lg font-bold">
-                    Total
-                </p>
-
-                <p className="text-xl font-bold">
-                    ${data.total}
-                </p>
+                ) : (
+                    <p className="text-gray-500">No items found</p>
+                )}
 
             </div>
 

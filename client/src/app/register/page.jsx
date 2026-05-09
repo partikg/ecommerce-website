@@ -25,7 +25,7 @@ export default function LoginPage() {
         try {
 
             const result = await axios.post(
-                `${process.env.NEXT_PUBLIC_API_URL}/api/frontend/user/register`,
+                `${process.env.NEXT_PUBLIC_API_URL}/api/user/register`,
                 data
             );
 

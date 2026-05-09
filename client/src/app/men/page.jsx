@@ -16,7 +16,7 @@ export default function Page() {
     const [newProducts, setNewProducts] = useState([]);
 
     useEffect(() => {
-        axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/sales/view`)
+        axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/sales/view`)
             .then((response) => {
                 const menProducts = response.data.data.filter(
                     (item) => item.gender === 'men'

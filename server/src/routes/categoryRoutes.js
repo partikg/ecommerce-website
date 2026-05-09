@@ -1,16 +1,15 @@
 const express = require('express');
-const route = express.Router();
-const cateorycontroller = require('../controllers/categoryController')
-const { upload } = require('../config/cloudinary')
+const router = express.Router();
 
-module.exports = app => {
-    route.post('/add', upload.array('images', 5), cateorycontroller.create);
-    route.post('/view', cateorycontroller.view);
-    route.put('/delete', cateorycontroller.delete);
-    route.put('/update/:id', upload.array('images', 5), cateorycontroller.update);
-    route.put('/change-status', cateorycontroller.changestatus);
-    route.put('/multi-delete', cateorycontroller.multidelete);
-    route.post('/details/:id', cateorycontroller.details);
+const categoryController = require('../controllers/categoryController');
+const { upload } = require('../config/cloudinary');
 
-    app.use('/api/backend/categories', route);
-}
+router.post('/add', upload.array('images', 5), categoryController.create);
+router.post('/view', categoryController.view);
+router.put('/delete', categoryController.delete);
+router.put('/update/:id', upload.array('images', 5), categoryController.update);
+router.put('/change-status', categoryController.changestatus);
+router.put('/multi-delete', categoryController.multidelete);
+router.post('/details/:id', categoryController.details);
+
+module.exports = router;

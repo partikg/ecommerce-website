@@ -15,7 +15,7 @@ export const loadRazorpay = () => {
 
 export const openPaymentPopUp = (order) => {
     const options = {
-        key: "rzp_test_RghXFo7rcpVb1U",
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY,
         amount: order.amount,
         currency: "INR",
         name: "PratikWear",
@@ -27,7 +27,7 @@ export const openPaymentPopUp = (order) => {
 
             try {
                 await axios.post(
-                    `${process.env.NEXT_PUBLIC_API_URL}/api/frontend/orders/confirm-order`,
+                    `${process.env.NEXT_PUBLIC_API_URL}/api/orders/add`,
                     {
                         order_id: response.razorpay_order_id,
                         payment_id: response.razorpay_payment_id,
@@ -75,7 +75,7 @@ export const handleCheckoutService = async ({
         };
 
         const res = await axios.post(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/frontend/orders/place-order`,
+            `${process.env.NEXT_PUBLIC_API_URL}/api/orders/add`,
             orderData,
             {
                 headers: {
@@ -84,8 +84,12 @@ export const handleCheckoutService = async ({
             }
         );
 
-        if (res.data.status) {
-            openPaymentPopUp(res.data.data);
+        const razorpayRes = await axios.post(
+            `${process.env.NEXT_PUBLIC_API_URL}/api/razorpay`
+        );
+
+        if (razorpayRes.data) {
+            openPaymentPopUp(razorpayRes.data);
         } else {
             alert("Order failed");
         }

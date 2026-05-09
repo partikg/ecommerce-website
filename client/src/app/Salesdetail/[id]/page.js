@@ -15,7 +15,7 @@ export default function Page() {
 
     useEffect(() => {
         if (params?.id) {
-            axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/sales/details/` + params.id)
+            axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/sales/details/` + params.id)
                 .then((response) => {
                     setProduct(response.data.data);
                     console.log('Product data:', response.data.data);

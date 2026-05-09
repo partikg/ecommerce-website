@@ -37,7 +37,7 @@ export default function Page() {
     }, [searchParams])
 
     useEffect(() => {
-        axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/sales/view`, filters)
+        axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/sales/view`, filters)
             .then((res) => {
                 setproductsales(res.data.data || [])
                 setsalespath(res.data.imagePath)

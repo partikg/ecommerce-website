@@ -1,8 +1,14 @@
 require('dotenv').config();
+
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
-const razorpayRoute = require("./src/routes/razorpay");
+
+const saleRoutes = require('./src/routes/saleRoutes');
+const categoryRoutes = require('./src/routes/categoryRoutes');
+const userRoutes = require('./src/routes/userRoutes');
+const orderRoutes = require('./src/routes/orderRoutes');
+const razorpayRoutes = require('./src/routes/razorpay');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -15,22 +21,26 @@ app.get('/', async (request, response) => {
     response.send('working');
 })
 
-app.use('/api/category', require('./src/routes/categoryRoutes'));
-app.use('/api/sale', require('./src/routes/saleRoutes'));
-app.use('/api/user', require('./src/routes/userRoutes'));
-app.use('/api/order', require('./src/routes/orderRoutes'));
+app.use('/api/sales', saleRoutes);
+app.use('/api/categories', categoryRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/orders', orderRoutes);
+app.use('/api/razorpay', razorpayRoutes);
 
 app.use('/uploads/categories', express.static('uploads/categories'))
 app.use('/uploads/user', express.static('uploads/user'))
 app.use('/uploads/sales', express.static('uploads/sales'))
-app.use("/api/razorpay", razorpayRoute);
 
 mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log('MongoDB connected'))
-    .catch(err => console.error('MongoDB connection error:', err));
+    .then(() => {
+        console.log('MongoDB connected');
 
-app.listen(PORT, () => {
-    console.log(`app listening at http://localhost:${PORT}`);
-});
+        app.listen(PORT, () => {
+            console.log(`Server running on http://localhost:${PORT}`);
+        });
+    })
+    .catch((error) => {
+        console.error('MongoDB connection error:', error);
+    });
 
 module.exports = app;

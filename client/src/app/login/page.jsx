@@ -5,18 +5,17 @@ import Cookies from 'universal-cookie';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useState } from 'react';
+import { jwtDecode } from 'jwt-decode';
 
 export default function LoginPage() {
 
     const router = useRouter();
     const cookies = new Cookies();
-
     const [error, setError] = useState('');
 
     const loginHandler = async (event) => {
 
         event.preventDefault();
-
         setError('');
 
         const data = {
@@ -25,36 +24,53 @@ export default function LoginPage() {
         };
 
         try {
-
             const result = await axios.post(
-                `${process.env.NEXT_PUBLIC_API_URL}/api/frontend/user/login`,
+                `${process.env.NEXT_PUBLIC_API_URL}/api/users/login`,
                 data
             );
 
-            if (result.data.status) {
+            console.log("Login Response:", result.data);
 
-                cookies.set('token', result.data.token);
+            const token = result.data.token;
 
-                router.push('/');
-
-            } else {
-
-                setError(result.data.message || 'Invalid email or password');
-
+            if (!token) {
+                setError("Token missing from response");
+                return;
             }
 
+            // 🔥 decode token (IMPORTANT FIX)
+            const decoded = jwtDecode(token);
+
+            console.log("DECODED:", decoded);
+
+            const userId = decoded?.userdata?._id;
+
+            if (!userId) {
+                setError("User ID not found in token");
+                return;
+            }
+
+            // save properly
+            cookies.set('token', token, { path: '/' });
+            localStorage.setItem('userId', userId);
+
+            console.log("SAVED USER ID:", userId);
+
+            router.push('/');
+            return;
+
         } catch (err) {
+            console.log("LOGIN ERROR:", err);
 
             setError(
-                err.response?.data?.message || 'Something went wrong'
+                err.response?.data?.message ||
+                err.message ||
+                "Something went wrong"
             );
-
         }
-
     };
 
     return (
-
         <div className="max-w-md mx-auto mt-20 border p-6 rounded-lg shadow">
 
             <h1 className="text-2xl font-bold mb-5 text-center">
@@ -63,62 +79,24 @@ export default function LoginPage() {
 
             <form onSubmit={loginHandler}>
 
-                <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700">
-                        Email:
-                    </label>
+                <input name="email" type="email" placeholder="Email"
+                    className="w-full p-2 border mb-3" />
 
-                    <input
-                        type="email"
-                        name="email"
-                        required
-                        className="w-full px-3 py-2 border rounded-md"
-                    />
-                </div>
+                <input name="password" type="password" placeholder="Password"
+                    className="w-full p-2 border mb-3" />
 
-                <div className="mb-4">
-                    <label className="block text-sm font-medium text-gray-700">
-                        Password:
-                    </label>
+                {error && <p className="text-red-500 mb-2">{error}</p>}
 
-                    <input
-                        type="password"
-                        name="password"
-                        required
-                        className="w-full px-3 py-2 border rounded-md"
-                    />
-                </div>
-
-                {error && (
-                    <p className="text-red-500 text-sm mb-4">
-                        {error}
-                    </p>
-                )}
-
-                <button
-                    type="submit"
-                    className="w-full bg-black text-white py-2 rounded-md"
-                >
+                <button className="w-full bg-black text-white p-2">
                     Login
                 </button>
 
             </form>
 
-            <p className="text-center mt-4">
-                <span className="text-gray-600">
-                    Don't have an account?
-                </span>{' '}
-
-                <Link
-                    href="/register"
-                    className="text-blue-600 hover:underline"
-                >
-                    Register Here
-                </Link>
+            <p className="mt-3 text-center">
+                <Link href="/register">Register</Link>
             </p>
 
         </div>
-
-    )
-
+    );
 }

@@ -11,7 +11,7 @@ export default function FeaturedCategories({ gender }) {
 
     useEffect(() => {
 
-        axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/categories/view`)
+        axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/categories/view`)
             .then((res) => {
 
                 const data = Array.isArray(res?.data?.data)

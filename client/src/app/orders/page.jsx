@@ -9,15 +9,24 @@ export default function My_orders() {
     const router = useRouter();
 
     useEffect(() => {
-        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/order/orders`)
+        const userId = localStorage.getItem('userId')
+        console.log('LocalStorage userId:', userId)
+
+        axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/orders/orders`)
             .then((success) => {
-                const myOrders = success.data.filter(
-                    order => order.user === localStorage.getItem('userId')
-                )
+                console.log('All Orders:', success.data)
+
+                const userId = localStorage.getItem('userId');
+
+                const myOrders = success.data.filter(order =>
+                    order.user_id?.toString() === userId
+                );
+
+                console.log('My orders:', myOrders)
                 setData(myOrders)
             })
             .catch((error) => {
-                console.log(error)
+                console.log('Orders Error:', error)
             })
     }, [])
 
@@ -51,18 +60,27 @@ export default function My_orders() {
                 <p className="text-gray-500">No orders found</p>
             ) : (
                 data.map((order) => (
-                    <div key={order._id}
+                    <div
+                        key={order._id}
                         onClick={() => router.push(`/orders/${order._id}`)}
-                        className="flex justify-between items-center p-5 mb-4 border rounded-lg cursor-pointer hover:shadow-md transition">
-                        <h5 className="mb-3 text-2xl font-semibold tracking-tight text-heading leading-8">
+                        className="flex flex-col gap-2 p-5 mb-4 border rounded-lg cursor-pointer hover:shadow-md transition"
+                    >
+
+                        <h5 className="text-xl font-semibold">
                             Order ID: {order._id}
                         </h5>
-                        <p className="text-body">Total: ${order.total}</p>
-                        <p className="text-body">Payment: {order.paymentStatus}</p>
-                        <p className={`text-body ${getStatusColor(order.orderStatus)}`}>{order.orderStatus}</p>
-                        <p className="text-body">Items: {order.items.length}</p>
-                    </div>
 
+                        <p>Total: ₹{order.order_total}</p>
+
+                        <p>
+                            Payment: {order.status === 2 ? "Paid" : "Pending"}
+                        </p>
+
+                        <p>User: {order.user_id}</p>
+
+                        <p>Items: {order.product_details?.length || 0}</p>
+
+                    </div>
                 ))
             )}
 
