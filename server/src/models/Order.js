@@ -1,27 +1,39 @@
 var mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema({
-    user: {
+    user_id: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
     },
-    items: [{
+    product_details: [{
+        id: { type: String },
         name: { type: String },
-        price: { type: Number },
-        stock: { type: Number },
+        image: [{ type: String }],
+        price: { type: String },
+        gender: { type: String },
+        type: { type: String },
+        description: { type: String },
+        qty: { type: Number }
     }],
-    total: {
+    order_total: {
         type: Number
     },
-    paymentStatus: {
-        type: String,
-        enum: ["Pending", "Completed", "Failed"]
+    razorpay_order_id: {
+        type: String
     },
-    orderStatus: {
+    razorpay_payment_id: {
         type: String,
-        enum: ["Processing", "Shipped", "Delivered"]
+        default: null
     },
-    paymentId: { type: String }
+    status: {
+        type: Number,
+        enum: [1, 2],
+        default: 1
+    },
+    shipping_details: {
+        address: { type: String },
+        city: { type: String }
+    }
 }, { timestamps: true });
 
 const Order = mongoose.model('Order', orderSchema);

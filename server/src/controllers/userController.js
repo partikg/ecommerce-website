@@ -1,6 +1,7 @@
 const userModel = require('../models/User')
 const bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
+const { sendWelcomeEmail } = require('../config/nodemailer');
 
 const getUsers = async (req, res) => {
     try {
@@ -62,15 +63,32 @@ const deleteUser = async (req, res) => {
 const register = async (req, res) => {
 
     try {
+        const existingUser = await userModel.findOne({ email: req.body.email });
+
+        if (existingUser) {
+            return res.status(400).json({
+                success: false,
+                status: false,
+                message: 'Email already registered'
+            });
+        }
+
+        if (!req.body.name || !req.body.email || !req.body.password) {
+            return res.status(400).json({
+                success: false,
+                status: false,
+                message: 'Name, email and password are required'
+            });
+        }
 
         const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
         const data = new userModel({
             name: req.body.name,
             email: req.body.email,
-            address: req.body.address,
+            address: req.body.address || '',
             password: hashedPassword,
-            role: req.body.role
+            role: req.body.role || 'user'
         });
 
         const result = await data.save();
@@ -87,17 +105,26 @@ const register = async (req, res) => {
             { expiresIn: '1h' }
         );
 
+        await sendWelcomeEmail({
+            userEmail: result.email,
+            userName: result.name,
+        });
+
         res.status(201).json({
             success: true,
+            status: true,
             message: 'Successfully registered',
-            token
+            token  // token for auto login
         });
 
     } catch (error) {
 
+        console.error('Registration error:', error);
+
         res.status(500).json({
             success: false,
-            message: error.message
+            status: false,
+            message: error.message || 'Registration failed'
         });
 
     }

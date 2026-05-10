@@ -55,7 +55,6 @@ exports.create = async (request, response) => {
 exports.view = async (request, response) => {
 
     try {
-
         const search = request.body.search || '';
 
         const filter = {};
@@ -69,7 +68,6 @@ exports.view = async (request, response) => {
         if (request.body.category) {
             filter.category_id = request.body.category;
         }
-
 
         const daysAgo = request.body.daysAgo || 1;
         const currentDate = new Date();
@@ -113,9 +111,6 @@ exports.view = async (request, response) => {
             path: 'category_id',
             select: { '_id': 1, 'name': 1, 'image': 1 }
         });
-
-        console.log("Sales Data Created At:", salesdata.map(s => s.created_at));
-
 
         if (salesdata.length > 0) {
             var resp = {

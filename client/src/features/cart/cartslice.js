@@ -20,6 +20,8 @@ export const countercart = createSlice({
         },
 
         addtocart: (state, action) => {
+            const selectedQty = action.payload.qty || 1;
+
             let existing = state.cart.find(v => v.id == action.payload._id);
 
             if (!existing) {
@@ -31,12 +33,12 @@ export const countercart = createSlice({
                     gender: action.payload.gender,
                     type: action.payload.type,
                     description: action.payload.description,
-                    qty: 1
+                    qty: selectedQty
                 };
 
                 state.cart.push(cartitems);
             } else {
-                existing.qty += 1;
+                 existing.qty += selectedQty;
             }
 
             saveToLocalStorage(state.cart);

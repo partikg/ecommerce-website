@@ -7,13 +7,20 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHeart } from '@fortawesome/free-solid-svg-icons'
 import { useSearchParams } from 'next/navigation'
 import { useDispatch, useSelector } from 'react-redux'
-import { addToWishlist } from '../../features/wishlist/wishlistslice'
+import {
+    addToWishlist,
+    removeFromWishlist
+} from '../../features/wishlist/wishlistslice';
+import LoadingSpinner from '@/components/LoadingSpinner';
+import { useToast } from '@/context/ToastContext';
 
 export default function Page() {
 
     const [productsales, setproductsales] = useState([])
     const [salespath, setsalespath] = useState('')
     const searchParams = useSearchParams()
+    const [loading, setLoading] = useState(true);
+    const { showToast } = useToast();
 
     const dispatch = useDispatch()
 
@@ -37,12 +44,15 @@ export default function Page() {
     }, [searchParams])
 
     useEffect(() => {
+        setLoading(true);
+
         axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/sales/view`, filters)
             .then((res) => {
                 setproductsales(res.data.data || [])
                 setsalespath(res.data.imagePath)
             })
             .catch((err) => console.log(err))
+            .finally(() => setLoading(false));
     }, [filters])
 
     return (
@@ -81,7 +91,9 @@ export default function Page() {
                 <h2 className='text-xl font-semibold mb-4'>Sale</h2>
 
                 <div className='flex flex-wrap'>
-                    {productsales.length > 0 ? (
+                    {loading ? (
+                        <LoadingSpinner />
+                    ) : productsales.length > 0 ? (
                         productsales.map((data) => (
                             <Link
                                 href={`/Salesdetail/${data._id}`}
@@ -110,11 +122,22 @@ export default function Page() {
 
                                     <button
                                         onClick={(e) => {
-                                            e.preventDefault()
+                                        e.preventDefault();
+
+                                        const alreadyExists = wishlist.some(
+                                            item => item.id === data._id
+                                        );
+
+                                        if (alreadyExists) {
+                                            dispatch(removeFromWishlist(data._id));
+                                            showToast('Removed from wishlist', 'success');
+                                        } else {
                                             dispatch(addToWishlist({
                                                 ...data,
                                                 id: data._id
-                                            }))
+                                            }));
+                                            showToast('Added to wishlist', 'success');
+                                        }
                                         }}
                                     >
                                         <FontAwesomeIcon

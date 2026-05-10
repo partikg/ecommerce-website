@@ -13,16 +13,13 @@ export default function Page() {
 
     const dispatch = useDispatch();
     const cartItems = useSelector((state) => state.cart?.cart || []);
-
     const [mounted, setMounted] = useState(false);
     const [open, setOpen] = useState(true);
 
-    // ✅ Ensure client-side rendering only
     useEffect(() => {
         setMounted(true);
     }, []);
 
-    // ✅ Load cart from localStorage
     useEffect(() => {
         if (typeof window !== "undefined") {
             const cart = localStorage.getItem('cartitems');
@@ -32,7 +29,7 @@ export default function Page() {
         }
     }, [dispatch]);
 
-    if (!mounted) return null; // 🔥 prevents SSR crash
+    if (!mounted) return null;
 
     const subtotal = cartItems.reduce((total, item) => {
         const price = Number(String(item.price).replace('$', '').trim()); return total + (price * item.qty);
@@ -70,7 +67,7 @@ export default function Page() {
             key: process.env.NEXT_PUBLIC_RAZORPAY_KEY,
             amount: order.amount,
             currency: "INR",
-            name: "WsCube Tech",
+            name: "PratikWear",
             description: "Order Payment",
             order_id: order.id,
 
@@ -78,7 +75,7 @@ export default function Page() {
                 axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/frontend/orders/confirm-order`, {
                     order_id: response.razorpay_order_id,
                     payment_id: response.razorpay_payment_id,
-                    status: 2
+                    status: 2 //paid
                 });
             },
         };
@@ -99,15 +96,15 @@ export default function Page() {
 
                             <div className="flex h-full flex-col overflow-y-scroll">
 
-                                {/* Header */}
                                 <div className="flex justify-between p-4">
                                     <DialogTitle className="text-lg font-medium">Shopping Cart</DialogTitle>
+                                    
                                     <button onClick={() => setOpen(false)}>
                                         <XMarkIcon className="h-6 w-6" />
                                     </button>
                                 </div>
 
-                                {/* Items */}
+                                {/* items */}
                                 <div className="p-4">
                                     {cartItems.length === 0 ? (
                                         <p>Your cart is empty</p>
@@ -128,7 +125,9 @@ export default function Page() {
 
                                                         <div className="flex items-center mt-2">
                                                             <button onClick={() => dispatch(updatecartminusqty(product.id))}>-</button>
+                                                            
                                                             <span className="mx-2">{product.qty}</span>
+                                                            
                                                             <button onClick={() => dispatch(updatecartaddqty(product.id))}>+</button>
                                                         </div>
 
@@ -145,7 +144,6 @@ export default function Page() {
                                     )}
                                 </div>
 
-                                {/* Footer */}
                                 <div className="p-4 border-t">
                                     <div className="flex justify-between">
                                         <span>Total</span>

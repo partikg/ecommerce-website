@@ -28,14 +28,18 @@ const createOrder = async (req, res) => {
     try {
         const savedOrder = await newOrder.save();
 
-        const user = await userModel.findById(req.body.user)
+        const user = await userModel.findById(req.body.user_id)
         if (user) {
             await sendOrderConfirmation({
                 userEmail: user.email,
                 orderId: savedOrder._id,
-                items: savedOrder.items,
-                total: savedOrder.total
+                items: savedOrder.product_details,
+                total: savedOrder.order_total
             })
+
+            console.log("Order confirmation email sent to:", user.email);
+        } else {
+            console.log("User not found. Email not sent.");
         }
         res.status(201).json(savedOrder);
     } catch (err) {

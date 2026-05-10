@@ -1,6 +1,5 @@
 import axios from "axios";
 
-
 export const loadRazorpay = () => {
     return new Promise((resolve) => {
         const script = document.createElement("script");
@@ -13,7 +12,7 @@ export const loadRazorpay = () => {
     });
 };
 
-export const openPaymentPopUp = (order) => {
+export const openPaymentPopUp = (order, onSuccess, onError,showToast) => {
     const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY,
         amount: order.amount,
@@ -23,21 +22,29 @@ export const openPaymentPopUp = (order) => {
         order_id: order.id,
 
         handler: async function (response) {
-            console.log("PAYMENT SUCCESS:", response);
 
             try {
-                await axios.post(
-                    `${process.env.NEXT_PUBLIC_API_URL}/api/orders/add`,
+               const updateRes = await axios.put(
+                    `${process.env.NEXT_PUBLIC_API_URL}/api/orders/update/${order.orderId}`,
                     {
-                        order_id: response.razorpay_order_id,
-                        payment_id: response.razorpay_payment_id,
-                        status: 2,
+                        status: 2, 
+                        razorpay_order_id: response.razorpay_order_id,
+                        razorpay_payment_id: response.razorpay_payment_id
                     }
                 );
 
-                alert("Payment Successful");
+                showToast?.("Payment Successful", "success");
+
+                if (onSuccess) {
+                    onSuccess(updateRes.data);
+                }
             } catch (error) {
                 console.log("CONFIRM ERROR:", error);
+                showToast?.("Payment successful but order update failed", "error");
+
+                 if (onError) {
+                    onError(error);
+                }
             }
         },
     };
@@ -52,15 +59,16 @@ export const handleCheckoutService = async ({
     profile,
     cartItems,
     subtotal,
+    showToast,
 }) => {
     try {
         if (!token) {
-            alert("Please login first");
+            showToast?.("Please login first", "error");
             return;
         }
 
         if (!profile || !profile._id) {
-            alert("Profile not loaded");
+             showToast?.("Profile not loaded", "error");
             return;
         }
 
@@ -68,13 +76,14 @@ export const handleCheckoutService = async ({
             user_id: profile._id,
             product_details: cartItems,
             order_total: subtotal,
+             status: 1,
             shipping_details: {
                 address: "Nagpur",
                 city: "Nagpur",
             },
         };
 
-        const res = await axios.post(
+        const orderRes  = await axios.post(
             `${process.env.NEXT_PUBLIC_API_URL}/api/orders/add`,
             orderData,
             {
@@ -84,16 +93,45 @@ export const handleCheckoutService = async ({
             }
         );
 
+         if (!orderRes.data._id) {
+            showToast?.("Failed to create order", "error");
+            return;
+        }
+
         const razorpayRes = await axios.post(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/razorpay`
+            `${process.env.NEXT_PUBLIC_API_URL}/api/razorpay`,{ amount: subtotal }
         );
 
         if (razorpayRes.data) {
-            openPaymentPopUp(razorpayRes.data);
+            openPaymentPopUp(
+                 {
+                    ...razorpayRes.data,
+                    orderId: orderRes.data._id, 
+                },
+                (successData) => {
+                    console.log("Payment success callback:", successData);
+                    localStorage.removeItem('cartitems');
+
+                    showToast?.("Payment Successful", "success");
+
+                    setTimeout(() => {
+                        window.location.href = '/orders';
+                    }, 1500);
+                },
+                (error) => {
+                    console.log("Payment error callback:", error);
+                    showToast?.("Payment failed", "error");
+                },
+                showToast 
+            );
         } else {
-            alert("Order failed");
+            showToast?.("Order failed", "error");
         }
     } catch (error) {
         console.log("CHECKOUT ERROR:", error);
+        showToast?.(
+            error.response?.data?.message || "Checkout failed",
+            "error"
+        );
     }
 };

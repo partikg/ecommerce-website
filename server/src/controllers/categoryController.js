@@ -1,6 +1,5 @@
 const categorymodel = require("../models/Category");
 
-
 exports.create = async (request, response) => {
 
     data = new categorymodel({
@@ -45,7 +44,6 @@ exports.create = async (request, response) => {
 exports.view = async (request, response) => {
 
     try {
-        console.log("View categories route request body:", request.body);
         const addcondition = [{
             deleted_at: null
         }
@@ -259,7 +257,6 @@ exports.multidelete = async (request, response) => {
 exports.details = async (request, response) => {
 
     try {
-
         const categorydata = await categorymodel.findById(request.params.id);
 
         if (categorydata) {

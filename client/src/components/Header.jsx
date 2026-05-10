@@ -20,7 +20,7 @@ import { faCartShopping, faHeart, faUser } from '@fortawesome/free-solid-svg-ico
 import Cookies from 'universal-cookie';
 import CartDrawer from './CartDrawer';
 import SearchPopover from './SearchPopover';
-
+import LoadingSpinner from './LoadingSpinner';
 
 export default function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
@@ -33,11 +33,47 @@ export default function Header() {
     const dispatch = useDispatch()
     const [open, setOpen] = useState(false)
     const [profile, setProfile] = useState(null);
+    const [token, setToken] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
     const popoverRef = useRef(null);
 
     const cookies = new Cookies();
-    const token = cookies.get('token');
     const loggedIn = !!token;
+
+    // ✅ IMPROVED: Check token on mount and poll every 300ms for changes
+    useEffect(() => {
+        const checkToken = () => {
+            const currentToken = cookies.get('token');
+            
+            // Only update if token actually changed
+            setToken(prevToken => {
+                if (prevToken !== currentToken) {
+                    return currentToken || null;
+                }
+                return prevToken;
+            });
+        };
+
+        // Check on mount
+        checkToken();
+
+        // Check when tab becomes visible
+        const handleVisibilityChange = () => {
+            if (!document.hidden) {
+                checkToken();
+            }
+        };
+
+        // Poll every 300ms for immediate detection of token changes
+        const interval = setInterval(checkToken, 300);
+
+        document.addEventListener('visibilitychange', handleVisibilityChange);
+
+        return () => {
+            document.removeEventListener('visibilitychange', handleVisibilityChange);
+            clearInterval(interval);
+        };
+    }, []);
 
     useEffect(() => {
         axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/sales/view`)
@@ -52,7 +88,6 @@ export default function Header() {
 
     // closepopover 
     const handleClosePopover = () => {
-        // Programmatically close the Popover
         popoverRef.current?.click();
     };
 
@@ -62,7 +97,6 @@ export default function Header() {
         setSearchTerm(term);
 
         if (term) {
-            // Fetch search results based on the search term
             axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/backend/sales/view`, { search: term })
                 .then((response) => {
                     console.log(response.data.data);
@@ -73,47 +107,62 @@ export default function Header() {
                     setSearchResults([]);
                 });
         } else {
-            setSearchResults([]); // Clear search results if the input is empty
+            setSearchResults([]);
         }
     };
 
     // logout
     const logoutHandler = () => {
         cookies.remove('token');
+        localStorage.removeItem('userId');
+        setToken(null);
+        setProfile(null);
         window.location.reload();
     };
 
-    // profile
+    // ✅ IMPROVED: Fetch profile when token changes (not just on mount)
     useEffect(() => {
+        if (!token) {
+            setProfile(null);
+            setIsLoading(false);
+            return;
+        }
 
-        const token = cookies.get('token');
-        if (!token) return;
+        setIsLoading(true);
 
-        axios.post(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/users/profile`,
-            {},
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }
-        )
-            .then((res) => {
-
-                console.log("PROFILE:", res.data);
+        const fetchProfile = async () => {
+            try {
+                const res = await axios.post(
+                    `${process.env.NEXT_PUBLIC_API_URL}/api/users/profile`,
+                    {},
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        },
+                        timeout: 5000
+                    }
+                );
 
                 const user = res.data.data.userdata;
-
                 setProfile(user);
-
                 localStorage.setItem('userId', user._id);
 
-            })
-            .catch((err) => {
+            } catch (err) {
                 console.log("PROFILE ERROR:", err);
-            });
+                setProfile(null);
+                // If token is invalid, clear it
+                if (err.response?.status === 401) {
+                    cookies.remove('token');
+                    setToken(null);
+                }
+            } finally {
+                setIsLoading(false);
+            }
+        };
 
-    }, []);
+        fetchProfile();
+
+    }, [token]); // ✅ Refetch whenever token changes
 
 
     return (
@@ -146,12 +195,12 @@ export default function Header() {
                             Women
                         </Link>
 
-                        {/* aboutus */}
+                        {/* men */}
                         <Link href="/men" className="cursor-pointer  font-medium text-gray-900">
                             Men
                         </Link>
 
-                        {/* ourstory */}
+                        {/* our story */}
                         <Link href="/our-story" className="cursor-pointer  font-medium text-gray-900">
                             Our Story
                         </Link>
@@ -196,25 +245,20 @@ export default function Header() {
                                         {loggedIn ? (
 
                                             <div>
-
                                                 <p className="text-sm text-gray-300">
                                                     Welcome back
                                                 </p>
-
                                             </div>
 
                                         ) : (
 
                                             <div>
-
                                                 <h2 className="text-lg font-semibold">
                                                     My Account
                                                 </h2>
-
                                                 <p className="text-sm text-gray-300 mt-1">
                                                     Login or create account
                                                 </p>
-
                                             </div>
 
                                         )}
@@ -228,17 +272,24 @@ export default function Header() {
 
                                             <div className="space-y-3">
 
-                                                <div className="pb-3 border-b">
-
-                                                    <h2 className="text-lg font-semibold text-gray-900">
-                                                        {profile?.name || 'User'}
-                                                    </h2>
-
-                                                    <p className="text-sm text-gray-500 mt-1 break-all">
-                                                        {profile?.email}
-                                                    </p>
-
-                                                </div>
+                                                {isLoading ? (
+                                                    <div className="py-4">
+                                                        <LoadingSpinner />
+                                                    </div>
+                                                ) : profile ? (
+                                                    <div className="pb-3 border-b">
+                                                        <h2 className="text-lg font-semibold text-gray-900">
+                                                            {profile.name}
+                                                        </h2>
+                                                        <p className="text-sm text-gray-500 mt-1 break-all">
+                                                            {profile.email}
+                                                        </p>
+                                                    </div>
+                                                ) : (
+                                                    <div className="pb-3 border-b text-sm text-gray-600">
+                                                        Unable to load profile
+                                                    </div>
+                                                )}
 
                                                 <Link
                                                     href="/wishlist"
@@ -314,8 +365,7 @@ export default function Header() {
                             <FontAwesomeIcon icon={faCartShopping} className="mr-2" />
                         </div>
 
-
-                        {/* cart diaglog */}
+                        {/* cart dialog */}
                         <CartDrawer
                             open={open}
                             setOpen={setOpen}
@@ -333,18 +383,6 @@ export default function Header() {
                 <div className="fixed inset-0 z-10" />
                 <DialogPanel className="fixed inset-y-0 right-0 z-10 w-full overflow-y-auto bg-white px-6 py-6 sm:max-w-sm sm:ring-1 sm:ring-gray-900/10">
                     <div className="flex items-center justify-between">
-
-                        {/* logo */}
-                        {/* <Link href="/" className="-m-1.5 p-1.5">
-                            <img
-                                alt=""
-                                src="/images/ecommercelogo.png"
-                                className="h-8 w-auto"
-                            />
-                            <span className="text-xl font-semibold text-gray-900">Ecommerce Website</span>
-                        </Link> */}
-
-
 
                         <button
                             type="button"
@@ -380,67 +418,43 @@ export default function Header() {
                                     </DisclosurePanel>
                                 </Disclosure>
 
-
-                                {/* offers */}
                                 <Link href="/offers" className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50">
                                     Offers
                                 </Link>
 
-                                {/* aboutus */}
                                 <Link
                                     href="/aboutus"
                                     className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                                 >
-                                    Aboutus
+                                    About Us
                                 </Link>
 
-                                {/* contactus */}
                                 <Link
                                     href="/contactus"
                                     className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                                 >
-                                    Contactus
+                                    Contact Us
                                 </Link>
-
-                                {/* company
-                                <Link
-                                    href="/company"
-                                    className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                                >
-                                    Company
-                                </Link> */}
 
                             </div>
 
-
-
-                            {/* <div className="py-6">
-                                <a
-                                    href="#"
-                                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
-                                >
-                                    Log in
-                                </a>
-                            </div> */}
-
                             <div className='py-2'>
                                 <Link href="/cart" className="cursor-pointer text-sm font-semibold leading-6 text-gray-900">
-                                    cart
+                                    Cart
                                 </Link>
                             </div>
 
                             <div className='py-2'>
                                 <Link href="/account" className="cursor-pointer text-sm font-semibold leading-6 text-gray-900">
-                                    account
+                                    Account
                                 </Link>
                             </div>
 
                             <div className='py-2'>
                                 <Link href="/signup" className="cursor-pointer text-sm font-semibold leading-6 text-gray-900">
-                                    signup
+                                    Sign Up
                                 </Link>
                             </div>
-
 
                         </div>
                     </div>

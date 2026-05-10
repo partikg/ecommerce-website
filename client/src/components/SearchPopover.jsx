@@ -24,7 +24,7 @@ export default function SearchPopover({ newProducts }) {
 
         try {
             const res = await axios.post(
-                `${process.env.NEXT_PUBLIC_API_URL}/api/backend/sales/view`,
+                `${process.env.NEXT_PUBLIC_API_URL}/api/sales/view`,
                 { search: term }
             );
 

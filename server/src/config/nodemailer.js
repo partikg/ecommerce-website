@@ -8,17 +8,36 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-const sendOrderConfirmation = ({ userEmail, orderId, items, total }) => {
-    transporter.sendMail({
+const sendWelcomeEmail = async ({ userEmail, userName }) => {
+    await transporter.sendMail({
         from: process.env.EMAIL,
         to: userEmail,
-        subject: 'Order Confirmed!',
+        subject: "Welcome to PratikWear",
         html: `
-        <h1>Order Confirmed!</h1>
-        <p>Order ID: ${orderId}</p>
-        <p>Total: $${total}</p>
-    `
-    })
-}
+            <h1>Welcome to PratikWear, ${userName}!</h1>
+            <p>Your account has been created successfully.</p>
+            <p>We're excited to have you with us.</p>
+        `,
+    });
+};
 
-module.exports = { sendOrderConfirmation } 
+const sendOrderConfirmation = async ({ userEmail, orderId, total }) => {
+    try {
+        const info = await transporter.sendMail({
+            from: process.env.EMAIL,
+            to: userEmail,
+            subject: "Order Confirmed",
+            html: `
+                <h1>Order Confirmed</h1>
+                <p>Order ID: ${orderId}</p>
+                <p>Total: ₹${total}</p>
+                <p>Thank you for shopping with PratikWear.</p>
+            `,
+        });
+
+        console.log("Order confirmation email sent:", info.messageId);
+    } catch (error) {
+        console.error("Order email error:", error);
+    }
+};
+module.exports = { sendWelcomeEmail, sendOrderConfirmation } 
