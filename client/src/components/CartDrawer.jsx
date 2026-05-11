@@ -38,19 +38,22 @@ export default function CartDrawer({ open, setOpen, profile }) {
             const token = cookies.get("token");
 
             if (!token) {
-            showToast('Please login first');
-            return;
-        }
- 
-        if (!profile) {
-            showToast("Profile not loaded.");
-            return;
-        }
- 
-        if (getcartitems.length === 0) {
-            showToast("Cart is empty");
-            return;
-        }
+                showToast('Please login first');
+                setLoading(false);
+                return;
+            }
+
+            if (!profile) {
+                showToast("Profile not loaded.");
+                setLoading(false);
+                return;
+            }
+
+            if (getcartitems.length === 0) {
+                showToast("Cart is empty");
+                setLoading(false);
+                return;
+            }
 
             await handleCheckoutService({
                 token,
@@ -131,10 +134,10 @@ export default function CartDrawer({ open, setOpen, profile }) {
                                                                             </div>
                                                                             <p className="mt-1 text-sm text-gray-500">{product.color}</p>
                                                                         </div>
-                                                                        
+
                                                                         <div className="flex flex-1 items-end justify-between text-sm">
                                                                             <p className="text-gray-500">Qty {product.qty}</p>
-                                                                            
+
                                                                             <div className="flex items-center border-gray-100">
                                                                                 <span
                                                                                     onClick={() => dispatch(updatecartminusqty(product.id))}
@@ -156,7 +159,7 @@ export default function CartDrawer({ open, setOpen, profile }) {
                                                                                     +
                                                                                 </span>
                                                                             </div>
-                                                                            
+
                                                                             <div className="flex">
                                                                                 <button
                                                                                     onClick={() => dispatch(removecart(product.id))}
@@ -182,7 +185,7 @@ export default function CartDrawer({ open, setOpen, profile }) {
                                     </div>
 
                                     <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
-                                        
+
                                         <div className="flex justify-between text-base font-medium text-gray-900">
                                             <p>Subtotal</p>
                                             <p>${subtotal.toFixed(2)}</p>
@@ -191,13 +194,25 @@ export default function CartDrawer({ open, setOpen, profile }) {
                                         <div className="mt-6">
                                             <button
                                                 onClick={handleCheckout}
-                                                disabled={getcartitems.length === 0}
-                                                className="flex w-full items-center justify-center rounded-md bg-indigo-600 px-6 py-3 text-white hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                                                disabled={getcartitems.length === 0 || loading}
+                                                className="flex w-full items-center justify-center rounded-md bg-indigo-600 px-6 py-3 text-white hover:bg-indigo-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all"
                                             >
-                                                {getcartitems.length === 0 ? 'Cart is empty' : 'Checkout'}
+                                                {loading ? (
+                                                    <>
+                                                        <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                                        </svg>
+                                                        Processing...
+                                                    </>
+                                                ) : getcartitems.length === 0 ? (
+                                                    'Cart is empty'
+                                                ) : (
+                                                    'Checkout'
+                                                )}
                                             </button>
                                         </div>
-                                        
+
                                         <button
                                             onClick={() => dispatch(emptycart())}
                                             className="mt-3 w-full border rounded px-4 py-2 hover:bg-gray-100"
@@ -205,7 +220,7 @@ export default function CartDrawer({ open, setOpen, profile }) {
                                             Clear Cart
                                         </button>
 
-                                         <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
+                                        <div className="mt-6 flex justify-center text-center text-sm text-gray-500">
                                             <p>
                                                 or{' '}
                                                 <button
