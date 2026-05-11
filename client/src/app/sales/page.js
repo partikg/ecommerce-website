@@ -1,5 +1,5 @@
 'use client'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, Suspense } from 'react'
 import Sidebar from '../../components/Sidebar'
 import axios from 'axios'
 import Link from 'next/link'
@@ -122,22 +122,22 @@ export default function Page() {
 
                                     <button
                                         onClick={(e) => {
-                                        e.preventDefault();
+                                            e.preventDefault();
 
-                                        const alreadyExists = wishlist.some(
-                                            item => item.id === data._id
-                                        );
+                                            const alreadyExists = wishlist.some(
+                                                item => item.id === data._id
+                                            );
 
-                                        if (alreadyExists) {
-                                            dispatch(removeFromWishlist(data._id));
-                                            showToast('Removed from wishlist', 'success');
-                                        } else {
-                                            dispatch(addToWishlist({
-                                                ...data,
-                                                id: data._id
-                                            }));
-                                            showToast('Added to wishlist', 'success');
-                                        }
+                                            if (alreadyExists) {
+                                                dispatch(removeFromWishlist(data._id));
+                                                showToast('Removed from wishlist', 'success');
+                                            } else {
+                                                dispatch(addToWishlist({
+                                                    ...data,
+                                                    id: data._id
+                                                }));
+                                                showToast('Added to wishlist', 'success');
+                                            }
                                         }}
                                     >
                                         <FontAwesomeIcon
@@ -161,5 +161,13 @@ export default function Page() {
                 </div>
             </div>
         </div>
+    )
+}
+
+export default function Page() {
+    return (
+        <Suspense fallback={<div className='p-4'><LoadingSpinner /></div>}>
+            <SalesContent />
+        </Suspense>
     )
 }
