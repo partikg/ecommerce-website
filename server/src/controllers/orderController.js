@@ -29,13 +29,16 @@ const createOrder = async (req, res) => {
         const savedOrder = await newOrder.save();
 
         const user = await userModel.findById(req.body.user_id)
+
         if (user) {
-            await sendOrderConfirmation({
+            sendOrderConfirmation({
                 userEmail: user.email,
                 orderId: savedOrder._id,
                 items: savedOrder.product_details,
                 total: savedOrder.order_total
-            })
+            }).catch(error => {
+                console.error("Failed to send order confirmation email:", error);
+            });
 
             console.log("Order confirmation email sent to:", user.email);
         } else {

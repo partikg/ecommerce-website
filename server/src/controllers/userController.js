@@ -105,9 +105,11 @@ const register = async (req, res) => {
             { expiresIn: '1h' }
         );
 
-        await sendWelcomeEmail({
+        sendWelcomeEmail({
             userEmail: result.email,
             userName: result.name,
+        }).catch(error => {
+            console.error("Failed to send welcome email:", error);
         });
 
         res.status(201).json({
