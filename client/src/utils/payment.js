@@ -12,7 +12,7 @@ export const loadRazorpay = () => {
     });
 };
 
-export const openPaymentPopUp = (order, onSuccess, onError,showToast) => {
+export const openPaymentPopUp = (order, onSuccess, onError, showToast) => {
     const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY,
         amount: order.amount,
@@ -24,10 +24,10 @@ export const openPaymentPopUp = (order, onSuccess, onError,showToast) => {
         handler: async function (response) {
 
             try {
-               const updateRes = await axios.put(
+                const updateRes = await axios.put(
                     `${process.env.NEXT_PUBLIC_API_URL}/api/orders/update/${order.orderId}`,
                     {
-                        status: 2, 
+                        status: 2,
                         razorpay_order_id: response.razorpay_order_id,
                         razorpay_payment_id: response.razorpay_payment_id
                     }
@@ -42,7 +42,7 @@ export const openPaymentPopUp = (order, onSuccess, onError,showToast) => {
                 console.log("CONFIRM ERROR:", error);
                 showToast?.("Payment successful but order update failed", "error");
 
-                 if (onError) {
+                if (onError) {
                     onError(error);
                 }
             }
@@ -53,7 +53,6 @@ export const openPaymentPopUp = (order, onSuccess, onError,showToast) => {
     rzp.open();
 };
 
-// checkout function
 export const handleCheckoutService = async ({
     token,
     profile,
@@ -68,7 +67,7 @@ export const handleCheckoutService = async ({
         }
 
         if (!profile || !profile._id) {
-             showToast?.("Profile not loaded", "error");
+            showToast?.("Profile not loaded", "error");
             return;
         }
 
@@ -76,37 +75,39 @@ export const handleCheckoutService = async ({
             user_id: profile._id,
             product_details: cartItems,
             order_total: subtotal,
-             status: 1,
+            status: 1,
             shipping_details: {
-                address: "Nagpur",
-                city: "Nagpur",
+                address: "Sambhajinagar",
+                city: "Sambhajinagar",
             },
         };
 
-        const orderRes  = await axios.post(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/orders/add`,
-            orderData,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`,
-                },
-            }
-        );
+        const [orderRes, razorpayRes] = await Promise.all([
+            axios.post(
+                `${process.env.NEXT_PUBLIC_API_URL}/api/orders/add`,
+                orderData,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            ),
+            axios.post(
+                `${process.env.NEXT_PUBLIC_API_URL}/api/razorpay`,
+                { amount: subtotal }
+            )
+        ]);
 
-         if (!orderRes.data._id) {
+        if (!orderRes.data._id) {
             showToast?.("Failed to create order", "error");
             return;
         }
 
-        const razorpayRes = await axios.post(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/razorpay`,{ amount: subtotal }
-        );
-
         if (razorpayRes.data) {
             openPaymentPopUp(
-                 {
+                {
                     ...razorpayRes.data,
-                    orderId: orderRes.data._id, 
+                    orderId: orderRes.data._id,
                 },
                 (successData) => {
                     console.log("Payment success callback:", successData);
@@ -122,7 +123,7 @@ export const handleCheckoutService = async ({
                     console.log("Payment error callback:", error);
                     showToast?.("Payment failed", "error");
                 },
-                showToast 
+                showToast
             );
         } else {
             showToast?.("Order failed", "error");
