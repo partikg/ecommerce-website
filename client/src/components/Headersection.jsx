@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense } from 'react';
 import axios from 'axios';
 import { useSearchParams } from 'next/navigation';
 import Hero from './Hero';
@@ -9,7 +9,7 @@ import JustIn from './JustIn';
 import Brr from './Brr';
 import Footer from './Footer';
 
-export default function Headersection() {
+function Headersection() {
 
     const [newProducts, setNewProducts] = useState([]);
     const searchparams = useSearchParams();
@@ -54,4 +54,12 @@ export default function Headersection() {
         </div >
 
     )
+}
+
+export default function Headersection() {
+    return (
+        <Suspense fallback={<div>Loading...</div>}>
+            <HeaderSectionContent />
+        </Suspense>
+    );
 }
