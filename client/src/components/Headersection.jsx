@@ -9,7 +9,7 @@ import JustIn from './JustIn';
 import Brr from './Brr';
 import Footer from './Footer';
 
-function Headersection() {
+function HeaderSectionContent() {
 
     const [newProducts, setNewProducts] = useState([]);
     const searchparams = useSearchParams();
