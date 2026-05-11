@@ -14,7 +14,7 @@ import {
 import LoadingSpinner from '@/components/LoadingSpinner';
 import { useToast } from '@/context/ToastContext';
 
-export default function Page() {
+function SalesContent() {
 
     const [productsales, setproductsales] = useState([])
     const [salespath, setsalespath] = useState('')
