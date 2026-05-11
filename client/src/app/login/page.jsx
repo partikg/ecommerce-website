@@ -144,7 +144,7 @@ export default function LoginPage() {
             )}
 
             <p className="mt-3 text-center text-sm">
-                Don't have an account?{' '}
+                {"Don't forget your password"}{' '}
                 <Link href="/register" className="text-blue-600 hover:underline">
                     Register here
                 </Link>
