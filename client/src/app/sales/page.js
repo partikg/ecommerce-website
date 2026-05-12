@@ -7,23 +7,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHeart } from '@fortawesome/free-solid-svg-icons'
 import { useSearchParams } from 'next/navigation'
 import { useDispatch, useSelector } from 'react-redux'
-import {
-    addToWishlist,
-    removeFromWishlist
-} from '../../features/wishlist/wishlistslice';
+import { removeFromWishlist, setWishlist, addToWishlist } from '@/features/wishlist/wishlistslice';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import { useToast } from '@/context/ToastContext';
 
 function SalesContent() {
-
     const [productsales, setproductsales] = useState([])
-    const [salespath, setsalespath] = useState('')
     const searchParams = useSearchParams()
     const [loading, setLoading] = useState(true);
     const { showToast } = useToast();
+    const [userId, setUserId] = useState(null);
 
     const dispatch = useDispatch()
-
     const wishlist = useSelector(state => state.wishlist.wishlist)
 
     const [filters, setFilters] = useState({
@@ -33,9 +28,23 @@ function SalesContent() {
     })
 
     useEffect(() => {
+        const storedUserId = localStorage.getItem('userId');
+        setUserId(storedUserId);
+    }, []);
+
+    useEffect(() => {
+        if (userId) {
+            axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/wishlists/${userId}`)
+                .then(res => {
+                    dispatch(setWishlist(res.data.data || []));
+                })
+                .catch(err => console.log(err));
+        }
+    }, [userId, dispatch]);
+
+    useEffect(() => {
         const category = searchParams.get('category') || ''
         const gender = searchParams.get('gender') || ''
-
         setFilters(prev => ({
             ...prev,
             category,
@@ -45,19 +54,64 @@ function SalesContent() {
 
     useEffect(() => {
         setLoading(true);
-
         axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/sales/view`, filters)
             .then((res) => {
                 setproductsales(res.data.data || [])
-                setsalespath(res.data.imagePath)
             })
             .catch((err) => console.log(err))
             .finally(() => setLoading(false));
     }, [filters])
 
+    const handleWishlistToggle = (data) => {
+        if (!userId) {
+            showToast('Please login first', 'error');
+            return;
+        }
+
+        const isInWishlist = wishlist.some(item => item.product_id === data._id);
+
+        if (isInWishlist) {
+            dispatch(removeFromWishlist(data._id));
+            showToast('Removed from wishlist', 'success');
+
+            axios.post(
+                `${process.env.NEXT_PUBLIC_API_URL}/api/wishlists/${userId}/remove`,
+                { product_id: data._id }
+            ).catch(err => {
+                dispatch(addToWishlist({
+                    product_id: data._id,
+                    name: data.name,
+                    image: data.image,
+                    price: data.price
+                }));
+                showToast('Error updating wishlist', 'error');
+            });
+        } else {
+            dispatch(addToWishlist({
+                product_id: data._id,
+                name: data.name,
+                image: data.image,
+                price: data.price
+            }));
+            showToast('Added to wishlist', 'success');
+
+            axios.post(
+                `${process.env.NEXT_PUBLIC_API_URL}/api/wishlists/${userId}/add`,
+                {
+                    product_id: data._id,
+                    name: data.name,
+                    image: data.image,
+                    price: data.price
+                }
+            ).catch(err => {
+                dispatch(removeFromWishlist(data._id));
+                showToast('Error updating wishlist', 'error');
+            });
+        }
+    };
+
     return (
         <div className='flex'>
-
             <Sidebar
                 selectedCategory={filters.category}
                 selectedType={filters.type}
@@ -85,9 +139,7 @@ function SalesContent() {
                 }
             />
 
-            {/* products */}
             <div className='flex-1 p-4'>
-
                 <h2 className='text-xl font-semibold mb-4'>Sale</h2>
 
                 <div className='flex flex-wrap'>
@@ -100,7 +152,6 @@ function SalesContent() {
                                 key={data._id}
                                 className='pb-4 m-2 w-[245px]'
                             >
-
                                 <div className='relative group'>
                                     <img
                                         className='h-80 w-full object-cover transition-opacity duration-300 group-hover:opacity-0'
@@ -123,27 +174,13 @@ function SalesContent() {
                                     <button
                                         onClick={(e) => {
                                             e.preventDefault();
-
-                                            const alreadyExists = wishlist.some(
-                                                item => item.id === data._id
-                                            );
-
-                                            if (alreadyExists) {
-                                                dispatch(removeFromWishlist(data._id));
-                                                showToast('Removed from wishlist', 'success');
-                                            } else {
-                                                dispatch(addToWishlist({
-                                                    ...data,
-                                                    id: data._id
-                                                }));
-                                                showToast('Added to wishlist', 'success');
-                                            }
+                                            handleWishlistToggle(data);
                                         }}
                                     >
                                         <FontAwesomeIcon
                                             icon={faHeart}
                                             style={{
-                                                color: wishlist.some(item => item.id === data._id)
+                                                color: wishlist.some(item => item.product_id === data._id)
                                                     ? "red"
                                                     : "gray"
                                             }}
@@ -152,7 +189,6 @@ function SalesContent() {
                                 </div>
 
                                 <h2 className='mt-1'>{data.price}</h2>
-
                             </Link>
                         ))
                     ) : (

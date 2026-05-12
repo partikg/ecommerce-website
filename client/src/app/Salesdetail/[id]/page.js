@@ -9,57 +9,108 @@ import LoadingSpinner from '@/components/LoadingSpinner';
 import { useToast } from '@/context/ToastContext';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faHeart } from '@fortawesome/free-solid-svg-icons'
-import {
-    addToWishlist,
-    removeFromWishlist
-} from '@/features/wishlist/wishlistslice';
+import { removeFromWishlist, setWishlist, addToWishlist } from '@/features/wishlist/wishlistslice';
 
 export default function Page() {
-
     const params = useParams();
     const dispatch = useDispatch();
     const { showToast } = useToast();
     const [product, setProduct] = useState({});
     const [qty, setQty] = useState(1);
+    const [userId, setUserId] = useState(null);
 
     const wishlist = useSelector(state => state.wishlist.wishlist)
 
+    // Get userId on mount
     useEffect(() => {
-    if (!params?.id) return;
+        const storedUserId = localStorage.getItem('userId');
+        setUserId(storedUserId);
+    }, []);
 
-    setProduct({});
-    setQty(1);
+    // Load wishlist from database
+    useEffect(() => {
+        if (userId) {
+            axios.get(`${process.env.NEXT_PUBLIC_API_URL}/api/wishlists/${userId}`)
+                .then(res => {
+                    dispatch(setWishlist(res.data.data || []));
+                })
+                .catch(err => console.log(err));
+        }
+    }, [userId, dispatch]);
 
-    axios
-        .post(
-            `${process.env.NEXT_PUBLIC_API_URL}/api/sales/details/${params.id}`
-        )
-        .then((response) => {
-            setProduct(response.data.data);
-        })
-        .catch((error) => {
-            console.log('Error fetching product details:', error);
-        });
-}, [params?.id]);
+    useEffect(() => {
+        if (!params?.id) return;
 
-     const isWishlisted = wishlist.some(
-        item => item.id === product._id
+        setProduct({});
+        setQty(1);
+
+        axios
+            .post(
+                `${process.env.NEXT_PUBLIC_API_URL}/api/sales/details/${params.id}`
+            )
+            .then((response) => {
+                setProduct(response.data.data);
+            })
+            .catch((error) => {
+                console.log('Error fetching product details:', error);
+            });
+    }, [params?.id]);
+
+    const isWishlisted = wishlist.some(
+        item => item.product_id === product._id
     );
 
-    const handleWishlist = (e) => {
+    const handleWishlist = async (e) => {
         e.preventDefault();
 
+        if (!userId) {
+            showToast('Please login first', 'error');
+            return;
+        }
+
         if (isWishlisted) {
+            // ✅ Remove from UI immediately
             dispatch(removeFromWishlist(product._id));
             showToast('Removed from wishlist', 'success');
+
+            // Then sync with API (in background)
+            axios.post(
+                `${process.env.NEXT_PUBLIC_API_URL}/api/wishlists/${userId}/remove`,
+                { product_id: product._id }
+            ).catch(err => {
+                // If API fails, revert the change
+                dispatch(addToWishlist({
+                    product_id: product._id,
+                    name: product.name,
+                    image: product.image,
+                    price: product.price
+                }));
+                showToast('Error updating wishlist', 'error');
+            });
         } else {
-            dispatch(
-                addToWishlist({
-                    ...product,
-                    id: product._id
-                })
-            );
+            // ✅ Add to UI immediately
+            dispatch(addToWishlist({
+                product_id: product._id,
+                name: product.name,
+                image: product.image,
+                price: product.price
+            }));
             showToast('Added to wishlist', 'success');
+
+            // Then sync with API (in background)
+            axios.post(
+                `${process.env.NEXT_PUBLIC_API_URL}/api/wishlists/${userId}/add`,
+                {
+                    product_id: product._id,
+                    name: product.name,
+                    image: product.image,
+                    price: product.price
+                }
+            ).catch(err => {
+                // If API fails, revert the change
+                dispatch(removeFromWishlist(product._id));
+                showToast('Error updating wishlist', 'error');
+            });
         }
     };
 
@@ -99,15 +150,15 @@ export default function Page() {
                     {/* details  */}
                     <div className='flex flex-col justify-center'>
 
-                         <h1 className="text-3xl font-semibold mb-2">
+                        <h1 className="text-3xl font-semibold mb-2">
                             {product.name}
                         </h1>
 
                         <p className="text-base font-normal">
                             {product.gender}
                         </p>
-                        
-                          <p className="text-2xl font-bold text-red-500 mb-4">
+
+                        <p className="text-2xl font-bold text-red-500 mb-4">
                             {product.price}
                         </p>
 
@@ -121,7 +172,7 @@ export default function Page() {
                             <button onClick={() => setQty(qty + 1)}>+</button>
                         </div>
 
-                          <button
+                        <button
                             onClick={handleWishlist}
                             className="mb-4 w-fit"
                         >
