@@ -2,10 +2,10 @@ Full-Stack E-Commerce Platform
 
 A production-ready full-stack eCommerce application showcasing modern web development practices with complete user and admin functionalities.
 
-Live Links
-- Client Link: https://ecommerce-website-duu9i5ioe-partikgs-projects.vercel.app/
-- Admin Link: https://admin-ecommerce-2fk4mjc9g-partikgs-projects.vercel.app/
-- Render Link: https://ecommerce-api-y7qm.onrender.com
+Live Demo
+- Client: https://ecommerce-website-duu9i5ioe-partikgs-projects.vercel.app/
+- Admin: https://admin-ecommerce-2fk4mjc9g-partikgs-projects.vercel.app/
+- Server: https://ecommerce-api-y7qm.onrender.com
 
 Features
 - User authentication (JWT)
