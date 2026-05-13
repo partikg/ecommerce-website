@@ -12,13 +12,9 @@ export default function Viewcategories() {
     // view
     useEffect(() => {
 
-        axios.post(`${import.meta.env.VITE_API_URL}/api/backend/categories/view`)
+        axios.post(`${import.meta.env.VITE_API_URL}/api/categories/view`)
             .then((success) => {
-                console.log("API RESPONSE:", success.data);
                 setcategories(success.data.data);
-                console.log(success.data.imagePath);
-                console.log("IMAGE PATH:", success.data.imagePath);
-                console.log("DATA:", success.data.data);
             })
             .catch((error) => {
                 console.log(error)
@@ -32,14 +28,12 @@ export default function Viewcategories() {
             id: id,
             status: !status
         }
-        axios.put(`${import.meta.env.VITE_API_URL}/api/backend/categories/change-status`, data)
+        axios.put(`${import.meta.env.VITE_API_URL}/api/categories/change-status`, data)
             .then((success) => {
-                // console.log(success.data)
                 toast.success('status changed', success)
                 setstatus(!status)
             })
             .catch((error) => {
-                // console.log(error)
                 toast.error(error)
             })
     }
@@ -49,7 +43,7 @@ export default function Viewcategories() {
         let data = {
             id: id
         }
-        axios.put(`${import.meta.env.VITE_API_URL}/api/backend/categories/delete`, data)
+        axios.put(`${import.meta.env.VITE_API_URL}/api/categories/delete`, data)
             .then((success) => {
                 toast.success('single record deleted', success)
                 setstatus(!status)
@@ -61,7 +55,6 @@ export default function Viewcategories() {
 
     // multiselect
     let multiselect = (id) => {
-        // console.log(id);
         let updateids = [...ids];
         if (updateids.includes(id)) {
             updateids = updateids.filter((item) => item !== id);
@@ -76,9 +69,8 @@ export default function Viewcategories() {
         let data = {
             ids: ids
         }
-        axios.put(`${import.meta.env.VITE_API_URL}/api/backend/categories/multi-delete`, data)
+        axios.put(`${import.meta.env.VITE_API_URL}/api/categories/multi-delete`, data)
             .then((success) => {
-                console.log(success)
                 toast.success(success.data.message)
             })
             .catch((error) => {

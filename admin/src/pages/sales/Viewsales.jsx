@@ -14,9 +14,8 @@ export default function Viewsales() {
 
     // sales
     useEffect(() => {
-        axios.post(`${import.meta.env.VITE_API_URL}/api/backend/sales/view`)
+        axios.post(`${import.meta.env.VITE_API_URL}/api/sales/view`)
             .then((success) => {
-                console.log('API Response:', success.data);
                 setsales(success.data.data || []);
                 setimagepath(success.data.imagePath || '');
             })
@@ -33,9 +32,8 @@ export default function Viewsales() {
             id: id,
             status: !status
         }
-        axios.put(`${import.meta.env.VITE_API_URL}/api/backend/sales/change-status`, data)
+        axios.put(`${import.meta.env.VITE_API_URL}/api/sales/change-status`, data)
             .then((success) => {
-                console.log(success)
                 toast.success('status changed', success)
                 setstatus(!status)
             })
@@ -50,9 +48,8 @@ export default function Viewsales() {
         let data = {
             id: id
         }
-        axios.put(`${import.meta.env.VITE_API_URL}/api/backend/sales/delete`, data)
+        axios.put(`${import.meta.env.VITE_API_URL}/api/sales/delete`, data)
             .then((success) => {
-                // console.log(success.data.status)
                 if (success.data.status == true) {
                     toast.success(success.data.message);
                     setstatus(!status);
@@ -85,9 +82,8 @@ export default function Viewsales() {
         let data = {
             ids: ids
         }
-        axios.put(`${import.meta.env.VITE_API_URL}/api/backend/sales/multi-delete`, data)
+        axios.put(`${import.meta.env.VITE_API_URL}/api/sales/multi-delete`, data)
             .then((success) => {
-                console.log(success)
                 toast.success(success.data.message)
             })
             .catch((error) => {
@@ -153,13 +149,13 @@ export default function Viewsales() {
                                         <div className="flex items-center gap-2">
                                             {data.image.map((image, index) => (
                                                 <div key={index} className="relative">
-                                                    {/* Image Display */}
+
                                                     <img
                                                         src={image}
                                                         alt={`Image ${index + 1}`}
                                                         className="w-16 h-16 object-cover border border-gray-300 rounded shadow-md"
                                                     />
-                                                    {/* Image Label Below */}
+
                                                     <div className="text-xs text-center mt-1 text-gray-600">{`Image ${index + 1}`}</div>
                                                 </div>
                                             ))}

@@ -18,7 +18,7 @@ export default function Login() {
             password: event.target.password.value
         }
 
-        axios.post(`${import.meta.env.VITE_API_URL}/api/frontend/user/login`, data)
+        axios.post(`${import.meta.env.VITE_API_URL}/api/users/login`, data)
             .then((result) => {
                 if (result.data.status == true) {
                     nav('/home');

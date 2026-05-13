@@ -22,7 +22,7 @@ export default function Addsales() {
     let [categories, setcategories] = useState([]);
 
     useEffect(() => {
-        axios.post(`${import.meta.env.VITE_API_URL}/api/backend/categories/view`)
+        axios.post(`${import.meta.env.VITE_API_URL}/api/categories/view`)
             .then(res => {
                 setcategories(res.data.data);
             })
@@ -57,7 +57,7 @@ export default function Addsales() {
         }
 
         if (params.sales_id === undefined) {
-            axios.post(`${import.meta.env.VITE_API_URL}/api/backend/sales/add`, form)
+            axios.post(`${import.meta.env.VITE_API_URL}/api/sales/add`, form)
                 .then((success) => {
                     console.log('Add Success:', success);
                     if (success.data.status === true) {
@@ -73,7 +73,7 @@ export default function Addsales() {
                 });
         } else {
             if (params.sales_id) {
-                axios.put(`${import.meta.env.VITE_API_URL}/api/backend/sales/update/` + params.sales_id, form)
+                axios.put(`${import.meta.env.VITE_API_URL}/api/sales/update/` + params.sales_id, form)
                     .then((success) => {
                         console.log('Update Success:', success);
                         if (success.data.status === true) {
@@ -96,7 +96,7 @@ export default function Addsales() {
 
     useEffect(() => {
         if (params.sales_id !== undefined) {
-            axios.post(`${import.meta.env.VITE_API_URL}/api/backend/sales/details/` + params.sales_id)
+            axios.post(`${import.meta.env.VITE_API_URL}/api/sales/details/` + params.sales_id)
                 .then((success) => {
                     console.log('Sales Details:', success.data);
                     setinput({
@@ -124,21 +124,9 @@ export default function Addsales() {
         setinput(data);
     };
 
-    // Handle image file change (multiple images)
-    // const handleImageChange = (event) => {
-    //     const files = Array.from(event.target.files); // Ensure files is an array
-    //     const uniqueFiles = files.filter(
-    //         (file) => !input.salesimages.some((img) => img.name === file.name) // Check for duplicates
-    //     );
-    //     setinput((prevState) => ({
-    //         ...prevState,
-    //         salesimages: [...prevState.salesimages, ...uniqueFiles], // Add only unique files
-    //     }));
-    // };
     const handleImageChange = (event) => {
-        const files = Array.from(event.target.files); // Ensure files is an array
+        const files = Array.from(event.target.files);
 
-        // Filter unique files based on name, size, and lastModified attributes
         const uniqueFiles = files.filter(
             (file) => !input.salesimages.some(
                 (img) => img.name === file.name && img.size === file.size && img.lastModified === file.lastModified
@@ -146,15 +134,13 @@ export default function Addsales() {
         );
 
         if (uniqueFiles.length > 0) {
-            // Add only unique files to the state
             setinput((prevState) => ({
                 ...prevState,
                 salesimages: [...prevState.salesimages, ...uniqueFiles],
             }));
         }
 
-        // Reset the file input to avoid re-selecting the same files
-        event.target.value = null;  // This clears the file input
+        event.target.value = null;
     };
 
     return (

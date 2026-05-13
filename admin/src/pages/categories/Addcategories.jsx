@@ -24,12 +24,12 @@ export default function Addcategories() {
         formData.append('order', input.categories_order);
 
         if (input.image) {
-            formData.append('image', input.image);
+            formData.append('images', input.image);
         }
 
         // add or update
         if (params.categories_id == undefined) {
-            axios.post(`${import.meta.env.VITE_API_URL}/api/backend/categories/add`, formData)
+            axios.post(`${import.meta.env.VITE_API_URL}/api/categories/add`, formData)
                 .then((success) => {
                     console.log(success.data)
                     nav('/categories/view');
@@ -40,7 +40,7 @@ export default function Addcategories() {
                     toast.error('Error: ' + error);
                 })
         } else {
-            axios.put(`${import.meta.env.VITE_API_URL}/api/backend/categories/update/${params.categories_id}`, formData)
+            axios.put(`${import.meta.env.VITE_API_URL}/api/categories/update/${params.categories_id}`, formData)
                 .then((success) => {
                     console.log(success.data)
                     nav('/categories/view');
@@ -58,7 +58,7 @@ export default function Addcategories() {
     useEffect(() => {
         if (params.categories_id != undefined) {
             console.log(params.categories_id)
-            axios.post(`${import.meta.env.VITE_API_URL}/api/backend/categories/details/` + params.categories_id)
+            axios.post(`${import.meta.env.VITE_API_URL}/api/categories/details/` + params.categories_id)
                 .then((result) => {
                     console.log(result.data)
                     setinput({
@@ -115,8 +115,6 @@ export default function Addcategories() {
                 </div>
 
                 <input value={(params.categories_id == undefined) ? 'submit' : 'update'} type="submit" className="bg-blue-600 text-center text-white py-2 px-5 rounded hover:bg-blue-700 transition duration-200" />
-
-
 
             </form >
         </div >

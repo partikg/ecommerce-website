@@ -13,14 +13,14 @@ const Header = () => {
     let logout = () => {
         cookies.remove('token')
         nav('/');
-        window.location.reload(); // Force a page reload to reset auth state
+        window.location.reload();
     }
 
     useEffect(() => {
         const usertoken = cookies.get('token');
 
         if (usertoken && location.pathname !== '/register') {
-            axios.post(`${import.meta.env.VITE_API_URL}/api/frontend/user/profile`, '', {
+            axios.post(`${import.meta.env.VITE_API_URL}/api/users/profile`, '', {
                 headers: {
                     'authorization': `Bearer ${usertoken}`
                 }

@@ -10,6 +10,8 @@ import Register from './pages/Register';
 import Addsales from './pages/sales/Addsales';
 import Viewsales from './pages/sales/Viewsales';
 import Profile from "./pages/Profile";
+import Addusers from './pages/users/Addusers';
+import Viewusers from './pages/users/Viewusers';
 
 function App() {
   return (
@@ -19,9 +21,8 @@ function App() {
   );
 }
 
-// Main content inside Router
 function MainContent() {
-  const location = useLocation(); // useLocation should be inside the Router
+  const location = useLocation();
 
   return (
     <div className="flex">
@@ -40,6 +41,9 @@ function MainContent() {
             <Route path="/sales/add" element={<Addsales />} />
             <Route path="/sales/view" element={<Viewsales />} />
             <Route path="/sales/add/:sales_id?" element={<Addsales />} />
+            <Route path="/users/add" element={<Addusers />} />
+            <Route path="/users/view" element={<Viewusers />} />
+            <Route path="/users/add/:users_id?" element={<Addusers />} />
           </Routes>
         </main>
       </div>

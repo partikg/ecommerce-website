@@ -6,17 +6,16 @@ const Home = () => {
     const [userprofile, setUserprofile] = useState({});
     const [user, setUser] = useState([]);
     const [categories, setCategories] = useState([]);
-    const [products, setProducts] = useState([]);
+    const [sales, setSales] = useState([]);
 
     const cookies = new Cookies();
 
     useEffect(() => {
         const usertoken = cookies.get("token");
 
-        // ---------------- PROFILE ----------------
         axios.post(
-            `${import.meta.env.VITE_API_URL}/api/frontend/user/profile`,
-            "",
+            `${import.meta.env.VITE_API_URL}/api/users/profile`,
+            {},
             {
                 headers: {
                     authorization: `Bearer ${usertoken}`,
@@ -30,37 +29,26 @@ const Home = () => {
                 console.log("Profile error:", err);
             });
 
-        // ---------------- USERS ----------------
-        axios.post(`${import.meta.env.VITE_API_URL}/api/frontend/user/viewuser`)
+        axios.get(`${import.meta.env.VITE_API_URL}/api/users`)
             .then((res) => {
-                const data = res.data?.data;
+                const data = res.data?.data || res.data;
                 setUser(Array.isArray(data) ? data : []);
             })
-            .catch((err) => {
-                console.log("Users error:", err);
-                setUser([]);
-            });
 
-        // ---------------- CATEGORIES ----------------
-        axios.post(`${import.meta.env.VITE_API_URL}/api/backend/categories/view`)
+        axios.post(`${import.meta.env.VITE_API_URL}/api/categories/view`)
             .then((res) => {
-                const data = res.data?.data;
+                const data = res.data?.data || res.data;
                 setCategories(Array.isArray(data) ? data : []);
             })
-            .catch((err) => {
-                console.log("Categories error:", err);
-                setCategories([]);
-            });
 
-        // ---------------- PRODUCTS ----------------
-        axios.post(`${import.meta.env.VITE_API_URL}/api/backend/products/view`)
+        axios.post(`${import.meta.env.VITE_API_URL}/api/sales/view`)
             .then((res) => {
                 const data = res.data?.data;
-                setProducts(Array.isArray(data) ? data : []);
+                setSales(Array.isArray(data) ? data : []);
             })
             .catch((err) => {
-                console.log("Products error:", err);
-                setProducts([]);
+                console.log("Sales error:", err);
+                setSales([]);
             });
 
     }, []);
@@ -69,7 +57,6 @@ const Home = () => {
         <div>
             <h2 className="text-2xl font-semibold mb-4">Dashboard</h2>
 
-            {/* WELCOME CARD */}
             <div className="bg-gray-100 p-6 rounded-lg shadow-md mb-6">
                 <h3 className="text-3xl font-semibold text-gray-800 mb-2">
                     Welcome back,{" "}
@@ -79,7 +66,6 @@ const Home = () => {
                 </h3>
             </div>
 
-            {/* STATS CARDS */}
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
 
                 <div className="border border-gray-300 rounded-lg p-4 shadow-md">
@@ -90,16 +76,16 @@ const Home = () => {
                 </div>
 
                 <div className="border border-gray-300 rounded-lg p-4 shadow-md">
-                    <h3 className="text-lg font-medium">Total Products</h3>
+                    <h3 className="text-lg font-medium">Total Categories</h3>
                     <p className="text-lg font-bold text-gray-700">
-                        {products?.length || 0}
+                        {categories?.length || 0}
                     </p>
                 </div>
 
                 <div className="border border-gray-300 rounded-lg p-4 shadow-md">
-                    <h3 className="text-lg font-medium">Total Categories</h3>
+                    <h3 className="text-lg font-medium">Total Sales</h3>
                     <p className="text-lg font-bold text-gray-700">
-                        {categories?.length || 0}
+                        {sales?.length || 0}
                     </p>
                 </div>
 

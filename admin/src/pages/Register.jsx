@@ -7,30 +7,24 @@ export default function Register() {
 
     let register = (event) => {
         event.preventDefault();
-        let form = new FormData(event.target);
-        let data = {
-            name: form.get('regname'),
-            email: form.get('regemail'),
-            mobileno: form.get('regmobileno'),
-            password: form.get('regpassword'),
-        }
 
-        if (form.get('regimage') != '') {
-            data.image = form.get('regimage');
-        }
+        const form = new FormData(event.target);
 
-        axios.post(`${import.meta.env.VITE_API_URL}/api/frontend/user/register`, toFormData(data))
-            .then((success) => {
-                console.log(success.data)
-                if (success.data.status == true) {
-                    nav('/');
-                    console.log(success.data)
-                }
+        axios.post(
+            `${import.meta.env.VITE_API_URL}/api/users/register`,
+            {
+                name: form.get("regname"),
+                email: form.get("regemail"),
+                password: form.get("regpassword")
+            }
+        )
+            .then((res) => {
+                console.log(res.data);
             })
-            .catch((error) => {
-                console.log(error)
-            })
-    }
+            .catch((err) => {
+                console.log(err.response?.data || err.message);
+            });
+    };
 
     return (
         <div>
