@@ -3,8 +3,13 @@
 A production-ready full-stack eCommerce application showcasing modern web development practices with complete user and admin functionalities.
 
 ## Live Demo
+<<<<<<< HEAD
 - Client: https://ecommerce-website-2u5lyjshh-partikgs-projects.vercel.app/
 - Admin: https://admin-ecommerce-2fk4mjc9g-partikgs-projects.vercel.app/
+=======
+- Client: https://ecommerce-website-duu9i5ioe-partikgs-projects.vercel.app/
+- Admin: https://ecommerce-website-fbbd.vercel.app/
+>>>>>>> dc5416bcd370f5a1c5273bdb3aac40e43012abe5
 - Server: https://ecommerce-api-y7qm.onrender.com
 
 ## Features
