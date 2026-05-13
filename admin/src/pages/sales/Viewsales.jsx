@@ -94,98 +94,119 @@ export default function Viewsales() {
     }
 
     return (
-        <div>
-
-            <h2 className="text-2xl font-semibold mb-4">View sales</h2>
+        <div className="min-h-screen">
 
             <ToastContainer />
 
-            <button onClick={multipledelete} className="px-4 py-1 my-2 bg-red-500 text-white rounded">multiple delete</button>
+            <h2 className="text-3xl font-bold text-gray-900">Sales</h2>
+
+            <button
+                onClick={multipledelete}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition duration-200 text-sm font-medium"
+            >
+                Multiple Delete
+            </button>
 
             <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
-                <thead>
-                    <tr className="border-b">
-                        <th className="text-left">checkbox</th>
-                        <th className="p-2 text-left">index</th>
-                        <th className="p-2 text-left">Name</th>
-                        <th className="p-2 text-left">Price</th>
-                        <th className="p-2 text-left">Type</th>
-                        <th className="p-2 text-left">Gender</th>
-                        <th className="p-2 text-left">categoryname</th>
-                        <th className="p-2 text-left">categoryimage</th>
-                        <th className="p-2 text-left">description</th>
-                        <th className="p-2 text-left">status</th>
-                        <th className="p-2 text-left">Image</th>
-                        <th className="p-2 text-left">Edit</th>
-                        <th className="p-2 text-left">Delete</th>
+                <thead className="bg-gray-50 border-b border-gray-200">
+                    <tr>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Select</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Sr.</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Name</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Price</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Type</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Gender</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Category</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Description</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Status</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Images</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Edit</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Delete</th>
                     </tr>
                 </thead>
+
                 <tbody>
-                    {sales.length != 0 ? (
+                    {sales.length > 0 &&
                         sales.map((data, index) => (
-                            <tr key={index}>
-                                <td className="size-6"><input onClick={() => multiselect(data._id)} type="checkbox" className="form-checkbox h-8 w-8 text-blue-600 cursor-pointer " /></td>
-                                <td className="p-2">{index + 1}</td>
-                                <td className="p-2"> {data.name} </td>
-                                <td className="p-2"> {data.price} </td>
-                                <td className="p-2"> {data.type} </td>
-                                <td className="p-2"> {data.gender} </td>
-                                <td className="p-2"> {data.category_id?.name} </td>
-                                <td className="p-2"> {data.category_id?.image} </td>
-                                <td className="p-2"> {data.description} </td>
-                                <td className="p-2">
+                            <tr
+                                key={index}
+                                className="border-b border-gray-200 hover:bg-gray-50 transition"
+                            >
+                                <td className="px-6 py-4">
+                                    <input
+                                        onChange={() => multiselect(data._id)}
+                                        type="checkbox"
+                                        className="form-checkbox h-5 w-5 text-blue-600"
+                                    />
+                                </td>
+
+                                <td className="px-6 py-4">{index + 1}</td>
+                                <td className="px-6 py-4">{data.name}</td>
+                                <td className="px-6 py-4">{data.price}</td>
+                                <td className="px-6 py-4">{data.type}</td>
+                                <td className="px-6 py-4">{data.gender}</td>
+                                <td className="px-6 py-4">{data.category_id?.name}</td>
+                                <td className="px-6 py-4">{data.description}</td>
+
+                                <td className="px-6 py-4">
                                     {data.status == 1 ? (
-                                        <button onClick={() => changestatus(data._id, data.status)} className="px-4 py-1 bg-green-500 text-white rounded hover:bg-green-600">active</button>
+                                        <button
+                                            onClick={() =>
+                                                changestatus(data._id, data.status)
+                                            }
+                                            className="px-4 py-1 bg-green-500 text-white rounded hover:bg-green-600"
+                                        >
+                                            Active
+                                        </button>
                                     ) : (
-                                        <button onClick={() => changestatus(data._id, data.status)} className="px-4 py-1 bg-red-500 text-white rounded hover:bg-red-600">Inactive</button>
+                                        <button
+                                            onClick={() =>
+                                                changestatus(data._id, data.status)
+                                            }
+                                            className="px-4 py-1 bg-red-500 text-white rounded hover:bg-red-600"
+                                        >
+                                            Inactive
+                                        </button>
                                     )}
                                 </td>
 
-                                {/* <td className="p-2">
-                                    <img src={imagepath + data.image} alt="Course Image" className="w-20 h-max mx-auto border border-gray-300 rounded" />
-                                </td> */}
-                                <td className="p-2">
+                                <td className="px-6 py-4">
                                     {data.image && data.image.length > 0 ? (
-                                        <div className="flex items-center gap-2">
-                                            {data.image.map((image, index) => (
-                                                <div key={index} className="relative">
-
-                                                    <img
-                                                        src={image}
-                                                        alt={`Image ${index + 1}`}
-                                                        className="w-16 h-16 object-cover border border-gray-300 rounded shadow-md"
-                                                    />
-
-                                                    <div className="text-xs text-center mt-1 text-gray-600">{`Image ${index + 1}`}</div>
-                                                </div>
+                                        <div className="flex flex-wrap gap-2">
+                                            {data.image.map((image, imgIndex) => (
+                                                <img
+                                                    key={imgIndex}
+                                                    src={image}
+                                                    alt="sale"
+                                                    className="w-16 h-16 object-cover border border-gray-300 rounded"
+                                                />
                                             ))}
                                         </div>
                                     ) : (
-                                        <span>No images available</span>
+                                        <div className="w-16 h-16 bg-gray-200 rounded"></div>
                                     )}
                                 </td>
 
-
-
-
-
-                                <td className="p-2">
+                                <td className="border px-6 py-4 text-center">
                                     <Link to={`/sales/add/${data._id}`}>
-                                        <button className="px-4 py-1 bg-blue-500 text-white rounded">Edit</button>
+                                        <button className="px-4 py-1 bg-blue-500 text-white rounded">
+                                            Edit
+                                        </button>
                                     </Link>
                                 </td>
 
-                                <td className="p-2">
-                                    <button onClick={() => Delete(data._id)} className="px-4 py-1 bg-blue-500 text-white rounded">delete</button>
+                                <td className="border px-6 py-4 text-center">
+                                    <button
+                                        onClick={() => Delete(data._id)}
+                                        className="px-4 py-1 bg-blue-500 text-white rounded"
+                                    >
+                                        Delete
+                                    </button>
                                 </td>
                             </tr>
-                        ))
-                    ) : (
-                        ''
-                    )}
+                        ))}
                 </tbody>
             </table>
-
         </div>
-    )
+    );
 }

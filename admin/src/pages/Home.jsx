@@ -54,35 +54,31 @@ const Home = () => {
     }, []);
 
     return (
-        <div>
-            <h2 className="text-2xl font-semibold mb-4">Dashboard</h2>
+        <div className="space-y-8">
 
-            <div className="bg-gray-100 p-6 rounded-lg shadow-md mb-6">
-                <h3 className="text-3xl font-semibold text-gray-800 mb-2">
-                    Welcome back,{" "}
-                    <span className="text-blue-500">
-                        {userprofile?.name || "User"}
-                    </span>!
-                </h3>
+            <div className="bg-gradient-to-r from-blue-600 to-blue-800 text-white rounded-xl p-8 shadow-lg">
+                <h1 className="text-4xl font-bold mb-2">
+                    Welcome back, <span className="text-blue-100">{userprofile?.name || 'Admin'}</span>!
+                </h1>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-                <div className="border border-gray-300 rounded-lg p-4 shadow-md">
+                <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6 hover:shadow-lg transition duration-300">
                     <h3 className="text-lg font-medium">Total Users</h3>
                     <p className="text-lg font-bold text-gray-700">
                         {user?.length || 0}
                     </p>
                 </div>
 
-                <div className="border border-gray-300 rounded-lg p-4 shadow-md">
+                <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6 hover:shadow-lg transition duration-300">
                     <h3 className="text-lg font-medium">Total Categories</h3>
                     <p className="text-lg font-bold text-gray-700">
                         {categories?.length || 0}
                     </p>
                 </div>
 
-                <div className="border border-gray-300 rounded-lg p-4 shadow-md">
+                <div className="bg-white rounded-lg shadow-md border border-gray-200 p-6 hover:shadow-lg transition duration-300">
                     <h3 className="text-lg font-medium">Total Sales</h3>
                     <p className="text-lg font-bold text-gray-700">
                         {sales?.length || 0}

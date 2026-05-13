@@ -1,5 +1,7 @@
 import axios, { toFormData } from "axios"
 import { Link, useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export default function Register() {
 
@@ -19,100 +21,81 @@ export default function Register() {
             }
         )
             .then((res) => {
+                toast.success(res.data.message)
                 console.log(res.data);
             })
             .catch((err) => {
                 console.log(err.response?.data || err.message);
+                toast.error(result.data.message)
             });
     };
 
     return (
-        <div>
+        <div className="min-h-screen bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center p-3">
+            <ToastContainer />
 
-            <h2 className="text-2xl text-center font-semibold mb-4">Register</h2>
+            <div className="w-full max-w-md">
 
-            <div className="bg-white border border-gray-200 rounded-lg shadow-md  max-w-max mx-auto">
+                <div className="text-center mb-2">
+                    <h1 className="text-3xl font-bold text-white ">Admin Panel</h1>
+                    <p className="text-blue-100">Create your account</p>
+                </div>
 
-                <form onSubmit={register}>
+                <div className="bg-white rounded-lg shadow-xl p-4">
+                    <form onSubmit={register} className="space-y-2">
 
-                    {/* Name Field */}
-                    <div className="form-group">
-                        <label htmlFor="name">Name:</label>
-                        <input
-                            type="text"
-                            id="regname"
-                            name="regname"
-                            placeholder="Enter your name"
+                        <div>
+                            <label className="flex items-center gap-2 text-sm font-semibold text-gray-900 mb-2" htmlFor="name">
+                                Full Name
+                            </label>
+                            <input
+                                type="text"
+                                id="regname"
+                                name="regname"
+                                placeholder="Enter your name"
+                            />
+                        </div>
 
-                        />
-                    </div>
+                        <div>
+                            <label className="flex items-center gap-2 text-sm font-semibold text-gray-900 mb-2" htmlFor="email"> Email Address</label>
+                            <input
+                                type="email"
+                                id="regemail"
+                                name="regemail"
+                                placeholder="Enter your email"
 
-                    {/* Email Field */}
-                    <div className="form-group">
-                        <label htmlFor="email">Email:</label>
-                        <input
-                            type="email"
-                            id="regemail"
-                            name="regemail"
-                            placeholder="Enter your email"
+                            />
+                        </div>
 
-                        />
-                    </div>
+                        <div>
+                            <label className="flex items-center gap-2 text-sm font-semibold text-gray-900 mb-2" htmlFor="password">Password</label>
+                            <input
+                                type="password"
+                                id="regpassword"
+                                name="regpassword"
+                                placeholder="Enter your password"
 
-                    {/* Mobileno Field */}
-                    <div className="form-group">
-                        <label htmlFor="password">Mobileno:</label>
-                        <input
-                            type="number"
-                            id="regmobileno"
-                            name="regmobileno"
-                            placeholder="Enter your mobileno"
+                            />
+                        </div>
 
-                        />
-                    </div>
+                        <div className='text-center'>
+                            <button type="submit" className="submit-btn">Submit</button>
+                        </div>
 
-                    {/* Image Field */}
-                    <div className="form-group">
-                        <label htmlFor="password">Profile Photo:</label>
-                        <input
-                            type="file"
-                            id="regimage"
-                            name="regimage"
-                            placeholder="give your Profile Photo"
+                    </form>
 
-                        />
-                    </div>
+                </div>
 
-                    {/* Password Field */}
-                    <div className="form-group">
-                        <label htmlFor="password">Password:</label>
-                        <input
-                            type="password"
-                            id="regpassword"
-                            name="regpassword"
-                            placeholder="Enter your password"
-
-                        />
-                    </div>
-
-                    {/* Submit Button */}
-                    <div className='text-center'>
-                        <button type="submit" className="submit-btn">Submit</button>
-                    </div>
-
-                </form>
+                <div className='text-center mt-2'>
+                    <span className="text-gray-600">go back to </span>
+                    <Link
+                        to="/"
+                        className="text-blue-600 hover:text-blue-800 underline font-medium transition duration-200">
+                        Login page
+                    </Link>
+                </div>
 
             </div>
-
-            <div className='text-center mt-4'>
-                <span className="text-gray-600">go back to </span>
-                <Link
-                    to="/"
-                    className="text-blue-600 hover:text-blue-800 underline font-medium transition duration-200">
-                    Login page
-                </Link>
-            </div>
-
         </div>
     )
 }

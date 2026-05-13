@@ -10,15 +10,25 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET
 })
 
-const storage = new CloudinaryStorage({
+const salesStorage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
-        folder: 'sales',
-        allowed_formats: ['jpg', 'png', 'jpeg', 'webp'],
+        folder: 'pratikwear/sales',
+        allowed_formats: ['jpg', 'png', 'jpeg', 'webp', 'avif'],
         resource_type: 'image'
     }
 })
 
-const upload = multer({ storage })
+const categoryStorage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'pratikwear/categories',
+        allowed_formats: ['jpg', 'png', 'jpeg', 'webp', 'avif'],
+        resource_type: 'image'
+    }
+})
 
-module.exports = { cloudinary, upload }
+const salesUpload = multer({ storage: salesStorage })
+const categoryUpload = multer({ storage: categoryStorage })
+
+module.exports = { cloudinary, salesUpload, categoryUpload }

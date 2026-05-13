@@ -43,55 +43,61 @@ export default function Login() {
     }, [])
 
     return (
-        <div>
+
+        <div className="min-h-screen bg-gradient-to-br from-blue-600 to-blue-800 flex items-center justify-center p-4">
             <ToastContainer />
 
-            <h2 className="text-2xl text-center font-semibold mb-4">Login</h2>
+            <div className="w-full max-w-md">
 
-            <div className="bg-white border border-gray-200 rounded-lg shadow-md max-w-max mx-auto">
+                <div className="text-center mb-8">
+                    <h1 className="text-3xl font-bold text-white mb-2">Admin Panel</h1>
+                    <p className="text-blue-100">Sign in to your account</p>
+                </div>
 
-                <form onSubmit={loginhandler}>
+                <div className="bg-white rounded-lg shadow-xl p-8">
+                    <form onSubmit={loginhandler} className="space-y-3">
 
-                    {/* Email Field */}
-                    <div className="form-group">
-                        <label htmlFor="email">Email:</label>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            placeholder="Enter your email"
+                        <div>
+                            <label className="flex items-center gap-2 text-sm font-semibold text-gray-900 mb-2" htmlFor="email">
+                                Email Address</label>
+                            <input
+                                type="email"
+                                id="email"
+                                name="email"
+                                placeholder="Enter your email"
+                            />
+                        </div>
 
-                        />
-                    </div>
+                        <div>
+                            <label className="flex items-center gap-2 text-sm font-semibold text-gray-900 mb-2" htmlFor="password">Password:</label>
+                            <input
+                                type="password"
+                                id="password"
+                                name="password"
+                                placeholder="Enter your password"
+                            />
+                        </div>
 
-                    {/* Password Field */}
-                    <div className="form-group">
-                        <label htmlFor="password">Password:</label>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            placeholder="Enter your password"
+                        <div className='text-center'>
+                            <button type="submit" className="submit-btn">Submit</button>
+                        </div>
 
-                        />
-                    </div>
+                    </form>
+                </div>
 
-                    {/* Submit Button */}
-                    <div className='text-center'>
-                        <button type="submit" className="submit-btn">Submit</button>
-                    </div>
+                {/* register */}
+                <div className="text-center mt-6">
+                    <p className="text-white">
+                        Don't have an account?{' '}
+                        <Link
+                            to="/register"
+                            className="font-semibold text-blue-100 hover:text-white transition"
+                        >
+                            Register Here
+                        </Link>
+                    </p>
+                </div>
 
-                </form>
-            </div>
-
-            {/* register */}
-            <div className='text-center mt-4'>
-                <span className="text-gray-600">Not registered ? </span>
-                <Link
-                    to="/Register"
-                    className="text-blue-600 hover:text-blue-800 underline font-medium transition duration-200">
-                    Register Here
-                </Link>
             </div>
 
         </div >

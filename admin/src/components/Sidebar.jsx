@@ -1,107 +1,92 @@
 import { Link } from 'react-router-dom';
 
-const Sidebar = () => (
+const Sidebar = () => {
+    return (
+        <aside className="w-64 min-w-64 h-screen bg-gray-900 text-white sticky top-0 overflow-y-auto shadow-xl">
 
-    <aside className="w-72 min-w-72 flex-shrink-0 h-screen overflow-y-auto bg-gray-900 border-r border-gray-800 text-white sticky top-0 shadow-2xl">
+            <nav className="p-4 space-y-6">
 
-        <div className="px-6 py-6 border-b border-gray-800">
-            <h2 className="text-2xl font-bold tracking-tight">Admin Panel</h2>
-        </div>
-
-        <nav>
-            <ul className="space-y-4">
-
-                <li>
+                <div>
                     <Link
                         to="/home"
-                        className="block p-3 rounded-lg hover:bg-gray-700 transition duration-200"
+                        className="block px-4 py-3 rounded-lg hover:bg-gray-800  transition duration-200"
                     >
                         Home
                     </Link>
-                </li>
+                </div>
 
-                {/* categories */}
-                <li>
-                    <div className="block p-3 rounded-lg hover:bg-gray-700 transition duration-200 cursor-pointer">
+                {/* Categories */}
+                <div>
+                    <h2 className="px-4 mb-2 text-sm font-semibold text-gray-400 uppercase">
                         Categories
-                    </div>
-                    <ul className="pl-4 space-y-2">
-                        <li>
-                            <Link
-                                to="/categories/add"
-                                className="block p-2 rounded-lg text-gray-300 hover:bg-gray-600 transition duration-200"
-                            >
-                                Add Categories
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
-                                to="/categories/view"
-                                className="block p-2 rounded-lg text-gray-300 hover:bg-gray-600 transition duration-200"
-                            >
-                                View Categories
-                            </Link>
-                        </li>
-                    </ul>
-                </li>
+                    </h2>
 
-                {/* sales */}
-                <li>
-                    <div className="block p-3 rounded-lg hover:bg-gray-700 transition duration-200 cursor-pointer">
+                    <div className="space-y-2">
+                        <Link
+                            to="/categories/add"
+                            className="block ml-4 px-4 py-2 rounded-lg text-sm text-gray-400  border-gray-700  hover:bg-gray-800 transition duration-200"
+                        >
+                            Add Category
+                        </Link>
+
+                        <Link
+                            to="/categories/view"
+                            className="block ml-4 px-4 py-2 rounded-lg text-sm text-gray-400  border-gray-700  hover:bg-gray-800 transition duration-200"
+                        >
+                            View Categories
+                        </Link>
+                    </div>
+                </div>
+
+                {/* Sales */}
+                <div>
+                    <h2 className="px-4 mb-2 text-sm font-semibold text-gray-400 uppercase">
                         Sales
-                    </div>
-                    <ul className="pl-4 space-y-2">
-                        <li>
-                            <Link
-                                to="/sales/add"
-                                className="block p-2 rounded-lg text-gray-300 hover:bg-gray-600 transition duration-200"
-                            >
-                                Add Sales
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
-                                to="/sales/view"
-                                className="block p-2 rounded-lg text-gray-300 hover:bg-gray-600 transition duration-200"
-                            >
-                                View Sales
-                            </Link>
-                        </li>
-                    </ul>
-                </li>
+                    </h2>
 
-                {/* users */}
-                <li>
-                    <div className="block p-3 rounded-lg hover:bg-gray-700 transition duration-200 cursor-pointer">
+                    <div className="space-y-2">
+                        <Link
+                            to="/sales/add"
+                            className="block ml-4 px-4 py-2 rounded-lg text-sm text-gray-400  border-gray-700  hover:bg-gray-800 transition duration-200"
+                        >
+                            Add Sales
+                        </Link>
+
+                        <Link
+                            to="/sales/view"
+                            className="block ml-4 px-4 py-2 rounded-lg text-sm text-gray-400  border-gray-700  hover:bg-gray-800 transition duration-200"
+                        >
+                            View Sales
+                        </Link>
+                    </div>
+                </div>
+
+                {/* Users */}
+                <div>
+                    <h2 className="px-4 mb-2 text-sm font-semibold text-gray-400 uppercase">
                         Users
+                    </h2>
+
+                    <div className="space-y-2">
+                        <Link
+                            to="/users/add"
+                            className="block ml-4 px-4 py-2 rounded-lg text-sm text-gray-400  border-gray-700  hover:bg-gray-800 transition duration-200"
+                        >
+                            Add Users
+                        </Link>
+
+                        <Link
+                            to="/users/view"
+                            className="block ml-4 px-4 py-2 rounded-lg text-sm text-gray-400  border-gray-700  hover:bg-gray-800 transition duration-200"
+                        >
+                            View Users
+                        </Link>
                     </div>
-                    <ul className="pl-4 space-y-2">
-                        <li>
-                            <Link
-                                to="/users/add"
-                                className="block p-2 rounded-lg text-gray-300 hover:bg-gray-600 transition duration-200"
-                            >
-                                Add Users
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
-                                to="/users/view"
-                                className="block p-2 rounded-lg text-gray-300 hover:bg-gray-600 transition duration-200"
-                            >
-                                View Users
-                            </Link>
-                        </li>
-                    </ul>
-                </li>
+                </div>
 
-            </ul>
-        </nav>
-    </aside>
-
-);
+            </nav>
+        </aside>
+    );
+};
 
 export default Sidebar;
-
-
-

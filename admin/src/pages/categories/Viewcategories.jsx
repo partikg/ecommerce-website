@@ -81,41 +81,43 @@ export default function Viewcategories() {
 
 
     return (
-        <div >
-
-            <h2 className="text-2xl font-semibold mb-4">View categories</h2>
+        <div className="min-h-screen">
 
             <ToastContainer />
 
-            <button onClick={multidelete} className="px-4 py-1 my-2 bg-red-500 text-white rounded">multipledelete</button>
+            <h2 className="text-3xl font-bold text-gray-900">Categories</h2>
+
+            <button onClick={multidelete} className=" px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition duration-200 text-sm font-medium">multipledelete</button>
 
             <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
-                <thead>
+                <thead className="bg-gray-50 border-b border-gray-200">
                     <tr className="border-b">
-                        <th className="p-2 text-left">Select</th>
-                        <th className="p-2 text-left">Sr.</th>
-                        <th className="p-2 text-left">Index</th>
-                        <th className="p-2 text-left">Name</th>
-                        <th className="p-2 text-left">Order</th>
-                        <th className="p-2 text-left">Status</th>
-                        <th className="p-2 text-left">Image</th>
-                        <th className="p-2 text-left">Edit</th>
-                        <th className="p-2 text-left">Delete</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Select</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Sr.</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Index</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Name</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Order</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Status</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Image</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Edit</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Delete</th>
                     </tr>
                 </thead>
 
                 <tbody>
                     {categories.length > 0 ? (
                         categories.map((data, index) => (
-                            <tr key={index} >
-                                <td className="size-6"><input onClick={() => multiselect(data._id)} type="checkbox" className="form-checkbox h-5 w-5 text-blue-600" /></td>
-                                <td className="p-2">{index + 1}</td>
-                                <td className="p-2">{data._id}</td>
-                                <td className="p-2">{data.name}</td>
-                                <td className="p-2"> {data.order} </td>
+                            <tr key={index} className="border-b border-gray-200 hover:bg-gray-50 transition">
+
+                                <td className="px-6 py-4"><input onClick={() => multiselect(data._id)} type="checkbox" className="form-checkbox h-5 w-5 text-blue-600" /></td>
+
+                                <td className="px-6 py-4">{index + 1}</td>
+                                <td className="px-6 py-4">{data._id}</td>
+                                <td className="px-6 py-4">{data.name}</td>
+                                <td className="px-6 py-4"> {data.order} </td>
 
                                 {/* status */}
-                                <td className="p-2">
+                                <td className="px-6 py-4">
                                     {
                                         data.status == 1 ?
                                             <button onClick={() => changestatus(data._id, data.status)} className="px-4 py-1 bg-green-500 text-white rounded hover:bg-green-600">active </button>
@@ -125,7 +127,7 @@ export default function Viewcategories() {
                                 </td>
 
                                 {/* image */}
-                                <td className="p-2">
+                                <td className="px-6 py-4">
                                     {data.image ? (
                                         <img
                                             src={data.image}
@@ -138,14 +140,14 @@ export default function Viewcategories() {
                                 </td>
 
                                 {/* edit */}
-                                <td className="border p-2 text-center">
+                                <td className="border px-6 py-4 text-center">
                                     <Link to={`/categories/add/${data._id}`}>
                                         <button className="px-4 py-1 bg-blue-500 text-white rounded">edit</button>
                                     </Link>
                                 </td>
 
                                 {/* delete */}
-                                <td className="border p-2 text-center">
+                                <td className="border px-6 py-4 text-center">
                                     <button onClick={() => Delete(data._id)} className="px-4 py-1 bg-blue-500 text-white rounded">delete</button>
                                 </td>
 

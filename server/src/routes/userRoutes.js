@@ -9,5 +9,7 @@ router.post('/profile', userController.profile);
 router.get('/', userController.getUsers);
 router.get('/:id', userController.getUserById);
 router.delete('/:id', userController.deleteUser);
+router.put('/multi-delete', userController.multiDeleteUsers);
+router.put('/:id', userController.updateUser);
 
 module.exports = router;

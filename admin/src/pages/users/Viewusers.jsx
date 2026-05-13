@@ -69,33 +69,40 @@ export default function Viewusers() {
     };
 
     return (
-        <div >
-
-            <h2 className="text-2xl font-semibold mb-4">View Users</h2>
+        <div className="min-h-screen">
 
             <ToastContainer />
 
-            <button onClick={multidelete} className="px-4 py-1 my-2 bg-red-500 text-white rounded">multipledelete</button>
+            <h2 className="text-3xl font-bold text-gray-900">Users</h2>
+
+            <button
+                onClick={multidelete}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition duration-200 text-sm font-medium"
+            >
+                Multiple Delete
+            </button>
 
             <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
-                <thead>
-                    <tr className="border-b">
-                        <th className="p-2 text-left">Select</th>
-                        <th className="p-2 text-left">Sr.</th>
-                        <th className="p-2 text-left">ID</th>
-                        <th className="p-2 text-left">Name</th>
-                        <th className="p-2 text-left">Email</th>
-                        <th className="p-2 text-left">Edit</th>
-                        <th className="p-2 text-left">Delete</th>
+                <thead className="bg-gray-50 border-b border-gray-200">
+                    <tr>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Select</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Sr.</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">ID</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Name</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Email</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Edit</th>
+                        <th className="px-6 py-4 text-left text-sm font-semibold text-gray-900">Delete</th>
                     </tr>
                 </thead>
 
                 <tbody>
                     {users.length > 0 &&
                         users.map((data, index) => (
-                            <tr key={index} >
-
-                                <td className="size-6">
+                            <tr
+                                key={index}
+                                className="border-b border-gray-200 hover:bg-gray-50 transition"
+                            >
+                                <td className="px-6 py-4">
                                     <input
                                         type="checkbox"
                                         checked={ids.includes(data._id)}
@@ -104,35 +111,33 @@ export default function Viewusers() {
                                     />
                                 </td>
 
-                                <td className="p-2">{index + 1}</td>
-                                <td className="p-2">{data._id}</td>
-                                <td className="p-2">{data.name}</td>
-                                <td className="p-2">{data.email}</td>
+                                <td className="px-6 py-4">{index + 1}</td>
+                                <td className="px-6 py-4">{data._id}</td>
+                                <td className="px-6 py-4">{data.name}</td>
+                                <td className="px-6 py-4">{data.email}</td>
 
-                                {/* edit */}
-                                <td className="border p-2 text-center">
+                                <td className="border px-6 py-4 text-center">
                                     <Link to={`/users/add/${data._id}`}>
-                                        <button className="px-4 py-1 bg-blue-500 text-white rounded">edit</button>
+                                        <button className="px-4 py-1 bg-blue-500 text-white rounded">
+                                            Edit
+                                        </button>
                                     </Link>
                                 </td>
 
-                                {/* delete */}
-                                <td className="border p-2 text-center">
-                                    <button onClick={() => Delete(data._id)} className="px-4 py-1 bg-blue-500 text-white rounded">delete</button>
+                                <td className="border px-6 py-4 text-center">
+                                    <button
+                                        onClick={() => Delete(data._id)}
+                                        className="px-4 py-1 bg-blue-500 text-white rounded"
+                                    >
+                                        Delete
+                                    </button>
                                 </td>
-
-
                             </tr>
-                        ))
-                    }
+                        ))}
                 </tbody>
-
-            </table >
-
-        </div >
-
-
-    )
+            </table>
+        </div>
+    );
 }
 
 

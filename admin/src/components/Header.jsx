@@ -1,6 +1,6 @@
 import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Cookies } from 'react-cookie';
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import axios from 'axios';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -10,6 +10,8 @@ const Header = () => {
     let nav = useNavigate();
     const location = useLocation();
     const cookies = new Cookies();
+    const [userProfile, setUserProfile] = useState(null);
+
     let logout = () => {
         cookies.remove('token')
         nav('/');
@@ -31,6 +33,7 @@ const Header = () => {
                         nav('/');
                     }
                     else {
+                        setUserProfile(success.data.data.userdata);
                         console.log(success.data)
                     }
                 })
@@ -38,7 +41,6 @@ const Header = () => {
                     toast.error('errored', error)
                 })
         } else {
-            // If token doesn't exist, redirect to login
             if (!usertoken && location.pathname !== '/') {
                 nav('/');
             }
@@ -47,23 +49,49 @@ const Header = () => {
 
     return (
         <div  >
-            <header className="bg-gray-800 text-white p-4 shadow-md sticky top-0 z-50" >
-                <ToastContainer />
-                <div className="container mx-auto flex justify-between items-center">
-                    <h1 className="text-2xl font-semibold">Admin Panel</h1>
-                    <nav>
-                        <ul className="flex space-x-6">
-                            <li>
-                                <Link to={'/profile'} className="hover:text-gray-300 transition duration-200">Profile</Link>
-                            </li>
-                            {/* <li>
-                                <Link to={'/'} className="hover:text-gray-300 transition duration-200">Login</Link>
-                            </li> */}
-                            <li>
-                                <Link to={'/'} onClick={() => logout()} className="hover:text-gray-300 transition duration-200">Logout</Link>
-                            </li>
-                        </ul>
-                    </nav>
+            <ToastContainer />
+
+            <header className="bg-white border-b border-gray-200 shadow-sm sticky top-0 z-40">
+
+                <div className="px-6 py-4 flex justify-between items-center">
+
+                    <div>
+                        <h1 className="text-2xl font-bold text-gray-900">
+                            Admin Dashboard
+                        </h1>
+                    </div>
+
+                    <div className="flex items-center gap-6">
+
+
+                        {userProfile && (
+                            <div className="hidden md:flex items-center gap-3">
+                                <div className="text-right">
+                                    <p className="text-sm font-medium text-gray-900">
+                                        {userProfile.name || 'Admin'}
+                                    </p>
+                                    <p className="text-xs text-gray-500">
+                                        {userProfile.email}
+                                    </p>
+                                </div>
+
+                                <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
+                                    {userProfile.name?.charAt(0)?.toUpperCase() || 'A'}
+                                </div>
+                            </div>
+                        )}
+
+                        <nav className="hidden md:flex items-center gap-4">
+                            <button
+                                onClick={logout}
+                                className="px-4 py-2 rounded-lg bg-red-50 text-red-700 hover:bg-red-100 transition duration-200"
+                            >
+                                <span className="text-sm font-medium">Logout</span>
+                            </button>
+                        </nav>
+
+                    </div>
+
                 </div>
             </header >
         </div >

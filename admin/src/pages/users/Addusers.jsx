@@ -92,56 +92,66 @@ export default function Addusers() {
     }
 
     return (
-        <div>
+        <div className="min-h-screen">
             <ToastContainer />
 
-            <h2 className="text-2xl font-semibold mb-4">
-                {params.users_id == undefined ? 'Add Users' : 'Update User'}
+            <h2 className="text-3xl font-bold text-gray-900">
+                {params.users_id == undefined ? "Add Users" : "Update User"}
             </h2>
 
-            <form onSubmit={submithandler}>
+            <div className="bg-white rounded-lg shadow-md border border-gray-200 max-w-2xl">
+                <form onSubmit={submithandler} className="p-8 space-y-6">
 
-                <div className="mb-4">
-                    <label className="block text-gray-700">Name:</label>
+                    <div className="mb-4">
+                        <label className="block text-sm font-semibold text-gray-900 mb-2">
+                            Full Name:
+                        </label>
+                        <input
+                            type="text"
+                            name="name"
+                            value={input.name}
+                            onChange={inputhandler}
+                            placeholder="Enter full name"
+                            className="mt-1 block w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                    </div>
+
+                    <div className="mb-4">
+                        <label className="block text-sm font-semibold text-gray-900 mb-2">
+                            Email Address
+                        </label>
+                        <input
+                            type="email"
+                            name="email"
+                            value={input.email}
+                            onChange={inputhandler}
+                            placeholder="Enter email address"
+                            className="mt-1 block w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                    </div>
+
+                    <div className="mb-4">
+                        <label className="block text-sm font-semibold text-gray-900 mb-2">
+                            Password
+                        </label>
+                        <input
+                            type="password"
+                            name="password"
+                            value={input.password}
+                            onChange={inputhandler}
+                            placeholder="Enter password"
+                            className="mt-1 block w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                    </div>
+
                     <input
-                        type="text"
-                        name="name"
-                        value={input.name}
-                        onChange={inputhandler}
-                        className="mt-1 block w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        type="submit"
+                        value={params.users_id == undefined ? "Submit" : "Update"}
+                        className="bg-blue-600 text-white py-2 px-5 rounded hover:bg-blue-700 transition duration-200"
                     />
-                </div>
-
-                <div className="mb-4">
-                    <label className="block text-gray-700">email:</label>
-                    <input
-                        type="email"
-                        name="email"
-                        value={input.email}
-                        onChange={inputhandler}
-                        className="mt-1 block w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                </div>
-
-                <div className="mb-4">
-                    <label className="block text-gray-700">Password:</label>
-                    <input
-                        type="password"
-                        name="password"
-                        value={input.password}
-                        onChange={inputhandler}
-                        className="mt-1 block w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    />
-                </div>
-
-                <input
-                    value={params.users_id == undefined ? 'submit' : 'update'}
-                    type="submit"
-                    className="bg-blue-600 text-center text-white py-2 px-5 rounded hover:bg-blue-700 transition duration-200"
-                />
-
-            </form >
-        </div >
-    )
+                </form>
+            </div>
+        </div>
+    );
 
 }

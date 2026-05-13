@@ -144,80 +144,164 @@ export default function Addsales() {
     };
 
     return (
-        <div>
-            <h2 className="text-2xl font-semibold mb-4">Add Sales</h2>
+        <div className="min-h-screen">
             <ToastContainer />
-            <form onSubmit={submithandler} className="bg-white p-4 rounded-lg shadow-md">
-                <div className="mb-4">
-                    <label className="block text-gray-700">Name:</label>
-                    <input name="salesname" onChange={inputhandler} value={input.salesname} type="text" className="mt-1 block w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                </div>
 
-                <div className="mb-4">
-                    <label className="block text-gray-700">Price:</label>
-                    <input name="salesprice" onChange={inputhandler} value={input.salesprice} type="text" className="mt-1 block w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                </div>
+            <h2 className="text-3xl font-bold text-gray-900">
+                {params.sales_id === undefined ? "Add Sales" : "Update Sales"}
+            </h2>
 
-                <div className="mb-4">
-                    <label className="block text-gray-700">Type:</label>
-                    <input name="salestype" onChange={inputhandler} value={input.salestype} type="text" className="mt-1 block w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                </div>
+            <div className="bg-white rounded-lg shadow-md border border-gray-200 max-w-2xl">
+                <form onSubmit={submithandler} className="p-8 space-y-6">
 
-                <div className="mb-4">
-                    <label className="block text-gray-700">Gender:</label>
-                    <input name="salesgender" onChange={inputhandler} value={input.salesgender} type="text" className="mt-1 block w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                </div>
+                    <div className="mb-4">
+                        <label className="block text-sm font-semibold text-gray-900 mb-2">
+                            Product Name:
+                        </label>
+                        <input
+                            name="salesname"
+                            value={input.salesname}
+                            onChange={inputhandler}
+                            type="text"
+                            placeholder="Enter product name"
+                            className="mt-1 block w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                    </div>
 
-                <div className="mb-4">
-                    <label className="block text-gray-700">Category ID:</label>
-                    <select
-                        name="salescategoryid"
-                        value={input.salescategoryid}
-                        onChange={inputhandler}
-                    >
-                        <option value="">Select Category</option>
-                        {categories.map(cat => (
-                            <option key={cat._id} value={cat._id}>
-                                {cat.name}
-                            </option>
-                        ))}
-                    </select>
-                </div>
+                    <div className="mb-4">
+                        <label className="block text-sm font-semibold text-gray-900 mb-2">
+                            Price
+                        </label>
+                        <input
+                            name="salesprice"
+                            value={input.salesprice}
+                            onChange={inputhandler}
+                            type="text"
+                            placeholder="Enter product price"
+                            className="mt-1 block w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                    </div>
 
-                <div className="mb-4">
-                    <label className="block text-gray-700">Description:</label>
-                    <textarea name="salesdescription" onChange={inputhandler} value={input.salesdescription} className="mt-1 block w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" rows="4"></textarea>
-                </div>
+                    <div className="mb-4">
+                        <label className="block text-sm font-semibold text-gray-900 mb-2">
+                            Type
+                        </label>
+                        <input
+                            name="salestype"
+                            value={input.salestype}
+                            onChange={inputhandler}
+                            type="text"
+                            placeholder="Enter product type"
+                            className="mt-1 block w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                    </div>
 
-                <div className="mb-4">
-                    <label className="block text-gray-700">Order:</label>
-                    <input name="salesorder" onChange={inputhandler} value={input.salesorder} type="text" className="mt-1 block w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                </div>
+                    <div className="mb-4">
+                        <label className="block text-sm font-semibold text-gray-900 mb-2">
+                            Gender
+                        </label>
+                        <input
+                            name="salesgender"
+                            value={input.salesgender}
+                            onChange={inputhandler}
+                            type="text"
+                            placeholder="Enter gender"
+                            className="mt-1 block w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                    </div>
 
-                <div className="mb-4">
-                    <label className="block text-gray-700">Status:</label>
-                    <input name="salesstatus" checked={input.salesstatus === true} value={1} onChange={inputhandler} type="radio" className="w-20" />
-                    Active
-                    <input name="salesstatus" checked={input.salesstatus === false} value={0} onChange={inputhandler} type="radio" className="w-20" />
-                    Inactive
-                </div>
+                    <div className="mb-4">
+                        <label className="block text-sm font-semibold text-gray-900 mb-2">
+                            Category
+                        </label>
+                        <select
+                            name="salescategoryid"
+                            value={input.salescategoryid}
+                            onChange={inputhandler}
+                            className="mt-1 block w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                            <option value="">Select Category</option>
+                            {categories.map((cat) => (
+                                <option key={cat._id} value={cat._id}>
+                                    {cat.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
 
-                <div className="mb-4">
-                    <label className="block text-gray-700">Images:</label>
-                    <input name="images" onChange={handleImageChange} type="file" multiple className="mt-1 block w-full border-2 border-dashed border-gray-300 p-3 rounded-lg hover:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-400 transition duration-200" />
-                    <div>
+                    <div className="mb-4">
+                        <label className="block text-sm font-semibold text-gray-900 mb-2">
+                            Description
+                        </label>
+                        <textarea
+                            name="salesdescription"
+                            value={input.salesdescription}
+                            onChange={inputhandler}
+                            rows="4"
+                            placeholder="Enter description"
+                            className="mt-1 block w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        ></textarea>
+                    </div>
+
+                    <div className="mb-4">
+                        <label className="block text-sm font-semibold text-gray-900 mb-2">
+                            Order
+                        </label>
+                        <input
+                            name="salesorder"
+                            value={input.salesorder}
+                            onChange={inputhandler}
+                            type="text"
+                            placeholder="Enter display order"
+                            className="mt-1 block w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+                    </div>
+
+                    <div className="mb-4">
+                        <label className="block text-sm font-semibold text-gray-900 mb-2">
+                            Status
+                        </label>
+                        <select
+                            name="salesstatus"
+                            value={input.salesstatus}
+                            onChange={inputhandler}
+                            className="mt-1 block w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                            <option value={1}>Active</option>
+                            <option value={0}>Inactive</option>
+                        </select>
+                    </div>
+
+                    <div className="mb-4">
+                        <label className="block text-sm font-semibold text-gray-900 mb-2">
+                            Product Images
+                        </label>
+                        <input
+                            name="images"
+                            type="file"
+                            multiple
+                            onChange={handleImageChange}
+                            className="mt-1 block w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
+
                         {input.salesimages.length > 0 && (
-                            <ul>
+                            <ul className="mt-3 text-sm text-gray-600 space-y-1">
                                 {Array.from(input.salesimages).map((file, index) => (
-                                    <li key={index}>{file.name}</li>
+                                    <li key={index}>
+                                        {file.name || `Image ${index + 1}`}
+                                    </li>
                                 ))}
                             </ul>
                         )}
                     </div>
-                </div>
 
-                <input type="submit" className="bg-blue-600 text-white py-2 px-5 rounded hover:bg-blue-700 transition duration-200" />
-            </form>
+                    <input
+                        type="submit"
+                        value={params.sales_id === undefined ? "Submit" : "Update"}
+                        className="bg-blue-600 text-white py-2 px-5 rounded hover:bg-blue-700 transition duration-200"
+                    />
+                </form>
+            </div>
         </div>
     );
 }

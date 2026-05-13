@@ -36,28 +36,95 @@ const createUser = async (req, res) => {
 };
 
 const deleteUser = async (req, res) => {
-
     try {
-
         const deletedUser = await userModel.deleteOne({
-            _id: req.body.id
+            _id: req.params.id
         });
 
-        res.status(200).json({
-            success: true,
-            message: 'User deleted successfully',
-            data: deletedUser
-        });
+        if (deletedUser.deletedCount > 0) {
+            res.status(200).json({
+                success: true,
+                message: 'User deleted successfully',
+                data: deletedUser
+            });
+        } else {
+            res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
 
     } catch (err) {
-
         res.status(500).json({
             success: false,
             message: err.message
         });
-
     }
+};
 
+const multiDeleteUsers = async (req, res) => {
+    try {
+        const deletedUsers = await userModel.deleteMany({
+            _id: { $in: req.body.ids }
+        });
+
+        if (deletedUsers.deletedCount > 0) {
+            res.status(200).json({
+                success: true,
+                message: 'Users deleted successfully',
+                data: deletedUsers
+            });
+        } else {
+            res.status(404).json({
+                success: false,
+                message: 'No users found'
+            });
+        }
+
+    } catch (err) {
+        res.status(500).json({
+            success: false,
+            message: err.message
+        });
+    }
+};
+
+const updateUser = async (req, res) => {
+    try {
+        const updateData = {
+            name: req.body.name,
+            email: req.body.email
+        };
+
+        if (req.body.password && req.body.password.trim() !== '') {
+            updateData.password = await bcrypt.hash(req.body.password, 10);
+        }
+
+        const updatedUser = await userModel.findByIdAndUpdate(
+            req.params.id,
+            updateData,
+            { new: true }
+        );
+
+        if (!updatedUser) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: 'User updated successfully',
+            data: updatedUser
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        });
+    }
 };
 
 const register = async (req, res) => {
@@ -231,6 +298,8 @@ module.exports = {
     getUserById,
     createUser,
     deleteUser,
+    multiDeleteUsers,
+    updateUser,
     register,
     login,
     profile

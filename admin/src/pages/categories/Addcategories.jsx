@@ -89,34 +89,55 @@ export default function Addcategories() {
     }
 
     return (
-        <div>
+        <div className="min-h-screen">
             <ToastContainer />
-            <h2 className="text-2xl font-semibold mb-4">Add Categories</h2>
-            <form onSubmit={submithandler}>
 
-                <div className="mb-4">
-                    <label className="block text-gray-700">Name:</label>
-                    <input type="text" onChange={inputhandler} value={input.categories_name} name="categories_name" className="mt-1 block w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                </div>
+            <h2 className="text-3xl font-bold text-gray-900">Add Categories</h2>
 
-                <div className="mb-4">
-                    <label className="block text-gray-700">Status: (give only 1 or 0)</label>
-                    <input type="text" onChange={inputhandler} value={input.categories_status} name="categories_status" className="mt-1 block w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                </div>
+            <div className="bg-white rounded-lg shadow-md border border-gray-200 max-w-2xl">
 
-                <div className="mb-4">
-                    <label className="block text-gray-700">Order:</label>
-                    <input type="text" onChange={inputhandler} value={input.categories_order} name="categories_order" className="mt-1 block w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                </div>
+                <form onSubmit={submithandler} className="p-8 space-y-6">
 
-                <div className="mb-4">
-                    <label className="block text-gray-700">Image:</label>
-                    <input type="file" onChange={inputhandler} name="image" className="mt-1 block w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                </div>
+                    <div className="mb-4">
+                        <label className="block text-sm font-semibold text-gray-900 mb-2">
+                            Category Name:
+                        </label>
+                        <input
+                            type="text"
+                            onChange={inputhandler}
+                            value={input.categories_name}
+                            placeholder="Enter category name"
+                            name="categories_name"
+                            className="mt-1 block w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    </div>
 
-                <input value={(params.categories_id == undefined) ? 'submit' : 'update'} type="submit" className="bg-blue-600 text-center text-white py-2 px-5 rounded hover:bg-blue-700 transition duration-200" />
+                    <div className="mb-4">
+                        <label className="block text-sm font-semibold text-gray-900 mb-2">Status:</label>
+                        <select type="text" onChange={inputhandler} value={input.categories_status} name="categories_status" className="mt-1 block w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" >
+                            <option value="1">Active</option>
+                            <option value="0">Inactive</option>
+                        </select>
+                    </div>
 
-            </form >
+                    <div className="mb-4">
+                        <label className="block text-sm font-semibold text-gray-900 mb-2">Order:</label>
+                        <input type="text"
+                            onChange={inputhandler}
+                            value={input.categories_order}
+                            placeholder="Enter display order"
+                            name="categories_order" className="mt-1 block w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    </div>
+
+                    <div className="mb-4">
+                        <label className="block text-sm font-semibold text-gray-900 mb-2">Category Image:</label>
+                        <input type="file" onChange={inputhandler} name="image" className="mt-1 block w-full border border-gray-300 p-3 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" />
+                    </div>
+
+                    <input value={(params.categories_id == undefined) ? 'submit' : 'update'} type="submit" className="bg-blue-600 text-center text-white py-2 px-5 rounded hover:bg-blue-700 transition duration-200" />
+
+                </form >
+
+            </div>
         </div >
     )
 
